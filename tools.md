@@ -114,4 +114,4 @@ Software and Services
 - [WeBull](https://www.webull.com) for analyzing stocks and markets.
 - [Fidelity Active Trader Pro](https://www.fidelity.com/trading/advanced-trading-tools/active-trader-pro/overview) for trading securities.
 
-[⏭️ NEXT: Peer Review](README.md#peer-review)
+[⏭️ NEXT: People](README.md#people)

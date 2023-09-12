@@ -3,9 +3,9 @@
 [🔙 BACK](README.md)
 
 Community Needs Assessment
-==========================================
+==============================================
 
-As a development leader, I advocate for the team members and protect the company’s information and technology.
+As a development leader, I advocate for the team members and protect information and technology.
 
 Table of Contents
 ----------------------------
@@ -17,7 +17,7 @@ Table of Contents
 - [Protecting Information and Technology](#protecting-information-and-technology)
 
 Advocating for Team Members
-------------------------------------------------
+-------------------------------------------
 
 I will learn the best ways to communicate with each team member effectively.
 
@@ -46,7 +46,7 @@ I will foster an environment where team members feel valued:
 - I will do what I can to place people in roles where they feel they provide the best value.
 
 Protecting Information and Technology
-------------------------------------------------------------------------------------
+-----------------------------------------------------------
 
 - I will document the team’s workflows and keep them current.
 - I will execute the team’s workflows as prescribed.

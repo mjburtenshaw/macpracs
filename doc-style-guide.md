@@ -1,6 +1,6 @@
-[🔝 TOP](README.md)
+[🔝 TOP: README](README.md)
 
-[🔙 BACK](README.md)
+[🔙 BACK: Policies](README.md#policies)
 
 Style Guides
 =================
@@ -36,4 +36,4 @@ Nouns
 
 Treat the proper nouns of vendors the same way they do, e.g., ClickUp capitalizes their Tasks.
 
-[⏭️ BACK TO TOP](README.md)
+[⏭️ NEXT: Policies](README.md#policies)

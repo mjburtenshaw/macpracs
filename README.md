@@ -10,10 +10,14 @@ Table of Contents
 
 - [Philosophy](#philosophy)
 - [Tools](#tools)
+- [People](#people)
+- [Policies](#policies)
 - [Procedures](#procedures)
 	- [Administration](#administration)
 	- [Reading](#reading)
 	- [Peer Review](#peer-review)
+	- [Production](#production)
+	- [Study](#study)
 
 Philosophy
 ----------------
@@ -38,6 +42,22 @@ What's in the Mac stack?
 
 > 🛠️ *See [tools](tools.md) if you wanna talk shop.*
 
+People
+----------
+
+> *"The four characteristics of humanism are curiosity, a free mind, belief in good taste, and belief in the human race."*
+> 
+> *- E.M. Forster*
+
+I have [a credo of sorts for assessing community needs](community-needs-assessment.md).
+
+More to come.
+
+Policies
+-------------
+
+- [How to write documents](doc-style-guide.md).
+
 Procedures
 ----------------
 
@@ -45,9 +65,9 @@ In general, this is what my work days usually look like:
 1. [Startup](administration.md#startup).
 2. [Reading](#reading).
 3. [Peer review](peer-review.md).
-4. Production.
-7. Study.
-8. [shutdown](administration.md#shutdown).
+4. [Production](#production).
+7. [Study](#study).
+8. [Shutdown](administration.md#shutdown).
 
 With some meetings and breaks littered in, of course.
 
@@ -76,4 +96,38 @@ How I perform peer reviews (PRs).
 
 > 📚 *See [peer-review](peer-review.md) if you wanna know what it takes to get my approval.*
 
-[⏭️ NEXT: Systems](systems.md)
+### Production
+
+> *"**Deep Work:** Professional activities performed in a state of distraction-free concentration that push your cognitive capabilities to their limit. These efforts create new value, improve your skill,  and are hard to replicate."*
+> 
+> *- Cal Newport*
+
+1. Address physiological imbalances:
+	- Use the restroom.
+	- Have a snack.
+	- Prepare a *small* glass of water. Use its emptiness to cue screen breaks.
+2. Restrict incoming communication:
+	- Equip headphones.
+	- Play music.
+	- Set my status to do not disturb on communication platforms.
+	- Set focus to do not disturb.
+3. Get into context:
+	- Start a task timer.
+	- Update task metadata.
+	- [Analyze the task](#developer-analysis) to verify it's ready for work.
+4. Apply a solution that achieves the desired outcomes.
+5. [Debrief](#debrief) the task at the end of the context session.
+
+#### Debrief
+
+1. Report progress.
+2. Stop the task timer.
+3. Update task metadata.
+
+### Study
+
+> *"The purpose of education is to replace an empty mind with an open one."*
+> 
+> *- Malcolm Forbes*
+
+Right now, I'm studying [Go](https://go.dev).

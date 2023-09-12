@@ -1,9 +1,9 @@
 [🔝 TOP: README](README.md)
 
-[🔙 BACK: Peer Review](README.md#peer-review)
+[🔙 BACK: Production](README.md#production)
 
 Developer Analysis
-==========================
+================================
 
 📖 ***Read the damn task description.***
 
@@ -16,28 +16,30 @@ Table of Contents
 Procedure
 ----------------
 
+🔂 If this isn't your first time entering context, simply review any new information posted on the task.
+
 🧐 Read the Task description and answer the following questions:
 
-- Is the Task priority defined?
-- Is the Task due date realistic?
-- Is the Task sized?
-- Does the Task describe the problem, how to resolve it, and validate the results?
+- Is the task priority defined?
+- Is the task due date realistic?
+- Is the task sized?
+- Does the task describe the problem, how to resolve it, and validate the results?
 - Do I *understand* what the problem is?
 - Do I understand and *agree* with the proposed solution?
 - Do I understand how to validate outcomes and the *impact* of the proposed changes?
 
 👎🏻 Do the following if the answer to any of these questions is no:
 
-1. Report your analysis as a comment on the Task.
-2. See if a peer is available to clarify the Task details.
+1. Report your analysis.
+2. See if a peer is available to clarify the task details.
 
-> 🫱🏻‍🫲🏿 If so, work together to resolve concerns. If the task requires a status regression, [exit the task context]().
+> 🫱🏻‍🫲🏿 If so, work together to resolve concerns. If the task requires a status regression, [exit the task context](README.md#debrief).
 
-> 🛑 If not, set the task status to blocked and [exit the task context]().
+> 🛑 If not, set the task status to blocked and [exit the task context](README.md#debrief).
 
 See Also
 --------------
 
 - [Measuring developer productivity? A response to McKinsey](https://newsletter.pragmaticengineer.com/p/measuring-developer-productivity?utm_source=tldrwebdev)
 
-[⏭️ NEXT: Study](README.md#procedures)
+[⏭️ NEXT: Study](README.md#study)
