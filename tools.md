@@ -51,13 +51,13 @@ Hardware
 ### Accessories
 
 - 🎒 [Backpack](https://www.amazon.com/Leather-Laptop-Backpack-Briefcase-College/dp/B0B5TBH8HP/ref=sr_1_10?crid=16D5H75TG89SB&keywords=leather+backpack+for+men&qid=1694492814&sprefix=leather+backpack+for+men%2Caps%2C141&sr=8-10). I also rock a variety of fanny packs to carry my phone, AirPods, wallet, keys, and ointments.
-- Wrist support: [Deltahub Carpio 2.0](https://us.deltahub.io/products/carpio-2)
+- Wrist support: [Deltahub Carpio 2.0](https://us.deltahub.io/products/carpio-2).
 - Desk mat: [Deltahub Minimalistic Desk Mat - Light Grey - Small](https://us.deltahub.io/products/minimalistic-desk-pad). I use Teflon-coated wrist supports and felt desk mats are great for them. The supports don't glide as easily on leather or faux-leather mats.
 - [Laptop stand](https://www.amazon.com/Vertical-Laptop-Stand-AboveTEK-Computer/dp/B08F73W3XS?pd_rd_w=pSyMS&content-id=amzn1.sym.1a072a44-84d1-4c51-bf0f-3547594e8217&pf_rd_p=1a072a44-84d1-4c51-bf0f-3547594e8217&pf_rd_r=RXRRPN548FC48D3AY5BV&pd_rd_wg=vqK5h&pd_rd_r=424627d6-6253-49f3-a9e6-732ad372d15d&pd_rd_i=B08F73W3XS&ref_=pd_bap_d_grid_rp_0_69_t&th=1): I use this to store my work machine, personal machine, and iPad.
 - Phone case: [iPhone 14 Pro Max Leather Case with MagSafe - Umber](https://www.apple.com/shop/product/MPPQ3ZM/A/iphone-14-pro-max-leather-case-with-magsafe-umber?fnode=933c952949f600613fb0602f0b0bd10dd164f1468dc69bb061fd51bbdcd6f533eb77d9c3c5bd158367d40557f07e9a5fe92498d32c5dd9a90f02ef050d2e178459d583854a292abe89cc84add5003feaff7c6ef01a331cc2b3885060aa0601521a7362b06311eb674f8d4c41a8127ee3).
 - [MX Travel Case](https://www.logitech.com/en-us/products/mice/mx-travel-case.956-000026.html).
 - [Keyboard travel case](https://www.amazon.com/dp/B0B38S4MW4?ref=ppx_yo2ov_dt_b_product_details&th=1).
-- Charger: [belkin BoostCharge Pro](https://www.belkin.com/3-in-1-wireless-charger-with-official-magsafe-charging-15w/P-WIZ017.html)
+- Charger: [belkin BoostCharge Pro](https://www.belkin.com/3-in-1-wireless-charger-with-official-magsafe-charging-15w/P-WIZ017.html).
 
 Software and Services
 -----------------------------------
@@ -82,8 +82,8 @@ Software and Services
 - [Obsidian](https://obsidian.md) for notes.
 - [Slack](https://slack.com) for professional messaging.
 - [Google Drive](https://drive.google.com/) for cloud storage.
-- [Google Sheets](https://sheets.google.com/)
-- [Google Slides](https://slides.google.com/)
+- [Google Sheets](https://sheets.google.com/).
+- [Google Slides](https://slides.google.com/).
 
 ### Media
 
@@ -114,4 +114,4 @@ Software and Services
 - [WeBull](https://www.webull.com) for analyzing stocks and markets.
 - [Fidelity Active Trader Pro](https://www.fidelity.com/trading/advanced-trading-tools/active-trader-pro/overview) for trading securities.
 
-[⏭️ NEXT: Peer Review](README#peer-review)
+[⏭️ NEXT: Peer Review](README.md#peer-review)
