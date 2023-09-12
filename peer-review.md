@@ -1,9 +1,13 @@
 [🔝 TOP: README](README.md)
 
-[🔙 BACK: Tools](README.md#tools)
+[🔙 BACK: Reading](README.md#reading)
 
 Peer Review
 ====================
+
+> *"The single biggest problem in communication is the illusion that it has taken place."*
+>
+> *– George Bernard Shaw*
 
 How I perform peer reviews (PRs).
 
