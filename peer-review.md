@@ -84,7 +84,7 @@ Legend
 I annotate my notes using the following legend:  
 > 🔴 *Major issues*  
 > 🟡 *Minor issues*  
-> 🟢 *Excellent work* 
+> 🟢 *Excellent work*  
 > 🎙️ *Nitpicking*
 
 GitLab
