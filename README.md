@@ -109,8 +109,8 @@ How I perform peer reviews (PRs).
 2. Restrict incoming communication:
 	- Equip headphones.
 	- Play music.
-	- Set my status to do not disturb on communication platforms.
-	- Set focus to do not disturb.
+	- When workspace policy permits, set your status to do not disturb on communication platforms.
+	- When workspace policy permits, set focus to do not disturb.
 3. Get into context:
 	- Start a task timer.
 	- Update task metadata.

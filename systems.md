@@ -130,8 +130,8 @@ Philosophy
 
 Many are familiar with the iron triangle: You can have it cheap, fast, or good. Pick any two. This is an example of a non-orthogonal relationship, and everything comes at the cost of something else.
 
-So, when deciding what policies to enforce, making the "right choice" comes down to what you want to optimize for, and how much you're willing to lose to get it.
+So, when deciding what policies to enforce, making the "right choice" comes down to what you want to optimize for, and what you're willing to part with to get it.
 
-When its difficult to make a decision, ponder what you really value, and the answer should come in short order.
+When it's difficult to make a decision, ponder what you really value, and the answer should come in short order.
 
 [⏭️ NEXT: Tools](README.md#tools)
