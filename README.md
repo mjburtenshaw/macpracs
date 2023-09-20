@@ -106,17 +106,18 @@ How I perform peer reviews (PRs).
 	- Use the restroom.
 	- Have a snack.
 	- Prepare a *small* glass of water. Use its emptiness to cue screen breaks.
-2. Restrict incoming communication:
+2. Address unread communications.
+3. Restrict incoming communication:
 	- Equip headphones.
 	- Play music.
 	- When workspace policy permits, set your status to do not disturb on communication platforms.
 	- When workspace policy permits, set focus to do not disturb.
-3. Get into context:
+4. Get into context:
 	- Start a task timer.
 	- Update task metadata.
 	- [Analyze the task](developer-analysis.md) to verify it's ready for work.
-4. Apply a solution that achieves the desired outcomes. Many solutions require [development](development.md), but some might not.
-5. [Debrief](#debrief) the task at the end of the context session.
+5. Apply a solution that achieves the desired outcomes. Many solutions require [development](development.md), but some might not.
+6. [Debrief](#debrief) the task at the end of the context session.
 
 #### Debrief
 
