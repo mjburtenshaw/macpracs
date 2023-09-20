@@ -9,7 +9,7 @@ Development
 > 
 > *- Janet Fitch*
 
-Developing good software is a methodical approach.
+A methodical approach to developing good software.
 
 Table of Contents
 ---------------------------
@@ -26,23 +26,24 @@ Preparation
 
 > 🪴 *Consider the project's branching model when choosing the donor branch.*
 
-3. Ensure you have the latest from the remote branch.
+3. Ensure you have the latest from the donor's remote branch.
 4. Checkout to a new branch off of the donor.
 
 > 🏭 *My branch name convention is my initials suffixed with a slash followed by either a task ID, if available, or a semantic descriptor, e.g., `mjb/12a3bc45` or `mjb/add-widget`*
 
 5. Start a local server.
-6. Locate tests for the development area.
-7. Verify the tests are green.
+6. Verify the server is in operating condition.
 
-> 🧼 *Note any errors you see without any changes. It's important to know if you introduce anything **new**. A clean console makes for a happy developer because new changes are easier to spot.*
+> 🧼 *Note preexisting runtime anomalies. It's important to know if you introduce anything **new**. A clean console makes for a happy developer because new changes are easier to spot.*
 
-8. Make style changes to the development area.
-9. Verify the tests are green.
-10. Commit style changes.
-11. Make small refactors to the development area.
-12. Verify the tests are green.
-13. Commit small refactors.
+7. Locate tests for the development area.
+8. Verify the tests are green.
+9. Make style changes to the development area.
+10. Verify the tests are green.
+11. Commit style changes.
+12. Make small refactors to the development area.
+13. Verify the tests are green.
+14. Commit small refactors.
 
 > 🏚️ *Don't live with [broken windows](https://en.wikipedia.org/wiki/Broken_windows_theory)*
 
