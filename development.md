@@ -47,6 +47,8 @@ Preparation
 
 > 🏚️ *Don't live with [broken windows](https://en.wikipedia.org/wiki/Broken_windows_theory)*
 
+> 🏗️ *If large refactors are needed, work on those first in a separate branch.*
+
 Execution
 --------------
 
