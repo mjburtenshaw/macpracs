@@ -54,7 +54,7 @@ Execution
 
 1. Add a red test for the changes you want to introduce.
 2. Apply changes that satisfy the test. Collaborate as needed.
-3. [Document](the-pragmatic-scribe.md) changes.
+3. [Document](the-pragmatic-scribe/README.md) changes.
 4. Commit the changes.
 5. Repeat until you achieve the solution outcome.
 
