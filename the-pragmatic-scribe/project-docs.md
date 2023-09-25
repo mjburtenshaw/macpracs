@@ -240,3 +240,8 @@ Profiling helps identify performance bottlenecks. We'll discuss how to document 
 Tuning involves optimizing software for better performance. We'll explore how to document tuning efforts and their impact on your software's efficiency.
 
 [⏭️ NEXT: Initiative Docs](the-pragmatic-scribe/README.md#initiative-docs)
+
+See Also
+-------------
+
+- [GitHub Repository Structure Best Practices](https://medium.com/code-factory-berlin/github-repository-structure-best-practices-248e6effc405)

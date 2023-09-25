@@ -1,9 +1,9 @@
 The Pragmatic Scribe
 ====================================
 
-> *Say what you mean, simply and directly.*
+> *"Say what you mean, simply and directly."[^1]*
 >
-> *- Brian W. Kernighan, The Elements of Programming Style*
+> *- Brian W. Kernighan*
 
 Table of Contents
 ---------------------------
@@ -12,11 +12,6 @@ Table of Contents
 - [A Note on Systems](#a-note-on-systems)
 - [Philosophy](#philosophy)
 - [Formats](#formats)
-	- [Semantic Code](#semantic-code)
-	- [Comments](#comments)
-	- [DocStrings](#docstrings)
-	- [Markdown](#markdown)
-	- [DBML](#dbml)
 - [The Pragmatic Scribe Paradigm](#the-pragmatic-scribe-paradigm)
 - [First Class Documentation](#first-class-documentation)
 	- [Project Docs](#project-docs)
@@ -27,7 +22,7 @@ Table of Contents
 Introduction
 -------------------
 
-In the ever-evolving landscape of software engineering, the role of documentation cannot be overstated. Documentation serves as the lifeblood of any software project, enabling developers to understand, maintain, and extend codebases effectively. In this comprehensive guide, we will explore the intricacies of creating high-quality documentation, catering to both novice and experienced software engineers.
+In the ever-evolving landscape of software engineering, the role of documentation cannot be overstated. Documentation serves as the lifeblood of any software project, enabling developers to understand, maintain, and extend codebases effectively. This comprehensive guide will explore the intricacies of creating high-quality documentation catering to novice and experienced software engineers.
 
 A Note on Systems
 ---------------------------
@@ -44,27 +39,10 @@ See [philosophy](the-pragmatic-scribe/philosophy.md)
 Formats
 -----------
 
-Documentation comes in various forms, each with its unique strengths. We'll explore formats such as semantic code, comments, docstrings, markdown, and DBML, discussing when and how to use them effectively.
+Documentation comes in various forms, each with its unique strengths. We'll explore semantic code, comments, markdown, and DBML formats, discussing when and how to use them effectively.
 
-### Semantic Code
+See [formats](the-pragmatic-scribe/formats.md)
 
-Writing self-explanatory code can be a form of documentation in itself. We'll look at the principles of writing semantic code that tells a story without additional documentation.
-
-### Comments
-
-Comments serve as annotations to your code, providing context and explanations. We'll discuss when and how to use comments effectively, avoiding common pitfalls.
-
-### DocStrings
-
-In languages like Python, docstrings play a crucial role in documenting functions and classes. We'll explore the conventions for writing clear and informative docstrings.
-
-### Markdown
-
-Markdown is a versatile format for creating structured documents. We'll delve into its syntax and explore how it can be used for various types of documentation.
-
-### DBML
-
-Database schema documentation is a critical part of many projects. We'll discuss how DBML, a specialized language, can be used to document your database schema effectively.
 
 The Pragmatic Scribe Paradigm
 ----------------------------------------------
@@ -104,10 +82,4 @@ The purpose of documentation is to transfer knowledge from your mind to those of
 See Also
 -------------
 
-- [GitHub Repository Structure Best Practices](https://medium.com/code-factory-berlin/github-repository-structure-best-practices-248e6effc405)
-- [DBML - Database Markup Language](https://dbml.dbdiagram.io/home/#dbml-database-markup-language)
-- [Markdown Guide](https://www.markdownguide.org)
-
-[^1]: *The Pragmatic Programmer* by Dave Thomas.
-[^2]: [google/styleguide/docguide](https://github.com/google/styleguide/tree/gh-pages/docguide)
-[^3]: [CODE IS NOT LITERATURE](https://gigamonkeys.com/code-reading/)
+[^1]: Brian W. Kernighan, The Elements of Programming Style
