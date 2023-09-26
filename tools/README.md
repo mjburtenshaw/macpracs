@@ -1,6 +1,6 @@
 [🔝 TOP: README](README.md)
 
-[🔙 BACK: Philosophy](README.md#philosophy)
+[🔙 BACK: Tools](README.md#tools)
 
 Tools
 =======
@@ -61,6 +61,12 @@ Hardware
 
 Software and Services
 -----------------------------------
+
+### System
+
+- [my zsh config](/tools/.zshrc)
+- [patrik-csak/auto-terminal-profile](https://github.com/patrik-csak/auto-terminal-profile) to switch Terminal profiles automatically with system appearance.
+- [mczachurski/wallpapper](https://github.com/mczachurski/wallpapper) to make dynamic wallpapers for MacOS.
 
 ### Productivity
 

@@ -40,7 +40,7 @@ Tools
 
 What's in the Mac stack?
 
-> 🛠️ *See [tools](tools.md) if you wanna talk shop.*
+> 🛠️ *See [tools](tools/README.md) if you wanna talk shop.*
 
 People
 ----------
