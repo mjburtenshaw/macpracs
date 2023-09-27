@@ -67,7 +67,7 @@ Procedures
 
 > Это все бумаги и бланки, вся госслужба похожа на крепость из бумаг, бланков и волокиты.
 >
-> "It's all papers and forms, the entire Civil Service is like a fortress made of papers, forms and red tape."
+> *"It's all papers and forms, the entire Civil Service is like a fortress made of papers, forms and red tape."*
 > *- Alexander Ostrovsky*
 
 If policies are the ends, then procedures are the means.

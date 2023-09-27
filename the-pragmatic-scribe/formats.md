@@ -1,9 +1,13 @@
+[🔝 TOP: README](the-pragmatic-scribe/README.md)
+
+[🔙 BACK: Formats](the-pragmatic-scribe/README.md#formats)
+
 Formats
 ====================================
 
-> *"A tool is but the extension of a man's hand, and a machine is but a complex tool. He that invents a machine augments the power of a man and the well-being of mankind."*
+> *"Plain text not only suffices, it is superior."[^1]*
 > 
-> *- Henry Ward Beecher*
+> *- Google*
 
 Table of Contents
 ---------------------------
@@ -103,13 +107,13 @@ Comments are human-readable annotations in source code that are generally ignore
 Markdown
 -------------
 
-Markdown[^1] is a lightweight markup language that you can use to add formatting elements to plaintext text documents. Created by John Gruber in 2004, Markdown is now one of the world’s most popular markup languages.
+Markdown[^2] is a lightweight markup language that you can use to add formatting elements to plaintext text documents. Created by John Gruber in 2004, Markdown is now one of the world’s most popular markup languages.
 
-> *The overriding design goal for Markdown’s formatting syntax is to make it as readable as possible. The idea is that a Markdown-formatted document should be publishable as-is, as plain text, without looking like it’s been marked up with tags or formatting instructions. While Markdown’s syntax has been influenced by several existing text-to-HTML filters, the single biggest source of inspiration for Markdown’s syntax is the format of plain text email.*
+> *"The overriding design goal for Markdown’s formatting syntax is to make it as readable as possible. The idea is that a Markdown-formatted document should be publishable as-is, as plain text, without looking like it’s been marked up with tags or formatting instructions. While Markdown’s syntax has been influenced by several existing text-to-HTML filters, the single biggest source of inspiration for Markdown’s syntax is the format of plain text email."*
 > 
-> *- John Gruber, Markdown Introduction[^2]*
+> *- John Gruber, Markdown Introduction[^3]*
 
-Because Markdown is an abstraction of XHTML[^2], any Markdown viewers worth their salt should support inline XHTML. This should avoided when possible, but it's handy if you want to add color or underlines to your document.
+Because Markdown is an abstraction of XHTML[^3], any Markdown viewers worth their salt should support inline XHTML. This should avoided when possible, but it's handy if you want to add color or underlines to your document.
 
 ### Sample
 
@@ -162,7 +166,7 @@ say_hello()
 DBML
 -------
 
-Database schema documentation is a critical part of many projects. DBML[^3] can document your database schema effectively with the help of tools like [dbdiagram.io](https://dbdiagram.io/home).
+Database schema documentation is a critical part of many projects. DBML[^4] can document your database schema effectively with the help of tools like [dbdiagram.io](https://dbdiagram.io/home).
 
 DBML is born to solve the frustrations of developers working on large, complex software projects:
 
@@ -200,12 +204,15 @@ Enum post_status {
 Ref: posts.user_id > users.id // many-to-one
 ```
 
+[🔙 Next: The Pragmatic Scribe Paradigm](the-pragmatic-scribe/README.md#the-pragmatic-scribe-paradigm)
+
 See Also
 -------------
 
 - [Wikipedia - Comment (computer programming)](https://en.wikipedia.org/wiki/Comment_(computer_programming))
 - [Best practices for writing code comments](https://stackoverflow.blog/2021/12/23/best-practices-for-writing-code-comments/)
 
-[^1]: [Markdown Guide](https://www.markdownguide.org)
-[^2]: [Markdown by John Gruber](https://daringfireball.net/projects/markdown/)
-[^3]: [DBML - Database Markup Language](https://dbml.dbdiagram.io/home/#dbml-database-markup-language)
+[^1]: [Google styleguide](https://github.com/google/styleguide/blob/gh-pages/docguide/philosophy.md#readable-source-text)
+[^2]: [Markdown Guide](https://www.markdownguide.org)
+[^3]: [Markdown by John Gruber](https://daringfireball.net/projects/markdown/)
+[^4]: [DBML - Database Markup Language](https://dbml.dbdiagram.io/home/#dbml-database-markup-language)

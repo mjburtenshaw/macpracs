@@ -74,7 +74,7 @@ Paradigms
 
 Like any philosophy, different paradigms attempt to live up to the form. Some examples of these paradigms include docs-first, docs-last, code-as-docs, test-as-docs, and wikis. These paradigms agree that documentation provides a net benefit to a system and is worth pursuing; they differ in method.
 
-I would like to introduce a pragmatic approach.
+I would like to introduce a pragmatic approach. But first, let's cover some documentation formats.
 
 [⏭️ NEXT: Formats](the-pragmatic-scribe/README.md#formats)
 
