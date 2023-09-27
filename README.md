@@ -131,4 +131,6 @@ How I perform peer reviews (PRs).
 > 
 > *- Malcolm Forbes*
 
-Right now, I'm studying [Go](https://go.dev).
+Here's what I'm actively studying:
+- [Go](https://go.dev).
+- Japanese via [Duolingo](https://www.duolingo.com.
