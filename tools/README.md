@@ -20,6 +20,7 @@ Table of Contents
 	- [Furniture](#furniture)
 	- [Accessories](#accessories)
 - [Software and Services](#software-and-services)
+	- [System](#system)
 	- [Productivity](#productivity)
 	- [Media](#media)
 	- [Reference](#reference)
@@ -65,7 +66,7 @@ Software and Services
 ### System
 
 - [my zsh config](/tools/.zshrc)
-- [patrik-csak/auto-terminal-profile](https://github.com/patrik-csak/auto-terminal-profile) to switch Terminal profiles automatically with system appearance.
+- ~~[patrik-csak/auto-terminal-profile](https://github.com/patrik-csak/auto-terminal-profile) to switch Terminal profiles automatically with system appearance.~~ [Currently broken on MacOS Sonoma](https://github.com/patrik-csak/auto-terminal-profile/issues/3). I'm using a Siri Shortcut that I run manually until the issue is closed.
 - [mczachurski/wallpapper](https://github.com/mczachurski/wallpapper) to make dynamic wallpapers for MacOS.
 
 ### Productivity
