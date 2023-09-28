@@ -39,7 +39,7 @@ Hardware
 ### Peripherals
 
 - 🖥️ Displays: [27" 4K UHD UltraFine™ IPS Monitor with HDR10](https://www.lg.com/us/monitors/lg-27ul500-w-4k-uhd-led-monitor). I only use one monitor.
-- 🖱️ Mouse: [MX Master 3S For Mac](#https://www.logitech.com/en-us/products/mice/mx-master-3s-mac-bluetooth-mouse.910-006570.html).
+- 🖱️ Mouse: [MX Master 3S For Mac](https://www.logitech.com/en-us/products/mice/mx-master-3s-mac-bluetooth-mouse.910-006570.html).
 - ⌨️ Keyboard: [MX Mechanical Mini for Mac](https://www.logitech.com/en-us/products/keyboards/mx-mechanical-mini-mac.920-010831.html).
 - 🎧 Audio: [AirPods Max in Space Gray](https://www.apple.com/airpods-max/) and AirPods Pro. The headphones are fantastic for plane rides.
 - ✏️ Stylus: [Apple Pencil 2nd generation](https://www.apple.com/apple-pencil/).
