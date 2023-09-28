@@ -170,7 +170,7 @@ DevOps Docs
 
 DevOps practices are integral to modern software development. We'll categorize DevOps documentation into Configuration Management and Infrastructure as Code (IaC) documentation, and Deployment documentation.
 
-### C/MID (Configuration Management and Infrastructure Documentation)
+### C/MID (Continuous Merge, Integration, and Deployment)
 
 Documenting infrastructure and configuration management is crucial for maintaining consistency and reliability in your environments. We'll discuss how to document infrastructure components and configurations effectively.
 
