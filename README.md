@@ -133,4 +133,4 @@ How I perform peer reviews (PRs).
 
 Here's what I'm actively studying:
 - [Go](https://go.dev).
-- Japanese via [Duolingo](https://www.duolingo.com.
+- Japanese via [Duolingo](https://www.duolingo.com).
