@@ -48,8 +48,7 @@ How I prepare for deep work.
 3. Check Slack:
 	1. Address Threads.
 	2. Address DMs.
-	3. Address Mentions.
-	4. Check Saved Items.
+	3. Check Later.
 4. Check ClickUp:
 	1. Address notifications.
 	2. Update LineUp.
