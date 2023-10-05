@@ -3,7 +3,7 @@
 [🔙 BACK: Tools](README.md#tools)
 
 Tools
-=======
+==========
 
 > *"Don't reinvent the wheel, just realign it."*
 >
@@ -121,4 +121,4 @@ Software and Services
 - [WeBull](https://www.webull.com) for analyzing stocks and markets.
 - [Fidelity Active Trader Pro](https://www.fidelity.com/trading/advanced-trading-tools/active-trader-pro/overview) for trading securities.
 
-[⏭️ NEXT: People](README.md#people)
+[⏭️ BACK TO TOP: README](README.md)

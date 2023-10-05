@@ -9,7 +9,6 @@ Table of Contents
 ---------------------------
 
 - [Philosophy](#philosophy)
-- [Tools](#tools)
 - [People](#people)
 - [Policies](#policies)
 - [Procedures](#procedures)
@@ -18,6 +17,8 @@ Table of Contents
 	- [Peer Review](#peer-review)
 	- [Production](#production)
 	- [Study](#study)
+- [Platforms](#platforms)
+	- [Tools](#tools)
 
 Philosophy
 ----------------
@@ -34,13 +35,6 @@ My philosophy takes the following assumptions as given:
 4. Systems can be iterated empirically.
 
 > 🧠 *See [systems](systems.md) if you wanna get in my brain.*
-
-Tools
---------
-
-What's in the Mac stack?
-
-> 🛠️ *See [tools](tools/README.md) if you wanna talk shop.*
 
 People
 ----------
@@ -134,3 +128,12 @@ How I perform peer reviews (PRs).
 Here's what I'm actively studying:
 - [Go](https://go.dev).
 - Japanese via [Duolingo](https://www.duolingo.com).
+
+Platforms
+---------------
+
+### Tools
+
+What's in the Mac stack?
+
+> 🛠️ *See [tools](tools/README.md) if you wanna talk shop.*
