@@ -5,6 +5,8 @@ My personal engineering practices.
 
 I love quotes. You'll see a bunch. This is my love letter to Civ 🗺️
 
+![Static Badge](https://img.shields.io/badge/version-1.0.0-66023c)
+
 Table of Contents
 ---------------------------
 
