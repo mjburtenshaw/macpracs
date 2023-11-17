@@ -3,19 +3,19 @@
 [🔙 BACK: Policies](README.md#policies)
 
 Style Guides
-=================
+============
 
 What do we want our writing to look like?
 
 Table of Contents
-----------------------------
+------------------
 
 - [Headers](#headers)
 	- [Casing](#casing)
 - [Nouns](#nouns)
 
 Headers
---------------
+--------
 
 Everything you wanted to know about headers--and maybe some things you didn't want to know.
 
@@ -32,7 +32,7 @@ All headers should use Title Case.
 > Understanding title case can be valuable as you work on documentation, presentations, and other forms of written communication.
 
 Nouns
-----------
+-----
 
 Treat the proper nouns of vendors the same way they do, e.g., ClickUp capitalizes their Tasks.
 

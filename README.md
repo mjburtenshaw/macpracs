@@ -40,14 +40,13 @@ People
 > 
 > *- E.M. Forster*
 
-I have [a credo of sorts for assessing community needs](community-needs-assessment.md).
-
 More to come.
 
 Policies
 --------
 
-- [How to write documents](doc-style-guide.md).
+- [How to write documents](/policies/doc-style-guide.md).
+- [How to care for developer communities](/policies/community-needs-assessment.md)
 
 Procedures
 -----------

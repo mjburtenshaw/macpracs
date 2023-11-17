@@ -3,18 +3,18 @@
 [🔙 BACK: Production](README.md#production)
 
 Developer Analysis
-================================
+===================
 
 📖 ***Read the damn task description.***
 
 Table of Contents
-----------------------------
+-----------------
 
 - [Procedure](#procedure)
 - [See Also](#see-also)
 
 Procedure
-----------------
+----------
 
 🔂 If this isn't your first time entering context, simply review any new information posted on the task.
 
@@ -38,7 +38,7 @@ Procedure
 > 🛑 If not, set the task status to blocked and [exit the task context](README.md#debrief).
 
 See Also
---------------
+---------
 
 - [Measuring developer productivity? A response to McKinsey](https://newsletter.pragmaticengineer.com/p/measuring-developer-productivity?utm_source=tldrwebdev)
 

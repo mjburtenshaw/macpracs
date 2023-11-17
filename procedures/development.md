@@ -1,9 +1,9 @@
 [🔝 TOP: README](README.md)
 
-[🔙 BACK: Developer Analysis](developer-analysis.md)
+[🔙 BACK: Developer Analysis](/procedures/developer-analysis.md)
 
 Development
-====================
+============
 
 > *"I thought clay must feel happy in the good potter's hand."*
 > 
@@ -12,7 +12,7 @@ Development
 A methodical approach to developing good software.
 
 Table of Contents
----------------------------
+-----------------
 
 - [Preparation](#preparation)
 - [Execution](#execution)
@@ -20,7 +20,7 @@ Table of Contents
 - [See Also](#see-also)
 
 Preparation
------------------
+-----------
 
 1. Select an appropriate donor branch.
 
@@ -50,7 +50,7 @@ Preparation
 > 🏗️ *If large refactors are needed, work on those first in a separate branch.*
 
 Execution
---------------
+---------
 
 1. Add a red test for the changes you want to introduce.
 2. Apply changes that satisfy the test. Collaborate as needed.
@@ -59,7 +59,7 @@ Execution
 5. Repeat until you achieve the solution outcome.
 
 Merge
---------
+-----
 
 1. Review the changes you made on your branch with the donor branch.
 2. Perform cleanup as needed.
@@ -68,12 +68,12 @@ Merge
 
 > 🪴 *Remember to target the donor branch!*
 
-5. [Debrief](README.md#debrief) the context.
+5. [Debrief](/procedures/production.md#debrief) the context.
 
 See Also
-------------
+---------
 
 - 🏚️ [Broken windows theory](https://en.wikipedia.org/wiki/Broken_windows_theory)
 - 🦅 [The Boy Scout Rule](https://twitter.com/unclebobmartin/status/1591443936836747264?lang=en#)
 
-[⏭️ NEXT: Debrief](README.md#debrief)
+[⏭️ NEXT: Debrief](/procedures/production.md#debrief)

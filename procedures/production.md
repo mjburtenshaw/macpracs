@@ -22,8 +22,8 @@ Production
 4. Get into context:
 	- Start a task timer.
 	- Update task metadata.
-	- [Analyze the task](developer-analysis.md) to verify it's ready for work.
-5. Apply a solution that achieves the desired outcomes. Many solutions require [development](development.md), but some might not.
+	- [Analyze the task](/procedures/developer-analysis.md) to verify it's ready for work.
+5. Apply a solution that achieves the desired outcomes. Many solutions require [development](/procedures/development.md), but some might not.
 6. [Debrief](#debrief) the task at the end of the context session.
 
 #### Debrief
