@@ -3,7 +3,7 @@
 [🔙 BACK: Study](/procedures/study.md)
 
 Shutdown
-=========================
+=========
 
 > ⌛️ *At the end of the workday, shut down your consideration of work issues until the next morning.*
 > 
