@@ -3,7 +3,7 @@
 [🔙 BACK: README](README.md)
 
 Systems
-============
+=========
 
 A system has intrinsic attributes and always exists whether or not its participants know it.
 
@@ -17,7 +17,7 @@ But knowledge is power, and you can change a system if you know how it works. Yo
 > 🪙 *This can be summed up by what I call the five P's: people, policies, procedures, platforms, and philosophy.*
 
 Table of Contents
-----------------------------
+------------------
 
 - [People and Ethics](#people-and-ethics)
 - [Policies](#policies)
@@ -30,7 +30,7 @@ Table of Contents
 - [Philosophy](#philosophy)
 
 People and Ethics
-----------------------------
+-----------------
 
 > *"Remember that people break down, too, not just machinery."*
 > 
@@ -45,7 +45,7 @@ There are two types of people in every system: those who have power and those wh
 > 🤕 *Even if their intent isn't malicious, a homogenous power group is more likely to act in a way that causes unintentional harm.*
 
 Policies
-------------
+--------
 
 > Politik ist die Kunst des Möglichen, des Erreichbaren – die Kunst des Nächstbesten
 > 
@@ -63,7 +63,7 @@ When adhered to, policies change human behavior in ways expected and not. It's i
 Policies can be enforced by people or platforms.
 
 Procedures
-------------------
+----------
 
 > Это все бумаги и бланки, вся госслужба похожа на крепость из бумаг, бланков и волокиты.
 >
@@ -79,7 +79,7 @@ It's fascinating that procedures enshrine policy in the absence of their express
 When policy is expressed, it's important to ensure that procedures can empirically fulfill the policies they're attached to. If you can't reconcile the two, it's time to axe the procedure or update the policy.
 
 Platforms
----------------
+---------
 
 > *"In the world of technology, it's not about what you build; it's about what you enable."*
 > 
@@ -120,7 +120,7 @@ You can smell this when express policies mention specific platforms. Sound polic
 Opposed to Maslow's Hammer, too many platforms will likely lead to abandoning some of them because people will have too many context switches to fulfill the policy. When humans start thrashing--like computers--they'll abandon some process to unblock their threads.
 
 Philosophy
------------------
+----------
 
 > 何事にもトレードオフがあります。
 > 理想的な結果などありません。
