@@ -1,9 +1,9 @@
 [🔝 TOP: README](README.md)
 
-[🔙 BACK: Reading](README.md#reading)
+[🔙 BACK: Reading](/procedures/reading.md)
 
 Peer Review
-====================
+============
 
 > *"The single biggest problem in communication is the illusion that it has taken place."*
 >
@@ -12,7 +12,7 @@ Peer Review
 How I perform peer reviews (PRs).
 
 Table of Contents
----------------------------
+------------------
 
 - [Philosophy](#philosophy)
 	- [Confidence](#confidence)
@@ -25,7 +25,7 @@ Table of Contents
 	- [Outcomes](#outcomes)
 
 Philosophy
-----------------
+-----------
 
 🏅 A good PR is all about ***confidence*** in proposed changes.
 
@@ -74,7 +74,7 @@ One day, it will become unnecessary for you to publish templates on PRs; they wi
 \- [u/Herodotus_Runs_Away](https://www.reddit.com/user/Herodotus_Runs_Away/) in response to [a question](https://www.reddit.com/r/Teachers/comments/10vq3sn/end_the_debate_once_and_for_all_do_writing_the/j7iz4g1/?context=3) from [u/TeacherGuy1980](https://www.reddit.com/user/TeacherGuy1980/) on [r/Teachers](https://www.reddit.com/r/Teachers/).
 
 Legend
----------
+-------
 
 [> 🗺️ *Legend definitions.*]: #
 [> 🤖 *Because these indicators are machine-readable, I avoid using them to call out anomalies in the author's behavior.*]: #
@@ -177,4 +177,4 @@ GitLab
 
 - [ ] The solution produces the desired outcomes.
 
-[⏭️ NEXT: Production](README.md#production)
+[⏭️ NEXT: Production](/procedures/production.md)
