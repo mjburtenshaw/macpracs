@@ -92,6 +92,7 @@ Software and Services
 - [Google Sheets](https://sheets.google.com/).
 - [Google Slides](https://slides.google.com/).
 - [macglab](https://github.com/mjburtenshaw/macglab) to quickly index open GitLab Merge Requests I care to review.
+- [TablePlus](https://tableplus.com) to interact with databases with a GUI.
 
 ### Media
 
