@@ -49,6 +49,9 @@ install_zsh_dependencies() {
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
   cp ~/code/github.com/mjburtenshaw/macpracs/tools/resources/bullet-train.zsh-theme.txt $ZSH_CUSTOM/themes/bullet-train.zsh-theme
 
+  echo "Installing nvm..."
+  PROFILE=/dev/null bash -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash'
+
   echo "Resourcing shell session..."
   cp ~/.zshrc ~/.zshrc.macpracs-backup
   cp $mjb_home/macpracs/tools/.zshrc ~/.zshrc

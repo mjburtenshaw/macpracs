@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "tools/README.md",
+                "file": "README.md",
                 "mode": "preview",
                 "source": true
               }
@@ -86,7 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "tools/README.md",
+                "file": "README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +103,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "tools/README.md",
+                "file": "README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +126,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "tools/README.md"
+                "file": "README.md"
               }
             }
           }
@@ -149,6 +149,9 @@
   },
   "active": "6f59edf84f5deae2",
   "lastOpenFiles": [
+    "procedures/reading.md",
+    "procedures/startup.md",
+    "tools/README.md",
     "tools/resources/recover.sh",
     "tools/resources/init-tools.sh",
     "tools/resources/install-zsh-deps.sh",
@@ -159,7 +162,6 @@
     "tools/resources/README.md",
     "tools/resources/color-palettes/synthwave84.clr",
     "tools/resources/color-palettes/solarized.clr",
-    "tools/resources/color-palettes",
-    "tools/resources/terminal-profiles/synthwave84.terminal"
+    "tools/resources/color-palettes"
   ]
 }
