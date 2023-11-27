@@ -93,6 +93,8 @@ Software and Services
 - [Google Slides](https://slides.google.com/).
 - [macglab](https://github.com/mjburtenshaw/macglab) to quickly index open GitLab Merge Requests I care to review.
 - [TablePlus](https://tableplus.com) to interact with databases with a GUI.
+- [KeyCastr](https://github.com/keycastr/keycastr) to visualize keystrokes in screen recordings.
+- [Vimari](https://github.com/televator-apps/vimari) to navigate Safari using only the keyboard.
 
 ### Media
 
