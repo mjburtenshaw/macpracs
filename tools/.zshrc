@@ -1,8 +1,8 @@
 # ZSH Configuration
 
-export mjb_home="${HOME}/code/github.com/mjburtenshaw"
+export mjbhome="${HOME}/code/github.com/mjburtenshaw"
 
-zsh_configs_dir="${mjb_home}/macpracs/tools/.zsh-configs"
+zsh_configs_dir="${mjbhome}/macpracs/tools/.zsh-configs"
 
 # Check if directory exists
 if [[ ! -d "$zsh_configs_dir" ]]; then

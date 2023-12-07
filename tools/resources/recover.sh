@@ -32,10 +32,10 @@ EOF
 }
 
 clone_repo() {
-  export mjb_home=~/code/github.com/mjburtenshaw
-  mkdir -p $mjb_home
+  export mjbhome=~/code/github.com/mjburtenshaw
+  mkdir -p $mjbhome
   operating_dir=$(pwd)
-  cd $mjb_home
+  cd $mjbhome
   git clone git@github.com:mjburtenshaw/macpracs.git
   cd $operating_dir
 }
@@ -54,12 +54,12 @@ install_zsh_dependencies() {
 
   echo "Resourcing shell session..."
   cp ~/.zshrc ~/.zshrc.macpracs-backup
-  cp $mjb_home/macpracs/tools/.zshrc ~/.zshrc
+  cp $mjbhome/macpracs/tools/.zshrc ~/.zshrc
   source .zshrc
 }
 
 install_color_palettes() {
-  color_palettes_dir=$mjb_home/macpracs/tools/resources/color_palettes
+  color_palettes_dir=$mjbhome/macpracs/tools/resources/color_palettes
 
   setopt NULL_GLOB
   color_palettes=($color_palettes_dir/*.config.zsh)
@@ -76,7 +76,7 @@ install_color_palettes() {
 }
 
 install_terminal_profiles() {
-  terminal_profiles_dir=$mjb_home/macpracs/tools/resources/terminal_profiles
+  terminal_profiles_dir=$mjbhome/macpracs/tools/resources/terminal_profiles
 
   setopt NULL_GLOB
   terminal_profiles=($terminal_profiles_dir/*.config.zsh)
