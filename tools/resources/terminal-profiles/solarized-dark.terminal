@@ -147,7 +147,7 @@
 	AAAAGQAAAAAAAAAAAAAAAAAAANo=
 	</data>
 	<key>BackgroundBlur</key>
-	<real>0.19985516151685398</real>
+	<real>0.20000000000000001</real>
 	<key>BackgroundColor</key>
 	<data>
 	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
@@ -157,8 +157,6 @@
 	U0NvbG9yohYYWE5TT2JqZWN0CBEaJCkyN0lMUVNXXWRqd36tr7G2wcrS1QAAAAAAAAEB
 	AAAAAAAAABkAAAAAAAAAAAAAAAAAAADe
 	</data>
-	<key>BlinkText</key>
-	<false/>
 	<key>CommandString</key>
 	<string>yes | source ~/.zshrc &amp;&amp; clear</string>
 	<key>CursorBlink</key>
@@ -181,10 +179,6 @@
 	U09iamVjdAgRGiQpMjdJTFFTWF5nbnd+hY6QkpSnrLfAx8oAAAAAAAABAQAAAAAAAAAc
 	AAAAAAAAAAAAAAAAAAAA0w==
 	</data>
-	<key>FontAntialias</key>
-	<true/>
-	<key>FontWidthSpacing</key>
-	<real>1.004032258064516</real>
 	<key>ProfileCurrentVersion</key>
 	<real>2.0699999999999998</real>
 	<key>RunCommandAsShell</key>
@@ -206,6 +200,8 @@
 	<false/>
 	<key>ShowActiveProcessInTitle</key>
 	<false/>
+	<key>ShowActivityIndicatorInTab</key>
+	<false/>
 	<key>ShowDimensionsInTitle</key>
 	<false/>
 	<key>ShowRepresentedURLInTabTitle</key>
@@ -214,10 +210,8 @@
 	<false/>
 	<key>ShowRepresentedURLPathInTabTitle</key>
 	<false/>
-	<key>ShowWindowSettingsNameInTitle</key>
+	<key>ShowRepresentedURLPathInTitle</key>
 	<false/>
-	<key>TerminalType</key>
-	<string>ansi</string>
 	<key>TextBoldColor</key>
 	<data>
 	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
@@ -236,97 +230,15 @@
 	cqIWGFhOU09iamVjdAgRGiQpMjdJTFFTV11kand+qKqssbzFzdAAAAAAAAABAQAAAAAA
 	AAAZAAAAAAAAAAAAAAAAAAAA2Q==
 	</data>
-	<key>UseBoldFonts</key>
-	<false/>
 	<key>UseBrightBold</key>
 	<true/>
-	<key>blackColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmg7JNIT2DkvUjPoO+F0s+AYY=
-	</data>
-	<key>blueColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmgyqcAj6DtOHsPoO+RUg/AYY=
-	</data>
-	<key>brightBlackColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmg+ZzgjyDs44BPoNahyM+AYY=
-	</data>
-	<key>brightBlueColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmg7yT4T6DEXcCP4POUAQ/AYY=
-	</data>
-	<key>brightCyanColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmg7CIAT+Dj5oQP4N8ShA/AYY=
-	</data>
-	<key>brightGreenColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmgzyujT6DFZy2PoOYFsQ+AYY=
-	</data>
-	<key>brightMagentaColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmgxMjsj6D+uazPoNkyTc/AYY=
-	</data>
-	<key>brightRedColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmgyfkPT+D/15aPoMgl5Y9AYY=
-	</data>
-	<key>brightWhiteColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmg49LfT+D0Dt1P4MGM10/AYY=
-	</data>
-	<key>brightYellowColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmg1MTpj6DeHnQPoPQg+A+AYY=
-	</data>
 	<key>columnCount</key>
-	<integer>84</integer>
-	<key>cyanColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmg4VRFj6DfyESP4PkZwY/AYY=
-	</data>
-	<key>greenColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmg9lI5j6DIYkKP4PVjKU8AYY=
-	</data>
-	<key>magentaColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmg/4CRz+DBTzdPYMgzt4+AYY=
-	</data>
+	<integer>86</integer>
 	<key>name</key>
 	<string>Solarized Dark</string>
-	<key>redColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmg6i7UT+DUATePYMl2hA+AYY=
-	</data>
 	<key>rowCount</key>
-	<integer>88</integer>
+	<integer>82</integer>
 	<key>type</key>
 	<string>Window Settings</string>
-	<key>whiteColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmgzqGaj+D2tdjP4NYPUw/AYY=
-	</data>
-	<key>yellowColour</key>
-	<data>
-	BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmg0DAJT+DB17vPoM4Y8A8AYY=
-	</data>
 </dict>
 </plist>

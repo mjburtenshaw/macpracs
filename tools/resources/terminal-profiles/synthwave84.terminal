@@ -222,10 +222,12 @@
 	cqIWGFhOU09iamVjdAgRGiQpMjdJTFFTV11kand+qKqssbzFzdAAAAAAAAABAQAAAAAA
 	AAAZAAAAAAAAAAAAAAAAAAAA2Q==
 	</data>
+	<key>UseBrightBold</key>
+	<true/>
 	<key>columnCount</key>
 	<integer>84</integer>
 	<key>name</key>
-	<string>Synthwave '84</string>
+	<string>synthwave84</string>
 	<key>rowCount</key>
 	<integer>88</integer>
 	<key>type</key>
