@@ -1,4 +1,4 @@
 # [Google Cloud SDK](https://cloud.google.com/sdk/docs)
 
-[ -f "${HOME}/google-cloud-sdk/path.zsh.inc" ] && source "${HOME}/google-cloud-sdk/path.zsh.inc"
-[ -f "${HOME}/google-cloud-sdk/completion.zsh.inc" ] && source "${HOME}/google-cloud-sdk/completion.zsh.inc"
+if [ -f "${HOME}/google-cloud-sdk/path.zsh.inc" ]; then source "${HOME}/google-cloud-sdk/path.zsh.inc"; fi
+if [ -f "${HOME}/google-cloud-sdk/completion.zsh.inc" ]; then source "${HOME}/google-cloud-sdk/completion.zsh.inc"; fi
