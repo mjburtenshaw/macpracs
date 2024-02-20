@@ -52,6 +52,9 @@ install_zsh_dependencies() {
   echo "Installing nvm..."
   PROFILE=/dev/null bash -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash'
 
+  echo "Installing auto-terminal-profile..."
+  npm install --global auto-terminal-profile
+
   echo "Resourcing shell session..."
   cp ~/.zshrc ~/.zshrc.macpracs-backup
   cp $mjbhome/macpracs/tools/.zshrc ~/.zshrc
@@ -90,6 +93,9 @@ install_terminal_profiles() {
   for terminal_profile in "${terminal_profiles[@]}"; do
     open "$terminal_profile"
   done
+
+  # enable auto switching profiles based on OS appearance
+  auto-terminal-profile enable --dark-profile='Solarized Dark' --light-profile='Solarized Light'
 }
 
 echo "This script uses sudo to install the following python packages in the global scope:"
