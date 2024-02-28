@@ -42,8 +42,8 @@ clone_repo() {
 
 install_zsh_dependencies() {
   echo "Installing python packages..."
-  sudo -H pip3 install astral
-  sudo -H pip3 install pytz
+  sudo -H pip3 install --break-system-packages astral
+  sudo -H pip3 install --break-system-packages pytz
 
   echo "Installing oh-my-zsh..."
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -62,10 +62,10 @@ install_zsh_dependencies() {
 }
 
 install_color_palettes() {
-  color_palettes_dir=$mjbhome/macpracs/tools/resources/color_palettes
+  color_palettes_dir=$mjbhome/macpracs/tools/resources/color-palettes
 
   setopt NULL_GLOB
-  color_palettes=($color_palettes_dir/*.config.zsh)
+  color_palettes=($color_palettes_dir/*.clr)
   unsetopt NULL_GLOB
 
   if [[ ${#color_palettes[@]} -eq 0 ]]; then
@@ -79,10 +79,10 @@ install_color_palettes() {
 }
 
 install_terminal_profiles() {
-  terminal_profiles_dir=$mjbhome/macpracs/tools/resources/terminal_profiles
+  terminal_profiles_dir=$mjbhome/macpracs/tools/resources/terminal-profiles
 
   setopt NULL_GLOB
-  terminal_profiles=($terminal_profiles_dir/*.config.zsh)
+  terminal_profiles=($terminal_profiles_dir/*.terminal)
   unsetopt NULL_GLOB
 
   if [[ ${#terminal_profiles[@]} -eq 0 ]]; then
