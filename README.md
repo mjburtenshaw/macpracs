@@ -5,7 +5,7 @@ My personal engineering practices.
 
 I love quotes. You'll see a bunch. This is my love letter to Civ 🗺️
 
-![Static Badge](https://img.shields.io/badge/version-2.4.1-66023c)
+![Static Badge](https://img.shields.io/badge/version-2.5.0-66023c)
 
 Table of Contents
 ------------------
@@ -60,6 +60,8 @@ In general, this is what my work days usually look like:
 8. [Shutdown](/procedures/shutdown.md).
 
 With some meetings and breaks littered in, of course.
+
+If I'm trying to configure my home network, I should refer to [Home System Administration](procedures/home-sysadmin.md)
 
 Platforms
 ----------
