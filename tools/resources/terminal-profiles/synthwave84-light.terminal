@@ -148,10 +148,10 @@
 	<data>
 	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
 	AAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGjCwwTVSRudWxs0w0ODxARElVO
-	U1JHQlxOU0NvbG9yU3BhY2VWJGNsYXNzTxArMC4xNjQ3MDU4ODI0IDAuMTI5NDExNzY0
-	NyAwLjIyMzUyOTQxMTggMC44ABABgALSFBUWF1okY2xhc3NuYW1lWCRjbGFzc2VzV05T
-	Q29sb3KiFhhYTlNPYmplY3QIERokKTI3SUxRU1ddZGp3fqyusLXAydHUAAAAAAAAAQEA
-	AAAAAAAAGQAAAAAAAAAAAAAAAAAAAN0=
+	U1JHQlxOU0NvbG9yU3BhY2VWJGNsYXNzTxAnMC45NTY4NjI3NDUxIDAuOTMzMzMzMzMz
+	MyAwLjg5NDExNzY0NzEAEAGAAtIUFRYXWiRjbGFzc25hbWVYJGNsYXNzZXNXTlNDb2xv
+	cqIWGFhOU09iamVjdAgRGiQpMjdJTFFTV11kand+qKqssbzFzdAAAAAAAAABAQAAAAAA
+	AAAZAAAAAAAAAAAAAAAAAAAA2Q==
 	</data>
 	<key>CommandString</key>
 	<string>yes | source ~/.zshrc &amp;&amp; clear</string>
@@ -222,12 +222,10 @@
 	cqIWGFhOU09iamVjdAgRGiQpMjdJTFFTV11kand+qKqssbzFzdAAAAAAAAABAQAAAAAA
 	AAAZAAAAAAAAAAAAAAAAAAAA2Q==
 	</data>
-	<key>UseBrightBold</key>
-	<true/>
 	<key>columnCount</key>
 	<integer>84</integer>
 	<key>name</key>
-	<string>synthwave84</string>
+	<string>Synthwave '84 Light</string>
 	<key>rowCount</key>
 	<integer>88</integer>
 	<key>type</key>

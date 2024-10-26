@@ -1,14 +1,12 @@
-macpracs
-=========
+# macpracs
 
 My personal engineering practices.
 
 I love quotes. You'll see a bunch. This is my love letter to Civ 🗺️
 
-![Static Badge](https://img.shields.io/badge/version-2.5.2-66023c)
+![Static Badge](https://img.shields.io/badge/version-2.6.0-66023c)
 
-Table of Contents
-------------------
+## Table of Contents
 
 - [Philosophy](#philosophy)
 - [People](#people)
@@ -17,8 +15,7 @@ Table of Contents
 - [Platforms](#platforms)
 	- [Tools](#tools)
 
-Philosophy
------------
+## Philosophy
 
 > Το σύνολο είναι περισσότερο από το άθροισμα των μερών του
 >
@@ -33,8 +30,7 @@ My philosophy takes the following assumptions as given:
 
 > 🧠 *See [systems](systems.md) if you wanna get in my brain.*
 
-People
-------
+## People
 
 > *"The four characteristics of humanism are curiosity, a free mind, belief in good taste, and belief in the human race."*
 > 
@@ -42,14 +38,12 @@ People
 
 More to come.
 
-Policies
---------
+## Policies
 
 - [How to write documents](/policies/doc-style-guide.md).
 - [How to care for developer communities](/policies/community-needs-assessment.md)
 
-Procedures
------------
+## Procedures
 
 In general, this is what my work days usually look like:
 1. [Startup](/procedures/startup.md).
@@ -63,8 +57,7 @@ With some meetings and breaks littered in, of course.
 
 If I'm trying to configure my home network, I should refer to [Home System Administration](procedures/home-sysadmin.md)
 
-Platforms
-----------
+## Platforms
 
 ### Tools
 
