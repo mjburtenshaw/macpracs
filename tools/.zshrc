@@ -2,6 +2,8 @@
 
 export mjbhome="${HOME}/code/github.com/mjburtenshaw"
 
+source $mjbhome/macpracs/tools/aliases.sh
+
 zsh_configs_dir="${mjbhome}/macpracs/tools/.zsh-configs"
 
 # Check if directory exists
