@@ -1,118 +1,230 @@
-#!/bin/bash
+#!/bin/zsh
+
+export mjbhome=~/code/github.com/mjburtenshaw
 
 add_ssh_key() {
-  echo "Enter your device name, e.g. mba (for macbook air): "
-  read device_name
+    echo "🔑 Adding SSH key..."
+    read -p "device_name?💻 Enter your device name, e.g. mba (for macbook air): "
 
-  keyfile=mjb-$device_name-personal-github-auth-key
-  keyfile_path=~/.ssh/$keyfile
+    keyfile=mjb-$device_name-personal-github-auth-key
+    keyfile_path=~/.ssh/$keyfile
 
-  echo "Use the following keyfile path to fill in prompts:"
-  echo -e "\n$keyfile_path\n"
-  echo $keyfile_path | pbcopy
-  echo "COPIED TO CLIPBOARD! :D"
+    echo -e "\n$keyfile_path\n"
+    echo "☝🏻  Use the copied keyfile path to fill in prompts:"
+    echo $keyfile_path | pbcopy
+    echo "📋 Copied to clipboard"
 
-  ssh-keygen -t ed25519 -C "$keyfile"
+    ssh-keygen -t ed25519 -C "$keyfile"
 
-  eval "$(ssh-agent -s)"
+    eval "$(ssh-agent -s)"
 
-  touch ~/.ssh/config 
+    touch ~/.ssh/config 
 
-  cat << EOF >> ~/.ssh/config
+    cat << EOF >> ~/.ssh/config
 Host github.com
-  AddKeysToAgent yes
-  IdentityFile $keyfile_path
+    AddKeysToAgent yes
+    IdentityFile $keyfile_path
 
 EOF
-  ssh-add $keyfile_path
+    ssh-add $keyfile_path
 
-  echo "Copy the public key and register it with GitHub"
-  pbcopy < $keyfile_path.pub
-  echo "COPIED TO CLIPBOARD! :D"
+    pbcopy < $keyfile_path.pub
+    echo "📋 COPIED TO CLIPBOARD! :D"
+
+    echo -e "\n$keyfile_path.pub\n"
+
+    read "?☝🏻 Copy the public key and register it with GitHub. Return here and press any key to continue."
 }
 
 clone_repo() {
-  export mjbhome=~/code/github.com/mjburtenshaw
-  mkdir -p $mjbhome
-  operating_dir=$(pwd)
-  cd $mjbhome
-  git clone git@github.com:mjburtenshaw/macpracs.git
-  cd $operating_dir
+    "📡 Cloning macpracs..."
+    mkdir -p $mjbhome
+    operating_dir=$(pwd)
+    cd $mjbhome
+    git clone git@github.com:mjburtenshaw/macpracs.git
+    cd $operating_dir
 }
 
-install_zsh_dependencies() {
-  echo "Installing python packages..."
-  sudo -H pip3 install --break-system-packages astral
-  sudo -H pip3 install --break-system-packages pytz
+install_builtins() {
+    echo "💾 Installing builtins..."
 
-  echo "Installing oh-my-zsh..."
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-  cp ~/code/github.com/mjburtenshaw/macpracs/tools/resources/bullet-train.zsh-theme.txt $ZSH_CUSTOM/themes/bullet-train.zsh-theme
+    install_homebrew
 
-  echo "Installing nvm..."
-  PROFILE=/dev/null bash -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash'
+    echo -e "\nhttps://www.logitech.com/en-us/software/logi-options-plus.html\n"
+    read "?☝🏻 Download and install LogiOptions+. Return here and press any key to continue."
 
-  echo "Installing auto-terminal-profile..."
-  npm install --global auto-terminal-profile
+    echo -e "\nhttps://rectangleapp.com\n"
+    read "?☝🏻 Download and install Rectangle Pro. Return here and press any key to continue."
 
-  echo "Resourcing shell session..."
-  cp ~/.zshrc ~/.zshrc.macpracs-backup
-  cp $mjbhome/macpracs/tools/.zshrc ~/.zshrc
-  source .zshrc
+    unzip $mjbhome/macpracs/tools/resources/Fira_Code.zip -d ~/Downloads/Fira_Code
+    read "?☝🏻 Go to your Downloads folder and add the Fira Code TTF files to your Font Book. Return here and press any key to continue."
+
+    echo -e "\nhttps://go.dev/doc/install\n"
+    read "?☝🏻 Download and install Go. Return here and press any key to continue."
+
+    echo -e "\nhttps://www.python.org/downloads/\n"
+    read "?☝🏻 Download and install Python. Return here and press any key to continue."
+    
+    install_terraform
+
+    echo -e "\nhttps://obsidian.md\n"
+    read "?☝🏻 Download and install Obsidian. Return here and press any key to continue."
+
+    echo -e "\nhttps://www.docker.com\n"
+    read "?☝🏻 Download and install Docker Desktop. Return here and press any key to continue."
+
+    echo -e "\nhttps://tableplus.com/download\n"
+    read "?☝🏻 Download and install TablePlus. Return here and press any key to continue."
+
+    echo "Installing KeyCastr..."
+    brew install --cask keycastr
+
+    echo -e "\nhttps://code.visualstudio.com\n"
+    read "?☝🏻 Download and install VS Code, and enable command line tools. Return here and press any key to continue."
+
+    read "?👉🏻 Open the app store to download and install Xcode, and accept the license agreement. Return here and press any key to continue."
 }
 
 install_color_palettes() {
-  color_palettes_dir=$mjbhome/macpracs/tools/resources/color-palettes
+    echo "🎨 Installing color palettes..."
 
-  setopt NULL_GLOB
-  color_palettes=($color_palettes_dir/*.clr)
-  unsetopt NULL_GLOB
+    color_palettes_dir=$mjbhome/macpracs/tools/resources/color-palettes
 
-  if [[ ${#color_palettes[@]} -eq 0 ]]; then
-    echo "Warning: No color_palettes found in $color_palettes_dir."
-    return
-  fi
+    setopt NULL_GLOB
+    color_palettes=($color_palettes_dir/*.clr)
+    unsetopt NULL_GLOB
 
-  for color_palette in "${color_palettes[@]}"; do
-    open "$color_palette"
-  done
+    if [[ ${#color_palettes[@]} -eq 0 ]]; then
+        echo "💣 Warning: No color_palettes found in $color_palettes_dir."
+        return
+    fi
+
+    for color_palette in "${color_palettes[@]}"; do
+        open "$color_palette"
+    done
+}
+
+install_homebrew() {
+    echo "🍺 Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    read "first_time? 🆕 First time installing Homebrew on this machine? (y/n): "
+
+    if [[ "$first_time" == "y" ]]; then
+        # add brew to PATH
+        echo >> /Users/malcolmburtenshaw/.zprofile
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/malcolmburtenshaw/.zprofile
+    fi
+
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+}
+
+install_node() {
+    echo "💾 Installing Node..."
+    PROFILE=/dev/null bash -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash'
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+    nvm install 20
 }
 
 install_terminal_profiles() {
-  terminal_profiles_dir=$mjbhome/macpracs/tools/resources/terminal-profiles
+    echo "🎨 Installing terminal profiles..."
 
-  setopt NULL_GLOB
-  terminal_profiles=($terminal_profiles_dir/*.terminal)
-  unsetopt NULL_GLOB
+    terminal_profiles_dir=$mjbhome/macpracs/tools/resources/terminal-profiles
 
-  if [[ ${#terminal_profiles[@]} -eq 0 ]]; then
-    echo "Warning: No terminal profile files found in $terminal_profiles_dir."
-    return
-  fi
+    setopt NULL_GLOB
+    terminal_profiles=($terminal_profiles_dir/*.terminal)
+    unsetopt NULL_GLOB
 
-  for terminal_profile in "${terminal_profiles[@]}"; do
-    open "$terminal_profile"
-  done
+    if [[ ${#terminal_profiles[@]} -eq 0 ]]; then
+        echo "💣 Warning: No terminal profile files found in $terminal_profiles_dir."
+        return
+    fi
 
-  # enable auto switching profiles based on OS appearance
-  auto-terminal-profile enable --dark-profile='Solarized Dark' --light-profile='Solarized Light'
+    for terminal_profile in "${terminal_profiles[@]}"; do
+        open "$terminal_profile"
+    done
+
+    # enable auto switching profiles based on OS appearance
+    auto-terminal-profile enable --dark-profile='solarized-dark' --light-profile='solarized-light'
 }
 
-echo "This script uses sudo to install the following python packages in the global scope:"
-echo "    - astral"
-echo "    - pytz"
-echo "Is that okay? (y/n) "
-read should_run
+install_terraform() {
+    echo "💾 Installing Terraform..."
+    brew tap hashicorp/tap
+    brew install hashicorp/tap/terraform
+    brew update
+    brew upgrade hashicorp/tap/terraform
+}
 
-if [[ "$should_run" != "y" ]]; then
-  echo "Okay. We'll leave it alone."
-  return
-fi
+install_zsh_dependencies() {
+    echo "💾 Installing python packages..."
+    sudo -H pip3 install astral
+    sudo -H pip3 install pytz
 
-add_ssh_key
-clone_repo
-install_zsh_dependencies
-install_color_palettes
-install_terminal_profiles
+    echo "💾 Installing oh-my-zsh..."
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    ZSH_CUSTOM=~/.oh-my-zsh/custom
+    cp ~/code/github.com/mjburtenshaw/macpracs/tools/resources/bullet-train.zsh-theme.txt $ZSH_CUSTOM/themes/bullet-train.zsh-theme
 
-echo "Done!"
+    install_node
+
+    resource_shell_session
+
+    echo "💾 Installing auto-terminal-profile..."
+    npm install --global auto-terminal-profile
+}
+
+# Function to prompt user before running each task
+prompt_user() {
+    local message=$1
+    local function_to_call=$2
+    read "should_run?$message (y/n): "
+    if [[ "$should_run" == "y" ]]; then
+        $function_to_call
+    fi
+}
+
+resource_shell_session() {
+    echo "🔃 Resourcing shell session..."
+
+    cp ~/.zshrc ~/.zshrc.macpracs-backup
+
+    cp $mjbhome/macpracs/tools/.zshrc ~/.zshrc
+
+    read "is_using_halo?😇 Are you using Halo on this machine? (y/n): "
+
+    if [[ "$is_using_halo" != "y" ]]; then
+        sed -i '' '2a\
+export skip_halo=true\
+' ~/.zshrc
+    fi
+
+    source ~/.zshrc
+}
+
+sign_waiver() {
+    echo "This script uses sudo to install the following python packages in the global scope:"
+    echo "    - astral"
+    echo "    - pytz"
+    read "should_run?🛂 Is that okay? (y/n): "
+    if [[ "$should_run" != "y" ]]; then
+        exit 0
+    fi
+}
+
+update_builtins() {
+    /Applications/Xcode.app/Contents/Developer/usr/bin/python3 -m pip install --upgrade pip
+}
+
+sign_waiver
+install_builtins
+update_builtins
+prompt_user "🔑 Add SSH key?" add_ssh_key
+prompt_user "📡 Clone repository?" clone_repo
+prompt_user "🐢 Install ZSH dependencies?" install_zsh_dependencies
+prompt_user "🎨 Install color palettes?" install_color_palettes
+prompt_user "🎨 Install terminal profiles?" install_terminal_profiles
+
+echo "🎉 Done!"
