@@ -160,8 +160,8 @@ install_terraform() {
 
 install_zsh_dependencies() {
     echo "💾 Installing python packages..."
-    sudo -H pip3 install astral
-    sudo -H pip3 install pytz
+    pip_install astral
+    pip_install pytz
 
     echo "💾 Installing oh-my-zsh..."
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -174,6 +174,17 @@ install_zsh_dependencies() {
 
     echo "💾 Installing auto-terminal-profile..."
     npm install --global auto-terminal-profile
+}
+
+# python3 can use a Homebrew installation as the default. Some
+# configuration files in this project rely on Python packages not available
+# in the Homebrew ecosystem. This alias allows direct invocations of
+# python3 to use the full ecosystem without breaking Homebrew packages
+# which use the Homebrew installation of python3 as a dependency.
+#
+# See also: aliases.sh
+pip_install() {
+    /usr/local/bin/python3 -m pip install --user $1
 }
 
 # Function to prompt user before running each task
