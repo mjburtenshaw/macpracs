@@ -4,7 +4,7 @@ export mjbhome=~/code/github.com/mjburtenshaw
 
 add_ssh_key() {
     echo "🔑 Adding SSH key..."
-    read -p "device_name?💻 Enter your device name, e.g. mba (for macbook air): "
+    read -p "device_name?💻 Enter your device name, e.g. mba (for MacBook Air): "
 
     keyfile=mjb-$device_name-personal-github-auth-key
     keyfile_path=~/.ssh/$keyfile
