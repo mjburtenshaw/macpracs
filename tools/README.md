@@ -2,8 +2,7 @@
 
 [🔙 BACK: Tools](README.md#tools)
 
-Tools
-==========
+# Tools
 
 > *"Don't reinvent the wheel, just realign it."*
 >
@@ -11,8 +10,7 @@ Tools
 
 You wanted to know what I use, so here you are.
 
-Table of Contents
----------------------------
+## Table of Contents
 
 - [Hardware](#hardware)
 	- [Machines](#machines)
@@ -26,8 +24,7 @@ Table of Contents
 	- [Reference](#reference)
 	- [Finance](#finance)
 
-Hardware
----------------
+## Hardware
 
 ### Machines
 
@@ -60,8 +57,7 @@ Hardware
 - [Keyboard travel case](https://www.amazon.com/dp/B0B38S4MW4?ref=ppx_yo2ov_dt_b_product_details&th=1).
 - Charger: [belkin BoostCharge Pro](https://www.belkin.com/3-in-1-wireless-charger-with-official-magsafe-charging-15w/P-WIZ017.html).
 
-Software and Services
------------------------------------
+## Software and Services
 
 ### System
 
