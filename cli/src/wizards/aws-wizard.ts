@@ -17,8 +17,10 @@ import {
   listECSServices,
   listRDSInstances,
   listEC2Instances,
+  listFailedBuilds,
   AWS_REGIONS,
 } from '../lib';
+import type { BuildInfo } from '../lib';
 
 const PIPELINE_SCRIPT_PATH = path.join(__dirname, '../../../scripts/aws-pipeline-watch.sh');
 const ECS_SCRIPT_PATH = path.join(__dirname, '../../../scripts/aws-ecs-tasks.sh');
@@ -132,6 +134,10 @@ async function codePipelineSubmenu(profile: string, region: string): Promise<voi
           value: 'pipeline',
         },
         {
+          name: '🔄 Retry pipeline execution',
+          value: 'retry-pipeline',
+        },
+        {
           name: '📋 List all pipelines',
           value: 'list-pipelines',
         },
@@ -167,6 +173,10 @@ async function codeBuildSubmenu(profile: string, region: string): Promise<void> 
         {
           name: '📝 Stream build logs',
           value: 'logs',
+        },
+        {
+          name: '🔄 Retry failed build',
+          value: 'retry-build',
         },
         {
           name: '📋 List all build projects',
@@ -274,14 +284,15 @@ async function executeAWSOperation(
   // For operations that need resource selection, fetch and present resource list
   let resourceName: string | undefined;
   let clusterName: string | undefined;
+  let buildId: string | undefined;
 
-  if (['pipeline', 'build', 'logs'].includes(operation)) {
+  if (['pipeline', 'build', 'logs', 'retry-build', 'retry-pipeline'].includes(operation)) {
     const spinner = ora('Fetching available resources...').start();
 
     try {
       let resources: string[] = [];
 
-      if (operation === 'pipeline') {
+      if (operation === 'pipeline' || operation === 'retry-pipeline') {
         resources = await listPipelines(profile, region);
       } else {
         // build or logs both use CodeBuild projects
@@ -293,7 +304,7 @@ async function executeAWSOperation(
       if (resources.length === 0) {
         console.log(
           chalk.yellow(
-            `\nNo ${operation === 'pipeline' ? 'pipelines' : 'build projects'} found in ${region}\n`
+            `\nNo ${operation === 'pipeline' || operation === 'retry-pipeline' ? 'pipelines' : 'build projects'} found in ${region}\n`
           )
         );
         return;
@@ -302,9 +313,11 @@ async function executeAWSOperation(
       const operationName =
         operation === 'pipeline'
           ? 'CodePipeline'
-          : operation === 'build'
-            ? 'CodeBuild project'
-            : 'CodeBuild project (for logs)';
+          : operation === 'retry-pipeline'
+            ? 'CodePipeline (to retry)'
+            : operation === 'build'
+              ? 'CodeBuild project'
+              : 'CodeBuild project (for logs)';
 
       const { name } = await inquirer.prompt([
         {
@@ -316,6 +329,40 @@ async function executeAWSOperation(
       ]);
 
       resourceName = name;
+
+      // For retry-build, fetch and select failed build
+      if (operation === 'retry-build') {
+        const buildsSpinner = ora('Fetching failed builds...').start();
+
+        try {
+          const failedBuilds = await listFailedBuilds(name, profile, region);
+          buildsSpinner.stop();
+
+          if (failedBuilds.length === 0) {
+            console.log(chalk.yellow(`\nNo retry-able failed builds found for project ${name}`));
+            console.log(chalk.gray('Note: Builds triggered by CodePipeline can only be retried through the pipeline.\n'));
+            return;
+          }
+
+          const { build } = await inquirer.prompt([
+            {
+              type: 'list',
+              name: 'build',
+              message: 'Select failed build to retry:',
+              choices: failedBuilds.map((b) => ({
+                name: `${b.id.split(':').pop()} - ${b.sourceVersion} - ${new Date(b.startTime).toLocaleString()}`,
+                value: b.id,
+              })),
+            },
+          ]);
+
+          buildId = build;
+        } catch (buildError) {
+          buildsSpinner.fail('Failed to fetch failed builds');
+          console.error(chalk.red(buildError instanceof Error ? buildError.message : String(buildError)));
+          return;
+        }
+      }
     } catch (error) {
       spinner.fail('Failed to fetch resources');
       console.error(chalk.red(error instanceof Error ? error.message : String(error)));
@@ -487,9 +534,15 @@ async function executeAWSOperation(
     }
   } else {
     scriptPath = PIPELINE_SCRIPT_PATH;
-    args = [operation];
-    if (resourceName) {
-      args.push(resourceName);
+
+    if (operation === 'retry-build') {
+      // For retry-build, pass project name and build ID
+      args = [operation, resourceName!, buildId!];
+    } else {
+      args = [operation];
+      if (resourceName) {
+        args.push(resourceName);
+      }
     }
   }
 
