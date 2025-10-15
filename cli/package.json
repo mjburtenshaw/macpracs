@@ -1,0 +1,46 @@
+{
+  "name": "@mjburtenshaw/macpracs-cli",
+  "version": "1.0.0",
+  "description": "Personal engineering practices CLI tool",
+  "main": "src/index.ts",
+  "bin": {
+    "macpracs": "./bin/macpracs"
+  },
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "lint": "eslint src --ext .ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "cli",
+    "devtools",
+    "automation",
+    "aws",
+    "git"
+  ],
+  "author": "mjburtenshaw",
+  "license": "MIT",
+  "dependencies": {
+    "amqplib": "^0.10.9",
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "inquirer": "^8.2.6",
+    "ora": "^5.4.1",
+    "tsx": "^4.7.0"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.7",
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.10.5",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

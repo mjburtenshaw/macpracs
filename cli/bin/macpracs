@@ -1,0 +1,12 @@
+#!/bin/sh
+# Resolve the actual location of this script (follow symlinks)
+SCRIPT="$0"
+while [ -L "$SCRIPT" ]; do
+  LINK="$(readlink "$SCRIPT")"
+  case "$LINK" in
+    /*) SCRIPT="$LINK";;
+    *) SCRIPT="$(dirname "$SCRIPT")/$LINK";;
+  esac
+done
+DIR="$(cd "$(dirname "$SCRIPT")/.." && pwd)"
+exec node "$DIR/node_modules/.bin/tsx" "$DIR/src/index.ts" "$@"
