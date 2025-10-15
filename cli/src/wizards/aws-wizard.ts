@@ -1,0 +1,520 @@
+/**
+ * AWS operations interactive wizard
+ */
+
+import inquirer from 'inquirer';
+import chalk from 'chalk';
+import path from 'path';
+import ora from 'ora';
+import {
+  execScript,
+  createLogger,
+  getAWSProfiles,
+  ensureAWSCredentials,
+  listPipelines,
+  listBuildProjects,
+  listECSClusters,
+  listECSServices,
+  listRDSInstances,
+  listEC2Instances,
+  AWS_REGIONS,
+} from '../lib';
+
+const PIPELINE_SCRIPT_PATH = path.join(__dirname, '../../../scripts/aws-pipeline-watch.sh');
+const ECS_SCRIPT_PATH = path.join(__dirname, '../../../scripts/aws-ecs-tasks.sh');
+const SSM_SCRIPT_PATH = path.join(__dirname, '../../../scripts/aws-ssm-rds.sh');
+
+export async function awsWizard(): Promise<void> {
+  console.log(chalk.blue('\n☁️  AWS Operations\n'));
+
+  // Step 1: Choose AWS service
+  const { service } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'service',
+      message: 'Which AWS service would you like to work with?',
+      choices: [
+        {
+          name: '🚀 CodePipeline',
+          value: 'codepipeline',
+        },
+        {
+          name: '🔨 CodeBuild',
+          value: 'codebuild',
+        },
+        {
+          name: '🐳 ECS',
+          value: 'ecs',
+        },
+        {
+          name: '🔐 SSM (Systems Manager)',
+          value: 'ssm',
+        },
+        new inquirer.Separator(),
+        {
+          name: '← Back to main menu',
+          value: 'back',
+        },
+      ],
+    },
+  ]);
+
+  if (service === 'back') {
+    return;
+  }
+
+  // Step 2: Select AWS profile
+  const profiles = getAWSProfiles();
+  const { profile } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'profile',
+      message: 'Select AWS profile:',
+      choices: profiles.map((p) => ({
+        name: p.isDefault ? `${p.name} (default)` : p.name,
+        value: p.name,
+      })),
+      default: process.env.AWS_PROFILE || 'default',
+    },
+  ]);
+
+  // Step 3: Select region
+  const { region } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'region',
+      message: 'Select AWS region:',
+      choices: AWS_REGIONS,
+      default: 'us-east-1',
+    },
+  ]);
+
+  // Step 4: Ensure AWS credentials are valid
+  const spinner = ora('Checking AWS credentials...').start();
+  const credentialsValid = await ensureAWSCredentials(profile);
+  spinner.stop();
+
+  if (!credentialsValid) {
+    console.log(chalk.red('Unable to proceed without valid credentials\n'));
+    return;
+  }
+
+  // Route to service-specific submenu
+  switch (service) {
+    case 'codepipeline':
+      await codePipelineSubmenu(profile, region);
+      break;
+    case 'codebuild':
+      await codeBuildSubmenu(profile, region);
+      break;
+    case 'ecs':
+      await ecsSubmenu(profile, region);
+      break;
+    case 'ssm':
+      await ssmSubmenu(profile, region);
+      break;
+    default:
+      console.log(chalk.red(`\nUnknown service: ${service}\n`));
+  }
+}
+
+async function codePipelineSubmenu(profile: string, region: string): Promise<void> {
+  console.log(chalk.blue('\n🚀 CodePipeline Operations\n'));
+
+  const { operation } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'operation',
+      message: 'What would you like to do?',
+      choices: [
+        {
+          name: '📊 Watch pipeline execution',
+          value: 'pipeline',
+        },
+        {
+          name: '📋 List all pipelines',
+          value: 'list-pipelines',
+        },
+        new inquirer.Separator(),
+        {
+          name: '← Back',
+          value: 'back',
+        },
+      ],
+    },
+  ]);
+
+  if (operation === 'back') {
+    return;
+  }
+
+  await executeAWSOperation(operation, profile, region);
+}
+
+async function codeBuildSubmenu(profile: string, region: string): Promise<void> {
+  console.log(chalk.blue('\n🔨 CodeBuild Operations\n'));
+
+  const { operation } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'operation',
+      message: 'What would you like to do?',
+      choices: [
+        {
+          name: '🔨 Watch build project',
+          value: 'build',
+        },
+        {
+          name: '📝 Stream build logs',
+          value: 'logs',
+        },
+        {
+          name: '📋 List all build projects',
+          value: 'list-builds',
+        },
+        new inquirer.Separator(),
+        {
+          name: '← Back',
+          value: 'back',
+        },
+      ],
+    },
+  ]);
+
+  if (operation === 'back') {
+    return;
+  }
+
+  await executeAWSOperation(operation, profile, region);
+}
+
+async function ecsSubmenu(profile: string, region: string): Promise<void> {
+  console.log(chalk.blue('\n🐳 ECS Operations\n'));
+
+  const { operation } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'operation',
+      message: 'What would you like to do?',
+      choices: [
+        {
+          name: '🐳 Watch task status',
+          value: 'ecs-tasks',
+        },
+        {
+          name: '📜 Tail service logs',
+          value: 'ecs-logs',
+        },
+        {
+          name: '📋 List clusters',
+          value: 'ecs-list-clusters',
+        },
+        {
+          name: '📋 List services in cluster',
+          value: 'ecs-list-services',
+        },
+        new inquirer.Separator(),
+        {
+          name: '← Back',
+          value: 'back',
+        },
+      ],
+    },
+  ]);
+
+  if (operation === 'back') {
+    return;
+  }
+
+  await executeAWSOperation(operation, profile, region);
+}
+
+async function ssmSubmenu(profile: string, region: string): Promise<void> {
+  console.log(chalk.blue('\n🔐 SSM Operations\n'));
+
+  const { operation } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'operation',
+      message: 'What would you like to do?',
+      choices: [
+        {
+          name: '💻 Start terminal session',
+          value: 'ssm-terminal',
+        },
+        {
+          name: '🔌 Connect to RDS instance',
+          value: 'ssm-rds-connect',
+        },
+        {
+          name: '📋 List RDS instances',
+          value: 'ssm-list-rds',
+        },
+        new inquirer.Separator(),
+        {
+          name: '← Back',
+          value: 'back',
+        },
+      ],
+    },
+  ]);
+
+  if (operation === 'back') {
+    return;
+  }
+
+  await executeAWSOperation(operation, profile, region);
+}
+
+async function executeAWSOperation(
+  operation: string,
+  profile: string,
+  region: string
+): Promise<void> {
+  // For operations that need resource selection, fetch and present resource list
+  let resourceName: string | undefined;
+  let clusterName: string | undefined;
+
+  if (['pipeline', 'build', 'logs'].includes(operation)) {
+    const spinner = ora('Fetching available resources...').start();
+
+    try {
+      let resources: string[] = [];
+
+      if (operation === 'pipeline') {
+        resources = await listPipelines(profile, region);
+      } else {
+        // build or logs both use CodeBuild projects
+        resources = await listBuildProjects(profile, region);
+      }
+
+      spinner.stop();
+
+      if (resources.length === 0) {
+        console.log(
+          chalk.yellow(
+            `\nNo ${operation === 'pipeline' ? 'pipelines' : 'build projects'} found in ${region}\n`
+          )
+        );
+        return;
+      }
+
+      const operationName =
+        operation === 'pipeline'
+          ? 'CodePipeline'
+          : operation === 'build'
+            ? 'CodeBuild project'
+            : 'CodeBuild project (for logs)';
+
+      const { name } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'name',
+          message: `Select ${operationName}:`,
+          choices: resources,
+        },
+      ]);
+
+      resourceName = name;
+    } catch (error) {
+      spinner.fail('Failed to fetch resources');
+      console.error(chalk.red(error instanceof Error ? error.message : String(error)));
+      return;
+    }
+  } else if (operation === 'ecs-tasks' || operation === 'ecs-logs') {
+    // For ECS tasks/logs, we need cluster first, then service
+    const clusterSpinner = ora('Fetching ECS clusters...').start();
+
+    try {
+      const clusters = await listECSClusters(profile, region);
+      clusterSpinner.stop();
+
+      if (clusters.length === 0) {
+        console.log(chalk.yellow(`\nNo ECS clusters found in ${region}\n`));
+        return;
+      }
+
+      const { cluster } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'cluster',
+          message: 'Select ECS cluster:',
+          choices: clusters,
+        },
+      ]);
+
+      clusterName = cluster;
+
+      const serviceSpinner = ora('Fetching ECS services...').start();
+      const services = await listECSServices(cluster, profile, region);
+      serviceSpinner.stop();
+
+      if (services.length === 0) {
+        console.log(chalk.yellow(`\nNo services found in cluster ${cluster}\n`));
+        return;
+      }
+
+      const { service } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'service',
+          message: 'Select ECS service:',
+          choices: services,
+        },
+      ]);
+
+      resourceName = service;
+    } catch (error) {
+      clusterSpinner.fail('Failed to fetch ECS resources');
+      console.error(chalk.red(error instanceof Error ? error.message : String(error)));
+      return;
+    }
+  } else if (operation === 'ecs-list-services') {
+    // For listing services, we need to select a cluster
+    const spinner = ora('Fetching ECS clusters...').start();
+
+    try {
+      const clusters = await listECSClusters(profile, region);
+      spinner.stop();
+
+      if (clusters.length === 0) {
+        console.log(chalk.yellow(`\nNo ECS clusters found in ${region}\n`));
+        return;
+      }
+
+      const { cluster } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'cluster',
+          message: 'Select ECS cluster:',
+          choices: clusters,
+        },
+      ]);
+
+      clusterName = cluster;
+    } catch (error) {
+      spinner.fail('Failed to fetch clusters');
+      console.error(chalk.red(error instanceof Error ? error.message : String(error)));
+      return;
+    }
+  } else if (operation === 'ssm-terminal') {
+    // For SSM terminal session, we need to select an EC2 instance
+    const spinner = ora('Fetching EC2 instances...').start();
+
+    try {
+      const instances = await listEC2Instances(profile, region);
+      spinner.stop();
+
+      if (instances.length === 0) {
+        console.log(chalk.yellow(`\nNo running EC2 instances found in ${region}\n`));
+        return;
+      }
+
+      const { instance } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'instance',
+          message: 'Select EC2 instance:',
+          choices: instances.map((inst) => ({
+            name: `${inst.name} (${inst.id})`,
+            value: inst.id,
+          })),
+        },
+      ]);
+
+      resourceName = instance;
+    } catch (error) {
+      spinner.fail('Failed to fetch EC2 instances');
+      console.error(chalk.red(error instanceof Error ? error.message : String(error)));
+      return;
+    }
+  } else if (operation === 'ssm-rds-connect') {
+    // For SSM RDS connection, we need to select an RDS instance
+    const spinner = ora('Fetching RDS instances...').start();
+
+    try {
+      const instances = await listRDSInstances(profile, region);
+      spinner.stop();
+
+      if (instances.length === 0) {
+        console.log(chalk.yellow(`\nNo RDS instances found in ${region}\n`));
+        return;
+      }
+
+      const { instance } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'instance',
+          message: 'Select RDS instance:',
+          choices: instances,
+        },
+      ]);
+
+      resourceName = instance;
+    } catch (error) {
+      spinner.fail('Failed to fetch RDS instances');
+      console.error(chalk.red(error instanceof Error ? error.message : String(error)));
+      return;
+    }
+  }
+
+  // Build arguments for bash script
+  let scriptPath: string;
+  let args: string[] = [];
+
+  // Determine which script to use and build arguments
+  if (operation.startsWith('ecs-')) {
+    scriptPath = ECS_SCRIPT_PATH;
+    // Convert operation name for ECS script
+    if (operation === 'ecs-tasks') {
+      args = ['tasks', clusterName!, resourceName!];
+    } else if (operation === 'ecs-logs') {
+      args = ['logs', clusterName!, resourceName!];
+    } else if (operation === 'ecs-list-clusters') {
+      args = ['list-clusters'];
+    } else if (operation === 'ecs-list-services') {
+      args = ['list-services', clusterName!];
+    }
+  } else if (operation.startsWith('ssm-')) {
+    scriptPath = SSM_SCRIPT_PATH;
+    // Convert operation name for SSM script
+    if (operation === 'ssm-terminal') {
+      args = ['terminal', resourceName!];
+    } else if (operation === 'ssm-rds-connect') {
+      args = ['connect', resourceName!];
+    } else if (operation === 'ssm-list-rds') {
+      args = ['list-instances'];
+    }
+  } else {
+    scriptPath = PIPELINE_SCRIPT_PATH;
+    args = [operation];
+    if (resourceName) {
+      args.push(resourceName);
+    }
+  }
+
+  // Add profile and region to all commands
+  args.push(profile);
+  args.push(region);
+
+  // Execute the operation
+  console.log(chalk.blue('\nExecuting AWS operation...\n'));
+
+  const logger = createLogger(false, false);
+
+  try {
+    const result = await execScript(scriptPath, args, {
+      captureOutput: false, // Let bash script handle its own output
+    });
+
+    if (result.exitCode !== 0) {
+      logger.error(`Operation failed with exit code ${result.exitCode}`);
+      process.exit(result.exitCode);
+    }
+
+    logger.success('\nOperation completed successfully');
+  } catch (error) {
+    logger.error('Failed to execute AWS operation', error as Error);
+    process.exit(1);
+  }
+}
