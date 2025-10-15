@@ -195,6 +195,14 @@ export interface EC2Instance {
   name: string;
 }
 
+export interface BuildInfo {
+  id: string;
+  status: string;
+  sourceVersion: string;
+  startTime: string;
+  initiatedBy?: string;
+}
+
 /**
  * Get list of running EC2 instances in a region
  */
@@ -228,6 +236,64 @@ export async function listEC2Instances(
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to list EC2 instances: ${stderr}`);
+  }
+}
+
+/**
+ * Get list of failed builds for a CodeBuild project
+ */
+export async function listFailedBuilds(
+  projectName: string,
+  profile: string,
+  region: string
+): Promise<BuildInfo[]> {
+  try {
+    // Get recent build IDs for the project
+    const listCmd = `aws codebuild list-builds-for-project --project-name ${projectName} --region ${region} --profile ${profile} --max-items 20 --output json`;
+    const listOutput = execSync(listCmd, { encoding: 'utf-8' });
+    const listResult = JSON.parse(listOutput);
+
+    const buildIds = listResult.ids || [];
+    if (buildIds.length === 0) {
+      return [];
+    }
+
+    // Get build details
+    const detailsCmd = `aws codebuild batch-get-builds --ids ${buildIds.join(' ')} --region ${region} --profile ${profile} --output json`;
+    const detailsOutput = execSync(detailsCmd, { encoding: 'utf-8' });
+    const detailsResult = JSON.parse(detailsOutput);
+
+    // Filter for failed builds that can be retried (not from CodePipeline)
+    const failedBuilds: BuildInfo[] = [];
+    detailsResult.builds?.forEach((build: any) => {
+      if (build.buildStatus === 'FAILED') {
+        const initiatedBy = build.initiatedBy || '';
+
+        // Skip builds initiated by CodePipeline - they can only be retried through the pipeline
+        if (initiatedBy.includes('codepipeline')) {
+          return;
+        }
+
+        // Also skip if source version is an S3 ARN (indicates pipeline artifacts)
+        const sourceVersion = build.sourceVersion || 'N/A';
+        if (sourceVersion.startsWith('arn:aws:s3:')) {
+          return;
+        }
+
+        failedBuilds.push({
+          id: build.id,
+          status: build.buildStatus,
+          sourceVersion: sourceVersion,
+          startTime: build.startTime || 'N/A',
+          initiatedBy: initiatedBy,
+        });
+      }
+    });
+
+    return failedBuilds;
+  } catch (error: any) {
+    const stderr = error.stderr?.toString() || error.message;
+    throw new Error(`Failed to list failed builds: ${stderr}`);
   }
 }
 
