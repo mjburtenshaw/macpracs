@@ -7,9 +7,12 @@ Personal engineering practices command-line tool following UNIX philosophy.
 ✅ **Completed:**
 - TypeScript project foundation with Commander and Inquirer
 - Core utilities (logger, exec, config management)
-- Interactive wizard system
-- AWS pipeline-watch commands (pipeline, build, logs, list)
-- AWS operations wizard
+- Interactive wizard system with hierarchical menus
+- AWS operations wizard with service-based navigation
+  - CodePipeline operations (watch, retry, list)
+  - CodeBuild operations (watch, stream logs, retry failed builds, list)
+  - ECS operations (watch tasks, tail logs, list clusters/services)
+  - SSM operations (terminal sessions, RDS port forwarding, list instances)
 - Testing infrastructure with Vitest
 - Development tooling with tsx
 
@@ -30,7 +33,7 @@ This will install the `macpracs` command globally. No build step required - the 
 
 ## Usage
 
-### Interactive Mode
+### Interactive Mode (Recommended)
 
 Run `macpracs` with no arguments to launch the interactive wizard:
 
@@ -38,26 +41,67 @@ Run `macpracs` with no arguments to launch the interactive wizard:
 macpracs
 ```
 
+The wizard provides guided access to all features organized by service:
+
+**AWS Operations:**
+- **CodePipeline**: Watch executions, retry pipelines, list all pipelines
+- **CodeBuild**: Watch builds, stream logs, retry failed builds, list projects
+- **ECS**: Watch task status, tail service logs, list clusters/services
+- **SSM**: Start terminal sessions, connect to RDS via port forwarding, list instances
+
+**Messaging Operations:**
+- Send/receive messages from RabbitMQ or AWS SQS
+
+**Coming Soon:**
+- Git workflows
+- Timestamp utilities
+- Automated procedures
+
 ### Direct Commands
 
+For scripting or automation, commands can also be called directly:
+
 ```bash
-# AWS Operations (✅ Implemented)
-macpracs aws pipeline-watch-pipeline <name> [options]
-macpracs aws pipeline-watch-build <name> [options]
-macpracs aws pipeline-watch-logs <name> [options]
-macpracs aws list-pipelines [options]
-macpracs aws list-builds [options]
+# CodePipeline & CodeBuild
+macpracs aws pipeline-watch-pipeline <name> [-p profile] [-r region]
+macpracs aws pipeline-watch-build <name> [-p profile] [-r region]
+macpracs aws pipeline-watch-logs <name> [-p profile] [-r region]
+macpracs aws retry-build <project-name> <build-id> [-p profile] [-r region]
+macpracs aws retry-pipeline <name> [-p profile] [-r region]
+macpracs aws list-pipelines [-p profile] [-r region]
+macpracs aws list-builds [-p profile] [-r region]
 
-# Git Workflows (🚧 Coming soon)
-macpracs git branch create <name>
+# ECS
+macpracs aws ecs-tasks <cluster> <service> [-p profile] [-r region]
+macpracs aws ecs-logs <cluster> <service> [-p profile] [-r region]
+macpracs aws list-ecs-clusters [-p profile] [-r region]
+macpracs aws list-ecs-services <cluster> [-p profile] [-r region]
+```
 
-# Timestamp Utilities (🚧 Coming soon)
-macpracs timestamp check <task> <hours>
-macpracs timestamp update <task>
+### Bash Scripts for Automation
 
-# Procedures (🚧 Coming soon)
-macpracs startup [--interactive]
-macpracs shutdown [--interactive]
+The CLI uses bash scripts under the hood for AWS operations. These can be called directly for scripting:
+
+```bash
+# CodePipeline & CodeBuild operations
+scripts/aws-pipeline-watch.sh pipeline <name> <profile> <region>
+scripts/aws-pipeline-watch.sh build <name> <profile> <region>
+scripts/aws-pipeline-watch.sh logs <name> <profile> <region>
+scripts/aws-pipeline-watch.sh retry-build <project> <build-id> <profile> <region>
+scripts/aws-pipeline-watch.sh retry-pipeline <name> <profile> <region>
+scripts/aws-pipeline-watch.sh list-pipelines <profile> <region>
+scripts/aws-pipeline-watch.sh list-builds <profile> <region>
+
+# ECS operations
+scripts/aws-ecs-tasks.sh tasks <cluster> <service> <profile> <region>
+scripts/aws-ecs-tasks.sh logs <cluster> <service> <profile> <region>
+scripts/aws-ecs-tasks.sh list-clusters <profile> <region>
+scripts/aws-ecs-tasks.sh list-services <cluster> <profile> <region>
+
+# SSM operations
+scripts/aws-ssm-rds.sh terminal <instance-id> <profile> <region>
+scripts/aws-ssm-rds.sh connect <db-instance> <profile> <region>
+scripts/aws-ssm-rds.sh list-instances <profile> <region>
 ```
 
 ### Global Options
@@ -151,23 +195,18 @@ describe('MyFeature', () => {
 ```
 cli/
 ├── src/
-│   ├── commands/              # Command implementations
-│   │   ├── aws/              # ✅ AWS utilities
-│   │   │   ├── pipeline-watch.ts
-│   │   │   └── index.ts
-│   │   ├── git/              # 🚧 Git workflows (coming soon)
-│   │   ├── procedures/       # 🚧 Procedure automation (coming soon)
-│   │   ├── timestamp.ts      # 🚧 Timestamp utilities (coming soon)
-│   │   └── index.ts
+│   ├── commands/              # Command implementations (legacy, being phased out)
 │   ├── lib/                  # ✅ Shared utilities
+│   │   ├── aws.ts            # AWS resource listing functions
 │   │   ├── exec.ts           # Execute bash scripts
 │   │   ├── logger.ts         # UNIX-style logging
 │   │   ├── config.ts         # Configuration management
 │   │   ├── types.ts          # TypeScript types
 │   │   └── index.ts
-│   ├── wizards/              # ✅ Interactive wizards
-│   │   ├── main-wizard.ts
-│   │   ├── aws-wizard.ts
+│   ├── wizards/              # ✅ Interactive wizards (primary interface)
+│   │   ├── main-wizard.ts    # Main menu with category selection
+│   │   ├── aws-wizard.ts     # AWS operations with service submenus
+│   │   ├── mq-wizard.ts      # Messaging operations
 │   │   └── index.ts
 │   └── index.ts              # CLI entry point
 ├── bin/
@@ -178,30 +217,72 @@ cli/
 └── README.md
 ```
 
-## Adding New Commands
+**Bash Scripts** (called by wizards):
+```
+scripts/
+├── aws-pipeline-watch.sh     # CodePipeline & CodeBuild operations
+├── aws-ecs-tasks.sh          # ECS cluster and service operations
+├── aws-ssm-rds.sh            # SSM terminal sessions and RDS connections
+└── timestamp-util.sh         # Timestamp checking (standalone utility)
+```
 
-1. Create command file in `src/commands/<category>/`
-2. Export registration function that adds to Commander
-3. Import and call registration in `src/index.ts`
-4. Create corresponding wizard in `src/wizards/` (optional)
+## Adding New Features
 
-Example:
+The CLI uses an interactive wizard architecture. To add new features:
+
+### 1. Add Menu Options
+
+Update the appropriate wizard file in `src/wizards/`:
 
 ```typescript
-// src/commands/example/my-command.ts
-import { Command } from 'commander';
-import { createLogger } from '../../lib';
+// src/wizards/aws-wizard.ts
+const { operation } = await inquirer.prompt([
+  {
+    type: 'list',
+    name: 'operation',
+    message: 'What would you like to do?',
+    choices: [
+      {
+        name: '🆕 My new feature',
+        value: 'my-feature',
+      },
+      // ... other options
+    ],
+  },
+]);
+```
 
-export function registerMyCommand(program: Command): void {
-  program
-    .command('my-command')
-    .description('Does something useful')
-    .action(async (options) => {
-      const logger = createLogger(options.verbose, options.quiet);
-      // Implementation here
-    });
+### 2. Add TypeScript Helper Functions (if needed)
+
+For operations requiring AWS API calls or complex logic:
+
+```typescript
+// src/lib/aws.ts
+export async function listMyResources(
+  profile: string,
+  region: string
+): Promise<string[]> {
+  const cmd = `aws my-service list-resources --region ${region} --profile ${profile} --output json`;
+  const output = execSync(cmd, { encoding: 'utf-8' });
+  return JSON.parse(output).resources;
 }
 ```
+
+### 3. Create or Update Bash Scripts
+
+For operations that need to run continuously or interact with AWS:
+
+```bash
+# scripts/my-script.sh
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Add your implementation here
+```
+
+### 4. Wire Up in executeAWSOperation
+
+Connect the menu choice to the script execution in the wizard file.
 
 ## License
 
