@@ -7,7 +7,7 @@ import { Command } from 'commander';
 import path from 'path';
 import { execScript, createLogger, CommandOptions } from '../../lib';
 
-const SCRIPT_PATH = path.join(__dirname, '../../../scripts/aws-pipeline-watch.sh');
+const SCRIPT_PATH = path.join(__dirname, '../../../../scripts/aws-pipeline-watch.sh');
 
 export function registerPipelineWatchCommands(aws: Command): void {
   // macpracs aws pipeline-watch pipeline <name> [options]
@@ -171,6 +171,72 @@ export function registerPipelineWatchCommands(aws: Command): void {
         logger.success('Build projects listed');
       } catch (error) {
         logger.error('Failed to list build projects', error as Error);
+        process.exit(1);
+      }
+    });
+
+  // macpracs aws retry-build <project-name> <build-id> [options]
+  aws
+    .command('retry-build <project-name> <build-id>')
+    .description('Retry a failed CodeBuild job')
+    .option('-p, --profile <profile>', 'AWS CLI profile')
+    .option('-r, --region <region>', 'AWS region', 'us-east-1')
+    .action(async (projectName: string, buildId: string, options: any) => {
+      const globalOpts = aws.parent?.opts() as CommandOptions;
+      const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
+
+      const args = ['retry-build', projectName, buildId];
+      if (options.profile) args.push(options.profile);
+      if (options.region) args.push(options.region);
+
+      logger.info(`Retrying build: ${buildId}`);
+
+      try {
+        const result = await execScript(SCRIPT_PATH, args, {
+          captureOutput: false,
+        });
+
+        if (result.exitCode !== 0) {
+          logger.error(`Retry build failed with exit code ${result.exitCode}`);
+          process.exit(result.exitCode);
+        }
+
+        logger.success('Build retry initiated');
+      } catch (error) {
+        logger.error('Failed to retry build', error as Error);
+        process.exit(1);
+      }
+    });
+
+  // macpracs aws retry-pipeline <name> [options]
+  aws
+    .command('retry-pipeline <name>')
+    .description('Retry a pipeline execution')
+    .option('-p, --profile <profile>', 'AWS CLI profile')
+    .option('-r, --region <region>', 'AWS region', 'us-east-1')
+    .action(async (name: string, options: any) => {
+      const globalOpts = aws.parent?.opts() as CommandOptions;
+      const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
+
+      const args = ['retry-pipeline', name];
+      if (options.profile) args.push(options.profile);
+      if (options.region) args.push(options.region);
+
+      logger.info(`Retrying pipeline: ${name}`);
+
+      try {
+        const result = await execScript(SCRIPT_PATH, args, {
+          captureOutput: false,
+        });
+
+        if (result.exitCode !== 0) {
+          logger.error(`Retry pipeline failed with exit code ${result.exitCode}`);
+          process.exit(result.exitCode);
+        }
+
+        logger.success('Pipeline retry initiated');
+      } catch (error) {
+        logger.error('Failed to retry pipeline', error as Error);
         process.exit(1);
       }
     });

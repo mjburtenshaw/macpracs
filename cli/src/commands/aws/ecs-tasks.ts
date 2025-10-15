@@ -7,7 +7,7 @@ import { Command } from 'commander';
 import path from 'path';
 import { execScript, createLogger, CommandOptions } from '../../lib';
 
-const SCRIPT_PATH = path.join(__dirname, '../../../scripts/aws-ecs-tasks.sh');
+const SCRIPT_PATH = path.join(__dirname, '../../../../scripts/aws-ecs-tasks.sh');
 
 export function registerECSTasksCommands(aws: Command): void {
   // macpracs aws ecs-tasks <cluster> <service> [options]
