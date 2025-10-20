@@ -298,6 +298,66 @@ export async function listFailedBuilds(
 }
 
 /**
+ * Get list of completed builds for a CodeBuild project
+ * @param statusFilter - Optional filter: 'FAILED', 'SUCCEEDED', 'STOPPED', or undefined for all
+ */
+export async function listCompletedBuilds(
+  projectName: string,
+  profile: string,
+  region: string,
+  statusFilter?: 'FAILED' | 'SUCCEEDED' | 'STOPPED'
+): Promise<BuildInfo[]> {
+  try {
+    // Get recent build IDs for the project
+    const listCmd = `aws codebuild list-builds-for-project --project-name ${projectName} --region ${region} --profile ${profile} --max-items 20 --output json`;
+    const listOutput = execSync(listCmd, { encoding: 'utf-8' });
+    const listResult = JSON.parse(listOutput);
+
+    const buildIds = listResult.ids || [];
+    if (buildIds.length === 0) {
+      return [];
+    }
+
+    // Get build details
+    const detailsCmd = `aws codebuild batch-get-builds --ids ${buildIds.join(' ')} --region ${region} --profile ${profile} --output json`;
+    const detailsOutput = execSync(detailsCmd, { encoding: 'utf-8' });
+    const detailsResult = JSON.parse(detailsOutput);
+
+    // Filter for completed builds based on status filter
+    const completedBuilds: BuildInfo[] = [];
+    detailsResult.builds?.forEach((build: any) => {
+      const buildStatus = build.buildStatus;
+
+      // Only include completed builds (not IN_PROGRESS)
+      if (buildStatus === 'IN_PROGRESS') {
+        return;
+      }
+
+      // Apply status filter if provided
+      if (statusFilter && buildStatus !== statusFilter) {
+        return;
+      }
+
+      const initiatedBy = build.initiatedBy || '';
+      const sourceVersion = build.sourceVersion || 'N/A';
+
+      completedBuilds.push({
+        id: build.id,
+        status: buildStatus,
+        sourceVersion: sourceVersion,
+        startTime: build.startTime || 'N/A',
+        initiatedBy: initiatedBy,
+      });
+    });
+
+    return completedBuilds;
+  } catch (error: any) {
+    const stderr = error.stderr?.toString() || error.message;
+    throw new Error(`Failed to list completed builds: ${stderr}`);
+  }
+}
+
+/**
  * Common AWS regions
  */
 export const AWS_REGIONS = [

@@ -32,16 +32,18 @@ usage() {
 Usage: $(basename "$0") <command> <name> [profile] [region]
 
 Commands:
-    pipeline <name>             Watch CodePipeline execution status
-    build <name>                Watch CodeBuild project status
-    logs <name>                 Stream CodeBuild logs in real-time
-    retry-build <project> <id>  Retry a failed CodeBuild job
-    retry-pipeline <name>       Retry a pipeline execution
-    list-pipelines              List all pipelines in the region
-    list-builds                 List all build projects in the region
+    pipeline <name>                Watch CodePipeline execution status
+    build <name>                   Watch CodeBuild project status
+    logs <name>                    Stream CodeBuild logs in real-time
+    view-build-logs <build-id>     View logs for a completed build
+    retry-build <project> <id>     Retry a failed CodeBuild job
+    retry-pipeline <name>          Retry a pipeline execution
+    list-pipelines                 List all pipelines in the region
+    list-builds                    List all build projects in the region
 
 Arguments:
     name                Pipeline or build project name
+    build-id            Build ID to view logs for
     project             CodeBuild project name
     id                  Build ID to retry
     profile             AWS CLI profile (default: \$AWS_PROFILE or 'default')
@@ -51,6 +53,7 @@ Examples:
     $(basename "$0") pipeline my-pipeline grove-cicd-admin us-east-1
     $(basename "$0") build my-build-project
     $(basename "$0") logs my-build-project grove-cicd-admin us-east-1
+    $(basename "$0") view-build-logs my-project:abc123 grove-cicd-admin us-east-1
     $(basename "$0") retry-build my-project my-project:abc123 grove-cicd-admin us-east-1
 
 Environment:
@@ -207,6 +210,104 @@ stream_logs() {
         --profile "$profile" \
         --follow \
         --format short
+}
+
+# View logs for a completed build
+view_build_logs() {
+    local build_id="$1"
+    local profile="$2"
+    local region="$3"
+
+    echo -e "${BLUE}Fetching logs for build: ${YELLOW}$build_id${NC}"
+    echo -e "${BLUE}Profile: ${YELLOW}$profile${NC}, Region: ${YELLOW}$region${NC}\n"
+
+    # Get build details
+    local build_details
+    build_details=$(aws codebuild batch-get-builds \
+        --ids "$build_id" \
+        --region "$region" \
+        --profile "$profile" \
+        --output json 2>&1) || {
+        echo -e "${RED}Error: Failed to get build details${NC}"
+        echo "$build_details"
+        exit 1
+    }
+
+    # Extract build information
+    local build_status
+    build_status=$(echo "$build_details" | jq -r '.builds[0].buildStatus // "UNKNOWN"')
+
+    local start_time
+    start_time=$(echo "$build_details" | jq -r '.builds[0].startTime // "N/A"')
+
+    local end_time
+    end_time=$(echo "$build_details" | jq -r '.builds[0].endTime // "N/A"')
+
+    local source_version
+    source_version=$(echo "$build_details" | jq -r '.builds[0].sourceVersion // "N/A"')
+
+    local project_name
+    project_name=$(echo "$build_details" | jq -r '.builds[0].projectName // "N/A"')
+
+    local log_group
+    log_group=$(echo "$build_details" | jq -r '.builds[0].logs.groupName // ""')
+
+    local log_stream
+    log_stream=$(echo "$build_details" | jq -r '.builds[0].logs.streamName // ""')
+
+    # Display build summary
+    echo -e "${CYAN}=== Build Summary ===${NC}"
+    echo -e "Project:        ${YELLOW}$project_name${NC}"
+    echo -e "Build ID:       ${YELLOW}$build_id${NC}"
+
+    if [[ "$build_status" == "SUCCEEDED" ]]; then
+        echo -e "Status:         ${GREEN}$build_status${NC}"
+    elif [[ "$build_status" == "FAILED" ]]; then
+        echo -e "Status:         ${RED}$build_status${NC}"
+    else
+        echo -e "Status:         ${YELLOW}$build_status${NC}"
+    fi
+
+    echo -e "Source Version: ${CYAN}$source_version${NC}"
+    echo -e "Start Time:     $start_time"
+    echo -e "End Time:       $end_time"
+    echo -e ""
+
+    # Check if logs are available
+    if [[ -z "$log_group" ]] || [[ -z "$log_stream" ]]; then
+        echo -e "${YELLOW}No CloudWatch logs available for this build${NC}"
+        echo -e "${YELLOW}The build may have failed during initialization or logs may have been deleted${NC}"
+        exit 0
+    fi
+
+    echo -e "${CYAN}=== Build Logs ===${NC}\n"
+
+    # Fetch and display logs
+    aws logs get-log-events \
+        --log-group-name "$log_group" \
+        --log-stream-name "$log_stream" \
+        --region "$region" \
+        --profile "$profile" \
+        --output text \
+        --query 'events[*].[timestamp,message]' | \
+    while IFS=$'\t' read -r timestamp message; do
+        # Convert timestamp from milliseconds to readable format
+        local datetime
+        datetime=$(date -r $((timestamp / 1000)) '+%Y-%m-%d %H:%M:%S' 2>/dev/null || echo "")
+
+        # Color code error messages
+        if echo "$message" | grep -qi "error\|failed\|failure"; then
+            echo -e "${RED}[$datetime] $message${NC}"
+        elif echo "$message" | grep -qi "warning\|warn"; then
+            echo -e "${YELLOW}[$datetime] $message${NC}"
+        elif echo "$message" | grep -qi "success\|succeeded\|complete"; then
+            echo -e "${GREEN}[$datetime] $message${NC}"
+        else
+            echo "[$datetime] $message"
+        fi
+    done
+
+    echo -e "\n${CYAN}=== End of Logs ===${NC}"
 }
 
 # List all pipelines
@@ -374,6 +475,16 @@ main() {
             local profile="${2:-$DEFAULT_PROFILE}"
             local region="${3:-$DEFAULT_REGION}"
             stream_logs "$project_name" "$profile" "$region"
+            ;;
+        view-build-logs)
+            if [[ $# -lt 1 ]]; then
+                echo -e "${RED}Error: Build ID required${NC}"
+                usage
+            fi
+            local build_id="$1"
+            local profile="${2:-$DEFAULT_PROFILE}"
+            local region="${3:-$DEFAULT_REGION}"
+            view_build_logs "$build_id" "$profile" "$region"
             ;;
         retry-build)
             if [[ $# -lt 2 ]]; then

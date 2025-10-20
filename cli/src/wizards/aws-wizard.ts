@@ -19,6 +19,7 @@ import {
   listRDSInstances,
   listEC2Instances,
   listFailedBuilds,
+  listCompletedBuilds,
   AWS_REGIONS,
 } from '../lib';
 
@@ -185,6 +186,10 @@ async function codeBuildSubmenu(profile: string, region: string): Promise<void> 
           value: 'logs',
         },
         {
+          name: '🔍 View completed build logs',
+          value: 'view-build-logs',
+        },
+        {
           name: '🔄 Retry failed build',
           value: 'retry-build',
         },
@@ -296,7 +301,7 @@ async function executeAWSOperation(
   let clusterName: string | undefined;
   let buildId: string | undefined;
 
-  if (['pipeline', 'build', 'logs', 'retry-build', 'retry-pipeline'].includes(operation)) {
+  if (['pipeline', 'build', 'logs', 'retry-build', 'retry-pipeline', 'view-build-logs'].includes(operation)) {
     const spinner = ora('Fetching available resources...').start();
 
     try {
@@ -305,7 +310,7 @@ async function executeAWSOperation(
       if (operation === 'pipeline' || operation === 'retry-pipeline') {
         resources = await listPipelines(profile, region);
       } else {
-        // build or logs both use CodeBuild projects
+        // build, logs, retry-build, or view-build-logs all use CodeBuild projects
         resources = await listBuildProjects(profile, region);
       }
 
@@ -327,7 +332,9 @@ async function executeAWSOperation(
             ? 'CodePipeline (to retry)'
             : operation === 'build'
               ? 'CodeBuild project'
-              : 'CodeBuild project (for logs)';
+              : operation === 'view-build-logs'
+                ? 'CodeBuild project (to view logs)'
+                : 'CodeBuild project (for logs)';
 
       const { name } = await inquirer.prompt([
         {
@@ -369,6 +376,56 @@ async function executeAWSOperation(
           buildId = build;
         } catch (buildError) {
           buildsSpinner.fail('Failed to fetch failed builds');
+          console.error(chalk.red(buildError instanceof Error ? buildError.message : String(buildError)));
+          return;
+        }
+      }
+
+      // For view-build-logs, prompt for status filter and select build
+      if (operation === 'view-build-logs') {
+        // Prompt for status filter
+        const { statusFilter } = await inquirer.prompt([
+          {
+            type: 'list',
+            name: 'statusFilter',
+            message: 'Filter builds by status:',
+            choices: [
+              { name: 'All completed builds', value: 'all' },
+              { name: 'Failed builds only', value: 'FAILED' },
+              { name: 'Succeeded builds only', value: 'SUCCEEDED' },
+              { name: 'Stopped builds only', value: 'STOPPED' },
+            ],
+          },
+        ]);
+
+        const buildsSpinner = ora('Fetching builds...').start();
+
+        try {
+          const filter = statusFilter === 'all' ? undefined : statusFilter;
+          const builds = await listCompletedBuilds(name, profile, region, filter);
+          buildsSpinner.stop();
+
+          if (builds.length === 0) {
+            const filterText = filter ? `${filter.toLowerCase()} ` : '';
+            console.log(chalk.yellow(`\nNo ${filterText}builds found for project ${name}\n`));
+            return;
+          }
+
+          const { build } = await inquirer.prompt([
+            {
+              type: 'list',
+              name: 'build',
+              message: 'Select build to view logs:',
+              choices: builds.map((b) => ({
+                name: `[${b.status}] ${b.id.split(':').pop()} - ${b.sourceVersion} - ${new Date(b.startTime).toLocaleString()}`,
+                value: b.id,
+              })),
+            },
+          ]);
+
+          buildId = build;
+        } catch (buildError) {
+          buildsSpinner.fail('Failed to fetch builds');
           console.error(chalk.red(buildError instanceof Error ? buildError.message : String(buildError)));
           return;
         }
@@ -548,6 +605,9 @@ async function executeAWSOperation(
     if (operation === 'retry-build') {
       // For retry-build, pass project name and build ID
       args = [operation, resourceName!, buildId!];
+    } else if (operation === 'view-build-logs') {
+      // For view-build-logs, pass build ID
+      args = [operation, buildId!];
     } else {
       args = [operation];
       if (resourceName) {
