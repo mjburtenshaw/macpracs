@@ -6,6 +6,7 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import path from 'path';
 import ora from 'ora';
+import { execSync } from 'child_process';
 import {
   execScript,
   createLogger,
@@ -20,7 +21,6 @@ import {
   listFailedBuilds,
   AWS_REGIONS,
 } from '../lib';
-import type { BuildInfo } from '../lib';
 
 const PIPELINE_SCRIPT_PATH = path.join(__dirname, '../../../scripts/aws-pipeline-watch.sh');
 const ECS_SCRIPT_PATH = path.join(__dirname, '../../../scripts/aws-ecs-tasks.sh');
@@ -36,6 +36,10 @@ export async function awsWizard(): Promise<void> {
       name: 'service',
       message: 'Which AWS service would you like to work with?',
       choices: [
+        {
+          name: '🔑 SSO Login',
+          value: 'sso',
+        },
         {
           name: '🚀 CodePipeline',
           value: 'codepipeline',
@@ -62,6 +66,12 @@ export async function awsWizard(): Promise<void> {
   ]);
 
   if (service === 'back') {
+    return;
+  }
+
+  // Handle SSO login separately (doesn't need region or credential check)
+  if (service === 'sso') {
+    await ssoLoginSubmenu();
     return;
   }
 
@@ -568,6 +578,38 @@ async function executeAWSOperation(
     logger.success('\nOperation completed successfully');
   } catch (error) {
     logger.error('Failed to execute AWS operation', error as Error);
+    process.exit(1);
+  }
+}
+
+async function ssoLoginSubmenu(): Promise<void> {
+  console.log(chalk.blue('\n🔑 AWS SSO Login\n'));
+
+  // Get available profiles
+  const profiles = getAWSProfiles();
+  const { profile } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'profile',
+      message: 'Select AWS profile for SSO login:',
+      choices: profiles.map((p) => ({
+        name: p.isDefault ? `${p.name} (default)` : p.name,
+        value: p.name,
+      })),
+      default: process.env.AWS_PROFILE || 'default',
+    },
+  ]);
+
+  const logger = createLogger(false, false);
+  logger.info(`Logging in to AWS SSO with profile: ${profile}`);
+
+  try {
+    // Execute aws sso login with inherited stdio for browser interaction
+    execSync(`aws sso login --profile ${profile}`, { stdio: 'inherit' });
+
+    logger.success('\nSSO login completed successfully');
+  } catch (error) {
+    logger.error('SSO login failed', error as Error);
     process.exit(1);
   }
 }
