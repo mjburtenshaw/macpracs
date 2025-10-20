@@ -3,6 +3,6 @@
  */
 
 export * from './aws';
-// export * from './git';
+export * from './github';
 // export * from './timestamp';
 // export * from './procedures';

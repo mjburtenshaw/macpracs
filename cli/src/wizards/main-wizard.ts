@@ -7,6 +7,7 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { awsWizard } from './aws-wizard';
 import { mqWizard } from './mq-wizard';
+import { githubWizard } from './github-wizard';
 
 export interface WizardChoice {
   name: string;
@@ -32,8 +33,8 @@ export async function mainWizard(): Promise<void> {
           value: 'mq',
         },
         {
-          name: '🌿 Git',
-          value: 'git',
+          name: '🐙 GitHub',
+          value: 'github',
         },
         {
           name: '⏰ Timestamps',
@@ -65,9 +66,8 @@ export async function mainWizard(): Promise<void> {
     case 'mq':
       await mqWizard();
       break;
-    case 'git':
-      console.log(chalk.yellow('\n⚠️  Git wizard coming soon!\n'));
-      // await gitWizard();
+    case 'github':
+      await githubWizard();
       break;
     case 'timestamp':
       console.log(chalk.yellow('\n⚠️  Timestamp wizard coming soon!\n'));

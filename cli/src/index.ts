@@ -21,7 +21,7 @@ import { mainWizard } from './wizards';
 // Import command modules
 import { registerAWSCommands } from './commands/aws';
 import { registerMQCommands } from './commands/mq';
-// import { registerGitCommands } from './commands/git';
+import { registerGitHubCommands } from './commands/github';
 // import { registerTimestampCommands } from './commands/timestamp';
 // import { registerProcedureCommands } from './commands/procedures';
 
@@ -45,7 +45,7 @@ program
 // Register subcommands
 registerAWSCommands(program);
 registerMQCommands(program);
-// registerGitCommands(program);
+registerGitHubCommands(program);
 // registerTimestampCommands(program);
 // registerProcedureCommands(program);
 
@@ -54,7 +54,7 @@ program.action(async () => {
   // Check if any subcommand was run
   const args = process.argv.slice(2);
   const isSubcommand = args.some((arg) =>
-    ['aws', 'mq', 'git', 'timestamp', 'startup', 'shutdown', 'help', '--help', '-h'].includes(arg)
+    ['aws', 'mq', 'github', 'timestamp', 'startup', 'shutdown', 'help', '--help', '-h'].includes(arg)
   );
 
   if (!isSubcommand && args.length === 0) {
