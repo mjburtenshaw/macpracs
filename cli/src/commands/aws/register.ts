@@ -1,21 +1,23 @@
 /**
  * AWS command registration
- * Creates the main aws command and registers all sub-commands
+ * Creates the main aws command and registers service-level sub-commands
  */
 
 import { Command } from 'commander';
-import { registerPipelineWatchCommands } from './pipeline-watch';
-import { registerECSTasksCommands } from './ecs-tasks';
-import { registerSSOLoginCommand } from './sso-login';
+import { registerCodeBuildCommands } from './codebuild';
+import { registerPipelineCommands } from './pipeline';
+import { registerECSCommands } from './ecs';
+import { registerSSOCommands } from './sso';
 
 export function registerAWSCommands(program: Command): void {
-  // Create the main aws command once
+  // Create the main aws command
   const aws = program
     .command('aws')
-    .description('AWS operations (pipelines, builds, logs, ECS, SSO)');
+    .description('AWS operations (CodeBuild, CodePipeline, ECS, SSO)');
 
-  // Register all AWS sub-commands on the same aws command object
-  registerPipelineWatchCommands(aws);
-  registerECSTasksCommands(aws);
-  registerSSOLoginCommand(aws);
+  // Register service-level commands (hierarchical structure)
+  registerCodeBuildCommands(aws);
+  registerPipelineCommands(aws);
+  registerECSCommands(aws);
+  registerSSOCommands(aws);
 }

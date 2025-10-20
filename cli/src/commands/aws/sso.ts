@@ -1,6 +1,6 @@
 /**
- * AWS SSO login command
- * Provides interactive profile selection for AWS SSO authentication
+ * AWS SSO commands
+ * Hierarchical structure: macpracs aws sso <operation>
  */
 
 import { Command } from 'commander';
@@ -8,14 +8,22 @@ import inquirer from 'inquirer';
 import { execSync } from 'child_process';
 import { createLogger, getAWSProfiles, CommandOptions } from '../../lib';
 
-export function registerSSOLoginCommand(aws: Command): void {
-  // macpracs aws sso-login [options]
-  aws
-    .command('sso-login')
+export function registerSSOCommands(aws: Command): void {
+  const sso = aws
+    .command('sso')
+    .description('SSO operations (login)');
+
+  registerLoginCommand(sso);
+}
+
+// macpracs aws sso login [options]
+function registerLoginCommand(sso: Command): void {
+  sso
+    .command('login')
     .description('Login to AWS SSO with profile selection')
     .option('-p, --profile <profile>', 'AWS CLI profile to use for SSO login')
     .action(async (options: any) => {
-      const globalOpts = aws.parent?.opts() as CommandOptions;
+      const globalOpts = sso.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
       let profile = options.profile;

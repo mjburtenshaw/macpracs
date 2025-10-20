@@ -218,8 +218,17 @@ view_build_logs() {
     local profile="$2"
     local region="$3"
 
-    echo -e "${BLUE}Fetching logs for build: ${YELLOW}$build_id${NC}"
-    echo -e "${BLUE}Profile: ${YELLOW}$profile${NC}, Region: ${YELLOW}$region${NC}\n"
+    # Check if output is being piped (not a TTY)
+    local IS_PIPED=false
+    if [ ! -t 1 ]; then
+        IS_PIPED=true
+    fi
+
+    # Only show decorative output if not piped
+    if [ "$IS_PIPED" = false ]; then
+        echo -e "${BLUE}Fetching logs for build: ${YELLOW}$build_id${NC}"
+        echo -e "${BLUE}Profile: ${YELLOW}$profile${NC}, Region: ${YELLOW}$region${NC}\n"
+    fi
 
     # Get build details
     local build_details
@@ -255,32 +264,39 @@ view_build_logs() {
     local log_stream
     log_stream=$(echo "$build_details" | jq -r '.builds[0].logs.streamName // ""')
 
-    # Display build summary
-    echo -e "${CYAN}=== Build Summary ===${NC}"
-    echo -e "Project:        ${YELLOW}$project_name${NC}"
-    echo -e "Build ID:       ${YELLOW}$build_id${NC}"
+    # Display build summary only if not piped
+    if [ "$IS_PIPED" = false ]; then
+        echo -e "${CYAN}=== Build Summary ===${NC}"
+        echo -e "Project:        ${YELLOW}$project_name${NC}"
+        echo -e "Build ID:       ${YELLOW}$build_id${NC}"
 
-    if [[ "$build_status" == "SUCCEEDED" ]]; then
-        echo -e "Status:         ${GREEN}$build_status${NC}"
-    elif [[ "$build_status" == "FAILED" ]]; then
-        echo -e "Status:         ${RED}$build_status${NC}"
-    else
-        echo -e "Status:         ${YELLOW}$build_status${NC}"
+        if [[ "$build_status" == "SUCCEEDED" ]]; then
+            echo -e "Status:         ${GREEN}$build_status${NC}"
+        elif [[ "$build_status" == "FAILED" ]]; then
+            echo -e "Status:         ${RED}$build_status${NC}"
+        else
+            echo -e "Status:         ${YELLOW}$build_status${NC}"
+        fi
+
+        echo -e "Source Version: ${CYAN}$source_version${NC}"
+        echo -e "Start Time:     $start_time"
+        echo -e "End Time:       $end_time"
+        echo -e ""
     fi
-
-    echo -e "Source Version: ${CYAN}$source_version${NC}"
-    echo -e "Start Time:     $start_time"
-    echo -e "End Time:       $end_time"
-    echo -e ""
 
     # Check if logs are available
     if [[ -z "$log_group" ]] || [[ -z "$log_stream" ]]; then
-        echo -e "${YELLOW}No CloudWatch logs available for this build${NC}"
-        echo -e "${YELLOW}The build may have failed during initialization or logs may have been deleted${NC}"
+        if [ "$IS_PIPED" = false ]; then
+            echo -e "${YELLOW}No CloudWatch logs available for this build${NC}"
+            echo -e "${YELLOW}The build may have failed during initialization or logs may have been deleted${NC}"
+        fi
         exit 0
     fi
 
-    echo -e "${CYAN}=== Build Logs ===${NC}\n"
+    # Show logs header only if not piped
+    if [ "$IS_PIPED" = false ]; then
+        echo -e "${CYAN}=== Build Logs ===${NC}\n"
+    fi
 
     # Fetch and display logs
     aws logs get-log-events \
@@ -295,19 +311,27 @@ view_build_logs() {
         local datetime
         datetime=$(date -r $((timestamp / 1000)) '+%Y-%m-%d %H:%M:%S' 2>/dev/null || echo "")
 
-        # Color code error messages
-        if echo "$message" | grep -qi "error\|failed\|failure"; then
-            echo -e "${RED}[$datetime] $message${NC}"
-        elif echo "$message" | grep -qi "warning\|warn"; then
-            echo -e "${YELLOW}[$datetime] $message${NC}"
-        elif echo "$message" | grep -qi "success\|succeeded\|complete"; then
-            echo -e "${GREEN}[$datetime] $message${NC}"
+        if [ "$IS_PIPED" = true ]; then
+            # Plain output when piped - no colors, no timestamp decoration
+            echo "$message"
         else
-            echo "[$datetime] $message"
+            # Color code error messages when not piped
+            if echo "$message" | grep -qi "error\|failed\|failure"; then
+                echo -e "${RED}[$datetime] $message${NC}"
+            elif echo "$message" | grep -qi "warning\|warn"; then
+                echo -e "${YELLOW}[$datetime] $message${NC}"
+            elif echo "$message" | grep -qi "success\|succeeded\|complete"; then
+                echo -e "${GREEN}[$datetime] $message${NC}"
+            else
+                echo "[$datetime] $message"
+            fi
         fi
     done
 
-    echo -e "\n${CYAN}=== End of Logs ===${NC}"
+    # Show end of logs message only if not piped
+    if [ "$IS_PIPED" = false ]; then
+        echo -e "\n${CYAN}=== End of Logs ===${NC}"
+    fi
 }
 
 # List all pipelines

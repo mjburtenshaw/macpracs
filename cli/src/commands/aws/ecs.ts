@@ -1,6 +1,6 @@
 /**
- * AWS ECS tasks commands
- * Wraps the aws-ecs-tasks.sh script for monitoring ECS task status
+ * AWS ECS commands
+ * Hierarchical structure: macpracs aws ecs <operation>
  */
 
 import { Command } from 'commander';
@@ -9,15 +9,26 @@ import { execScript, createLogger, CommandOptions } from '../../lib';
 
 const SCRIPT_PATH = path.join(__dirname, '../../../../scripts/aws-ecs-tasks.sh');
 
-export function registerECSTasksCommands(aws: Command): void {
-  // macpracs aws ecs-tasks <cluster> <service> [options]
-  aws
-    .command('ecs-tasks <cluster> <service>')
+export function registerECSCommands(aws: Command): void {
+  const ecs = aws
+    .command('ecs')
+    .description('ECS operations (tasks, logs, list-clusters, list-services)');
+
+  registerTasksCommand(ecs);
+  registerLogsCommand(ecs);
+  registerListClustersCommand(ecs);
+  registerListServicesCommand(ecs);
+}
+
+// macpracs aws ecs tasks <cluster> <service> [options]
+function registerTasksCommand(ecs: Command): void {
+  ecs
+    .command('tasks <cluster> <service>')
     .description('Watch ECS task status with timestamps')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
     .action(async (cluster: string, service: string, options: any) => {
-      const globalOpts = aws.parent?.opts() as CommandOptions;
+      const globalOpts = ecs.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
       const args = ['tasks', cluster, service];
@@ -28,7 +39,7 @@ export function registerECSTasksCommands(aws: Command): void {
 
       try {
         const result = await execScript(SCRIPT_PATH, args, {
-          captureOutput: false, // Let bash script handle its own output
+          captureOutput: false,
         });
 
         if (result.exitCode !== 0) {
@@ -42,15 +53,17 @@ export function registerECSTasksCommands(aws: Command): void {
         process.exit(1);
       }
     });
+}
 
-  // macpracs aws ecs-logs <cluster> <service> [options]
-  aws
-    .command('ecs-logs <cluster> <service>')
+// macpracs aws ecs logs <cluster> <service> [options]
+function registerLogsCommand(ecs: Command): void {
+  ecs
+    .command('logs <cluster> <service>')
     .description('Tail CloudWatch logs for ECS service')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
     .action(async (cluster: string, service: string, options: any) => {
-      const globalOpts = aws.parent?.opts() as CommandOptions;
+      const globalOpts = ecs.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
       const args = ['logs', cluster, service];
@@ -61,7 +74,7 @@ export function registerECSTasksCommands(aws: Command): void {
 
       try {
         const result = await execScript(SCRIPT_PATH, args, {
-          captureOutput: false, // Let bash script handle its own output
+          captureOutput: false,
         });
 
         if (result.exitCode !== 0) {
@@ -75,15 +88,17 @@ export function registerECSTasksCommands(aws: Command): void {
         process.exit(1);
       }
     });
+}
 
-  // macpracs aws ecs-list-clusters [options]
-  aws
-    .command('ecs-list-clusters')
+// macpracs aws ecs list-clusters [options]
+function registerListClustersCommand(ecs: Command): void {
+  ecs
+    .command('list-clusters')
     .description('List all ECS clusters in the region')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
     .action(async (options: any) => {
-      const globalOpts = aws.parent?.opts() as CommandOptions;
+      const globalOpts = ecs.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
       const args = ['list-clusters'];
@@ -108,15 +123,17 @@ export function registerECSTasksCommands(aws: Command): void {
         process.exit(1);
       }
     });
+}
 
-  // macpracs aws ecs-list-services <cluster> [options]
-  aws
-    .command('ecs-list-services <cluster>')
+// macpracs aws ecs list-services <cluster> [options]
+function registerListServicesCommand(ecs: Command): void {
+  ecs
+    .command('list-services <cluster>')
     .description('List all services in an ECS cluster')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
     .action(async (cluster: string, options: any) => {
-      const globalOpts = aws.parent?.opts() as CommandOptions;
+      const globalOpts = ecs.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
       const args = ['list-services', cluster];
