@@ -411,6 +411,78 @@ export async function listCompletedBuilds(
   }
 }
 
+export interface SourceRevision {
+  revisionId: string;
+  revisionSummary?: string;
+  revisionUrl?: string;
+}
+
+export interface PipelineActionExecution {
+  actionExecutionId?: string;
+  status?: string;
+  summary?: string;
+  lastStatusChange?: string;
+  token?: string;
+  lastUpdatedBy?: string;
+  externalExecutionId?: string;
+  externalExecutionUrl?: string;
+  percentComplete?: number;
+  errorDetails?: {
+    code?: string;
+    message?: string;
+  };
+}
+
+export interface PipelineStageExecution {
+  pipelineExecutionId: string;
+  stageName: string;
+  status: string;
+  actionStates?: Array<{
+    actionName: string;
+    currentRevision?: SourceRevision;
+    latestExecution?: PipelineActionExecution;
+    entityUrl?: string;
+  }>;
+}
+
+export interface PipelineExecution {
+  pipelineExecutionId: string;
+  pipelineName: string;
+  pipelineVersion: number;
+  status: string;
+  statusSummary?: string;
+  artifactRevisions?: Array<{
+    name: string;
+    revisionId: string;
+    revisionChangeIdentifier?: string;
+    revisionSummary?: string;
+    created?: string;
+    revisionUrl?: string;
+  }>;
+  trigger?: {
+    triggerType: string;
+    triggerDetail?: string;
+  };
+  stageStates?: PipelineStageExecution[];
+}
+
+export interface PipelineExecutionSummary {
+  pipelineExecutionId: string;
+  status: string;
+  startTime?: string;
+  lastUpdateTime?: string;
+  sourceRevisions?: Array<{
+    actionName: string;
+    revisionId: string;
+    revisionSummary?: string;
+    revisionUrl?: string;
+  }>;
+  trigger?: {
+    triggerType: string;
+    triggerDetail?: string;
+  };
+}
+
 /**
  * Get detailed information about a specific build
  */
@@ -480,6 +552,105 @@ export async function getLatestBuild(
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to get latest build: ${stderr}`);
+  }
+}
+
+/**
+ * Get detailed information about a pipeline execution
+ */
+export async function getPipelineExecution(
+  pipelineName: string,
+  executionId: string,
+  profile: string,
+  region: string
+): Promise<PipelineExecution> {
+  try {
+    const cmd = `aws codepipeline get-pipeline-execution --pipeline-name ${pipelineName} --pipeline-execution-id ${executionId} --region ${region} --profile ${profile} --output json`;
+    const output = execSync(cmd, { encoding: 'utf-8' });
+    const result = JSON.parse(output);
+
+    if (!result.pipelineExecution) {
+      throw new Error(`No execution found with ID: ${executionId}`);
+    }
+
+    const execution = result.pipelineExecution;
+
+    // Also get pipeline state to include stage and action details
+    const stateCmd = `aws codepipeline get-pipeline-state --name ${pipelineName} --region ${region} --profile ${profile} --output json`;
+    const stateOutput = execSync(stateCmd, { encoding: 'utf-8' });
+    const stateResult = JSON.parse(stateOutput);
+
+    return {
+      pipelineExecutionId: execution.pipelineExecutionId,
+      pipelineName: execution.pipelineName || pipelineName,
+      pipelineVersion: execution.pipelineVersion || 0,
+      status: execution.status || 'UNKNOWN',
+      statusSummary: execution.statusSummary,
+      artifactRevisions: execution.artifactRevisions,
+      trigger: execution.trigger,
+      stageStates: stateResult.stageStates,
+    };
+  } catch (error: any) {
+    const stderr = error.stderr?.toString() || error.message;
+    throw new Error(`Failed to get pipeline execution: ${stderr}`);
+  }
+}
+
+/**
+ * List recent pipeline executions
+ */
+export async function listPipelineExecutions(
+  pipelineName: string,
+  profile: string,
+  region: string,
+  maxResults: number = 20
+): Promise<PipelineExecutionSummary[]> {
+  try {
+    const cmd = `aws codepipeline list-pipeline-executions --pipeline-name ${pipelineName} --region ${region} --profile ${profile} --max-items ${maxResults} --output json`;
+    const output = execSync(cmd, { encoding: 'utf-8' });
+    const result = JSON.parse(output);
+
+    const summaries: PipelineExecutionSummary[] = [];
+
+    if (result.pipelineExecutionSummaries) {
+      for (const summary of result.pipelineExecutionSummaries) {
+        summaries.push({
+          pipelineExecutionId: summary.pipelineExecutionId,
+          status: summary.status || 'UNKNOWN',
+          startTime: summary.startTime,
+          lastUpdateTime: summary.lastUpdateTime,
+          sourceRevisions: summary.sourceRevisions,
+          trigger: summary.trigger,
+        });
+      }
+    }
+
+    return summaries;
+  } catch (error: any) {
+    const stderr = error.stderr?.toString() || error.message;
+    throw new Error(`Failed to list pipeline executions: ${stderr}`);
+  }
+}
+
+/**
+ * Get the latest pipeline execution
+ */
+export async function getLatestPipelineExecution(
+  pipelineName: string,
+  profile: string,
+  region: string
+): Promise<string> {
+  try {
+    const executions = await listPipelineExecutions(pipelineName, profile, region, 1);
+
+    if (executions.length === 0) {
+      throw new Error(`No executions found for pipeline: ${pipelineName}`);
+    }
+
+    return executions[0].pipelineExecutionId;
+  } catch (error: any) {
+    const stderr = error.message || String(error);
+    throw new Error(`Failed to get latest pipeline execution: ${stderr}`);
   }
 }
 

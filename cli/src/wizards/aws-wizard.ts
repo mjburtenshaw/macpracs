@@ -145,6 +145,10 @@ async function codePipelineSubmenu(profile: string, region: string): Promise<voi
           value: 'pipeline',
         },
         {
+          name: '📋 Inspect pipeline execution',
+          value: 'describe-pipeline',
+        },
+        {
           name: '🔄 Retry pipeline execution',
           value: 'retry-pipeline',
         },
@@ -313,6 +317,25 @@ async function executeAWSOperation(
       return;
     } catch (error) {
       console.error(chalk.red('\nDescribe operation failed'));
+      if (error instanceof Error) {
+        console.error(chalk.red(error.message));
+      }
+      process.exit(1);
+    }
+  }
+
+  // Special case: 'describe-pipeline' operation uses its own built-in wizard
+  if (operation === 'describe-pipeline') {
+    console.log(chalk.blue('\nLaunching pipeline describe wizard...\n'));
+
+    try {
+      // Invoke the describe command with profile and region pre-filled
+      execSync(`macpracs aws pipeline describe --profile ${profile} --region ${region}`, {
+        stdio: 'inherit',
+      });
+      return;
+    } catch (error) {
+      console.error(chalk.red('\nPipeline describe operation failed'));
       if (error instanceof Error) {
         console.error(chalk.red(error.message));
       }
