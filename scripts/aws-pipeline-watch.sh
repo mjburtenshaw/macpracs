@@ -150,7 +150,13 @@ watch_pipeline() {
             {
                 stageName: .stageName,
                 status: (.latestExecution.status // "NOT_STARTED"),
-                lastStatusChange: (.latestExecution.lastStatusChange // ""),
+                # Get timestamp from the most recent action in the stage
+                lastStatusChange: (
+                    [.actionStates[]?.latestExecution?.lastStatusChange // empty] |
+                    sort |
+                    reverse |
+                    .[0] // ""
+                ),
                 actions: [.actionStates[]? | select(.latestExecution.status == "InProgress") | .actionName]
             } |
             "\(.stageName)\t\(.status)\t\(.lastStatusChange)\t\(.actions | join(", "))"
