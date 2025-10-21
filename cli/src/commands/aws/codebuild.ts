@@ -17,6 +17,9 @@ import {
   getAWSProfiles,
   listBuildProjects,
   listCompletedBuilds,
+  getBuildDetails,
+  getLatestBuild,
+  BuildDetails,
   AWS_REGIONS,
 } from '../../lib';
 
@@ -25,13 +28,14 @@ const SCRIPT_PATH = path.join(__dirname, '../../../../scripts/aws-pipeline-watch
 export function registerCodeBuildCommands(aws: Command): void {
   const codebuild = aws
     .command('codebuild')
-    .description('CodeBuild operations (logs, watch, list, retry)');
+    .description('CodeBuild operations (logs, watch, list, retry, describe)');
 
   registerLogsCommand(codebuild);
   registerWatchCommand(codebuild);
   registerStreamCommand(codebuild);
   registerListCommand(codebuild);
   registerRetryCommand(codebuild);
+  registerDescribeCommand(codebuild);
 }
 
 // macpracs aws codebuild logs [options]
@@ -207,6 +211,52 @@ function registerRetryCommand(codebuild: Command): void {
     });
 }
 
+// macpracs aws codebuild describe [options]
+function registerDescribeCommand(codebuild: Command): void {
+  codebuild
+    .command('describe')
+    .description('Inspect build execution details (commit, status, phases, etc.)')
+    .option('--build-id <id>', 'Build ID to inspect (specific ID, "latest", or "unknown" for wizard)')
+    .option('--project <name>', 'CodeBuild project name')
+    .option('--detail <level>', 'Detail level: summary, detailed, full', 'summary')
+    .option('--format <format>', 'Output format: json, md', 'json')
+    .option('-p, --profile <profile>', 'AWS CLI profile')
+    .option('-r, --region <region>', 'AWS region', 'us-east-1')
+    .action(async (options: any) => {
+      const globalOpts = codebuild.parent?.parent?.opts() as CommandOptions;
+      const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
+
+      try {
+        const config = await gatherDescribeConfiguration(options, logger);
+        const buildDetails = await getBuildDetails(config.buildId, config.profile, config.region);
+
+        const output = formatBuildOutput(buildDetails, config.detail, config.format);
+        console.log(output);
+
+        // Print tip with fully qualified command if in wizard mode
+        if (config.wasWizard && process.stdout.isTTY) {
+          const detailFlag = config.detail !== 'summary' ? ` --detail ${config.detail}` : '';
+          const formatFlag = config.format !== 'json' ? ` --format ${config.format}` : '';
+          console.log(
+            chalk.gray(
+              `\n💡 Tip: macpracs aws codebuild describe --build-id ${config.buildId} --profile ${config.profile} --region ${config.region}${detailFlag}${formatFlag}\n`
+            )
+          );
+        }
+      } catch (error) {
+        logger.error('Failed to describe build');
+        if (error instanceof Error) {
+          console.error(chalk.red(`\nError details: ${error.message}`));
+          if (globalOpts?.verbose && error.stack) {
+            console.error(chalk.gray('\nStack trace:'));
+            console.error(chalk.gray(error.stack));
+          }
+        }
+        process.exit(1);
+      }
+    });
+}
+
 // Helper functions for logs command (copied from codebuild-logs.ts)
 
 interface LogsConfig {
@@ -215,6 +265,15 @@ interface LogsConfig {
   region: string;
   grepPattern?: string;
   copyToClipboard: boolean;
+}
+
+interface DescribeConfig {
+  buildId: string;
+  profile: string;
+  region: string;
+  detail: 'summary' | 'detailed' | 'full';
+  format: 'json' | 'md';
+  wasWizard: boolean;
 }
 
 async function gatherLogsConfiguration(options: any, logger: any): Promise<LogsConfig> {
@@ -539,4 +598,460 @@ async function executePipeline(
       }
     }
   });
+}
+
+// Helper functions for describe command
+
+async function gatherDescribeConfiguration(options: any, logger: any): Promise<DescribeConfig> {
+  let buildId = options.buildId;
+  let profile = options.profile;
+  let region = options.region || 'us-east-1';
+  let detail = options.detail || 'summary';
+  let format = options.format || 'json';
+  let wasWizard = false;
+
+  // If build-id is 'latest', we need the project name
+  if (buildId === 'latest') {
+    let projectName = options.project;
+
+    if (!projectName) {
+      wasWizard = true;
+      console.log(chalk.blue('\n🔍 CodeBuild Describe - Latest Build\n'));
+
+      if (!profile) {
+        const profiles = getAWSProfiles();
+        const { selectedProfile } = await inquirer.prompt([
+          {
+            type: 'list',
+            name: 'selectedProfile',
+            message: 'Select AWS profile:',
+            choices: profiles.map((p) => ({
+              name: p.isDefault ? `${p.name} (default)` : p.name,
+              value: p.name,
+            })),
+            default: process.env.AWS_PROFILE || 'default',
+          },
+        ]);
+        profile = selectedProfile;
+      }
+
+      if (!region) {
+        const { selectedRegion } = await inquirer.prompt([
+          {
+            type: 'list',
+            name: 'selectedRegion',
+            message: 'Select AWS region:',
+            choices: AWS_REGIONS,
+            default: 'us-east-1',
+          },
+        ]);
+        region = selectedRegion;
+      }
+
+      const credentialsSpinner = ora('Checking AWS credentials...').start();
+      const credentialsValid = await ensureAWSCredentials(profile);
+      credentialsSpinner.stop();
+
+      if (!credentialsValid) {
+        throw new Error('Unable to proceed without valid credentials');
+      }
+
+      const projectsSpinner = ora('Fetching CodeBuild projects...').start();
+      const projects = await listBuildProjects(profile, region);
+      projectsSpinner.stop();
+
+      if (projects.length === 0) {
+        throw new Error(`No CodeBuild projects found in ${region}`);
+      }
+
+      const { selectedProject } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'selectedProject',
+          message: 'Select CodeBuild project:',
+          choices: projects,
+        },
+      ]);
+      projectName = selectedProject;
+    }
+
+    // Get the latest build ID
+    const spinner = ora('Fetching latest build...').start();
+    buildId = await getLatestBuild(projectName, profile, region);
+    spinner.stop();
+
+    if (wasWizard) {
+      const { selectedDetail } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'selectedDetail',
+          message: 'Select detail level:',
+          choices: [
+            { name: 'Summary (status, commit, times)', value: 'summary' },
+            { name: 'Detailed (+ phases)', value: 'detailed' },
+            { name: 'Full (+ environment, artifacts)', value: 'full' },
+          ],
+          default: 'summary',
+        },
+      ]);
+      detail = selectedDetail;
+
+      const { selectedFormat } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'selectedFormat',
+          message: 'Select output format:',
+          choices: [
+            { name: 'Markdown (human-readable)', value: 'md' },
+            { name: 'JSON (machine-readable)', value: 'json' },
+          ],
+          default: 'md',
+        },
+      ]);
+      format = selectedFormat;
+    }
+
+    return { buildId, profile, region, detail, format, wasWizard };
+  }
+
+  // If build-id is 'unknown' or not provided, launch full wizard
+  if (!buildId || buildId === 'unknown') {
+    wasWizard = true;
+    console.log(chalk.blue('\n🔍 CodeBuild Describe\n'));
+
+    if (!profile) {
+      const profiles = getAWSProfiles();
+      const { selectedProfile } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'selectedProfile',
+          message: 'Select AWS profile:',
+          choices: profiles.map((p) => ({
+            name: p.isDefault ? `${p.name} (default)` : p.name,
+            value: p.name,
+          })),
+          default: process.env.AWS_PROFILE || 'default',
+        },
+      ]);
+      profile = selectedProfile;
+    }
+
+    if (!region) {
+      const { selectedRegion } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'selectedRegion',
+          message: 'Select AWS region:',
+          choices: AWS_REGIONS,
+          default: 'us-east-1',
+        },
+      ]);
+      region = selectedRegion;
+    }
+
+    const credentialsSpinner = ora('Checking AWS credentials...').start();
+    const credentialsValid = await ensureAWSCredentials(profile);
+    credentialsSpinner.stop();
+
+    if (!credentialsValid) {
+      throw new Error('Unable to proceed without valid credentials');
+    }
+
+    let projectName = options.project;
+    if (!projectName) {
+      const projectsSpinner = ora('Fetching CodeBuild projects...').start();
+      const projects = await listBuildProjects(profile, region);
+      projectsSpinner.stop();
+
+      if (projects.length === 0) {
+        throw new Error(`No CodeBuild projects found in ${region}`);
+      }
+
+      const { selectedProject } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'selectedProject',
+          message: 'Select CodeBuild project:',
+          choices: projects,
+        },
+      ]);
+      projectName = selectedProject;
+    }
+
+    const buildsSpinner = ora('Fetching builds...').start();
+    const builds = await listCompletedBuilds(projectName, profile, region);
+    buildsSpinner.stop();
+
+    if (builds.length === 0) {
+      throw new Error(`No builds found for project ${projectName}`);
+    }
+
+    const { selectedBuild } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'selectedBuild',
+        message: 'Select build to describe:',
+        choices: builds.map((b) => ({
+          name: `[${b.status}] ${b.id.split(':').pop()} - ${b.sourceVersion} - ${new Date(b.startTime).toLocaleString()}`,
+          value: b.id,
+        })),
+      },
+    ]);
+    buildId = selectedBuild;
+
+    const { selectedDetail } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'selectedDetail',
+        message: 'Select detail level:',
+        choices: [
+          { name: 'Summary (status, commit, times)', value: 'summary' },
+          { name: 'Detailed (+ phases)', value: 'detailed' },
+          { name: 'Full (+ environment, artifacts)', value: 'full' },
+        ],
+        default: 'summary',
+      },
+    ]);
+    detail = selectedDetail;
+
+    const { selectedFormat } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'selectedFormat',
+        message: 'Select output format:',
+        choices: [
+          { name: 'Markdown (human-readable)', value: 'md' },
+          { name: 'JSON (machine-readable)', value: 'json' },
+        ],
+        default: 'md',
+      },
+    ]);
+    format = selectedFormat;
+
+    return { buildId, profile, region, detail, format, wasWizard };
+  }
+
+  // Specific build ID provided
+  if (!profile) {
+    const profiles = getAWSProfiles();
+    const { selectedProfile } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'selectedProfile',
+        message: 'Select AWS profile:',
+        choices: profiles.map((p) => ({
+          name: p.isDefault ? `${p.name} (default)` : p.name,
+          value: p.name,
+        })),
+        default: process.env.AWS_PROFILE || 'default',
+      },
+    ]);
+    profile = selectedProfile;
+  }
+
+  const spinner = ora('Checking AWS credentials...').start();
+  const credentialsValid = await ensureAWSCredentials(profile);
+  spinner.stop();
+
+  if (!credentialsValid) {
+    throw new Error('Unable to proceed without valid credentials');
+  }
+
+  return { buildId, profile, region, detail, format, wasWizard };
+}
+
+function formatBuildOutput(
+  build: BuildDetails,
+  detail: 'summary' | 'detailed' | 'full',
+  format: 'json' | 'md'
+): string {
+  if (format === 'json') {
+    return formatAsJson(build, detail);
+  } else {
+    return formatAsMarkdown(build, detail);
+  }
+}
+
+function formatAsJson(build: BuildDetails, detail: 'summary' | 'detailed' | 'full'): string {
+  if (detail === 'summary') {
+    const duration = build.endTime
+      ? Math.round((new Date(build.endTime).getTime() - new Date(build.startTime).getTime()) / 1000)
+      : null;
+
+    return JSON.stringify(
+      {
+        id: build.id,
+        projectName: build.projectName,
+        buildNumber: build.buildNumber,
+        buildStatus: build.buildStatus,
+        sourceVersion: build.sourceVersion,
+        resolvedSourceVersion: build.resolvedSourceVersion,
+        initiator: build.initiator,
+        startTime: build.startTime,
+        endTime: build.endTime,
+        durationSeconds: duration,
+      },
+      null,
+      2
+    );
+  } else if (detail === 'detailed') {
+    const duration = build.endTime
+      ? Math.round((new Date(build.endTime).getTime() - new Date(build.startTime).getTime()) / 1000)
+      : null;
+
+    return JSON.stringify(
+      {
+        id: build.id,
+        projectName: build.projectName,
+        buildNumber: build.buildNumber,
+        buildStatus: build.buildStatus,
+        sourceVersion: build.sourceVersion,
+        resolvedSourceVersion: build.resolvedSourceVersion,
+        initiator: build.initiator,
+        startTime: build.startTime,
+        endTime: build.endTime,
+        durationSeconds: duration,
+        currentPhase: build.currentPhase,
+        phases: build.phases,
+      },
+      null,
+      2
+    );
+  } else {
+    // full
+    return JSON.stringify(build, null, 2);
+  }
+}
+
+function formatAsMarkdown(build: BuildDetails, detail: 'summary' | 'detailed' | 'full'): string {
+  let output = '';
+
+  output += `# Build Details\n\n`;
+  output += `## Summary\n\n`;
+  output += `- **Build ID**: ${build.id}\n`;
+  output += `- **Project**: ${build.projectName}\n`;
+  output += `- **Build Number**: ${build.buildNumber}\n`;
+
+  // Color-code status
+  const statusEmoji = build.buildStatus === 'SUCCEEDED' ? '✅' : build.buildStatus === 'FAILED' ? '❌' : '⏳';
+  output += `- **Status**: ${statusEmoji} ${build.buildStatus}\n`;
+
+  output += `- **Source Version**: \`${build.sourceVersion}\`\n`;
+  if (build.resolvedSourceVersion) {
+    output += `- **Resolved Source Version**: \`${build.resolvedSourceVersion}\`\n`;
+  }
+  if (build.initiator) {
+    output += `- **Initiated By**: ${build.initiator}\n`;
+  }
+
+  output += `- **Start Time**: ${new Date(build.startTime).toLocaleString()}\n`;
+  if (build.endTime) {
+    output += `- **End Time**: ${new Date(build.endTime).toLocaleString()}\n`;
+    const duration = Math.round((new Date(build.endTime).getTime() - new Date(build.startTime).getTime()) / 1000);
+    const minutes = Math.floor(duration / 60);
+    const seconds = duration % 60;
+    output += `- **Duration**: ${minutes}m ${seconds}s\n`;
+  }
+
+  if (detail === 'summary') {
+    return output;
+  }
+
+  // Detailed: Add phases
+  if (build.phases && build.phases.length > 0) {
+    output += `\n## Build Phases\n\n`;
+    output += `| Phase | Status | Duration | Context |\n`;
+    output += `|-------|--------|----------|----------|\n`;
+
+    for (const phase of build.phases) {
+      const phaseEmoji = phase.phaseStatus === 'SUCCEEDED' ? '✅' : phase.phaseStatus === 'FAILED' ? '❌' : '⏳';
+      const duration = phase.durationInSeconds ? `${phase.durationInSeconds}s` : 'N/A';
+      const context = phase.contexts && phase.contexts.length > 0
+        ? phase.contexts.map(c => c.message || '').join(', ')
+        : '-';
+      output += `| ${phase.phaseType} | ${phaseEmoji} ${phase.phaseStatus} | ${duration} | ${context} |\n`;
+    }
+  }
+
+  if (detail === 'detailed') {
+    return output;
+  }
+
+  // Full: Add environment, artifacts, logs, network
+  if (build.environment) {
+    output += `\n## Environment\n\n`;
+    output += `- **Type**: ${build.environment.type}\n`;
+    output += `- **Image**: ${build.environment.image}\n`;
+    output += `- **Compute Type**: ${build.environment.computeType}\n`;
+    if (build.environment.privilegedMode !== undefined) {
+      output += `- **Privileged Mode**: ${build.environment.privilegedMode}\n`;
+    }
+
+    if (build.environment.environmentVariables && build.environment.environmentVariables.length > 0) {
+      output += `\n### Environment Variables\n\n`;
+      output += `| Name | Value | Type |\n`;
+      output += `|------|-------|------|\n`;
+      for (const env of build.environment.environmentVariables) {
+        output += `| ${env.name} | ${env.value} | ${env.type} |\n`;
+      }
+    }
+  }
+
+  if (build.artifacts) {
+    output += `\n## Artifacts\n\n`;
+    if (build.artifacts.location) {
+      output += `- **Location**: ${build.artifacts.location}\n`;
+    }
+    if (build.artifacts.sha256sum) {
+      output += `- **SHA256**: \`${build.artifacts.sha256sum}\`\n`;
+    }
+    if (build.artifacts.md5sum) {
+      output += `- **MD5**: \`${build.artifacts.md5sum}\`\n`;
+    }
+  }
+
+  if (build.logs) {
+    output += `\n## Logs\n\n`;
+    if (build.logs.groupName) {
+      output += `- **Log Group**: ${build.logs.groupName}\n`;
+    }
+    if (build.logs.streamName) {
+      output += `- **Log Stream**: ${build.logs.streamName}\n`;
+    }
+    if (build.logs.deepLink) {
+      output += `- **CloudWatch Link**: ${build.logs.deepLink}\n`;
+    }
+  }
+
+  if (build.networkInterface) {
+    output += `\n## Network Interface\n\n`;
+    if (build.networkInterface.subnetId) {
+      output += `- **Subnet ID**: ${build.networkInterface.subnetId}\n`;
+    }
+    if (build.networkInterface.networkInterfaceId) {
+      output += `- **Network Interface ID**: ${build.networkInterface.networkInterfaceId}\n`;
+    }
+  }
+
+  if (build.source) {
+    output += `\n## Source\n\n`;
+    output += `- **Type**: ${build.source.type}\n`;
+    output += `- **Location**: ${build.source.location}\n`;
+    if (build.source.gitCloneDepth) {
+      output += `- **Git Clone Depth**: ${build.source.gitCloneDepth}\n`;
+    }
+    if (build.source.buildspec) {
+      output += `- **Buildspec**: ${build.source.buildspec}\n`;
+    }
+  }
+
+  if (build.timeoutInMinutes) {
+    output += `\n## Timeouts\n\n`;
+    output += `- **Timeout**: ${build.timeoutInMinutes} minutes\n`;
+    if (build.queuedTimeoutInMinutes) {
+      output += `- **Queued Timeout**: ${build.queuedTimeoutInMinutes} minutes\n`;
+    }
+  }
+
+  return output;
 }

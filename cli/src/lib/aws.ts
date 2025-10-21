@@ -203,6 +203,60 @@ export interface BuildInfo {
   initiatedBy?: string;
 }
 
+export interface BuildPhase {
+  phaseType: string;
+  phaseStatus: string;
+  startTime?: string;
+  endTime?: string;
+  durationInSeconds?: number;
+  contexts?: Array<{ statusCode?: string; message?: string }>;
+}
+
+export interface BuildDetails {
+  id: string;
+  arn: string;
+  projectName: string;
+  buildNumber: number;
+  buildStatus: string;
+  sourceVersion: string;
+  resolvedSourceVersion?: string;
+  initiator?: string;
+  startTime: string;
+  endTime?: string;
+  currentPhase?: string;
+  phases?: BuildPhase[];
+  source?: {
+    type: string;
+    location: string;
+    gitCloneDepth?: number;
+    buildspec?: string;
+  };
+  artifacts?: {
+    location?: string;
+    sha256sum?: string;
+    md5sum?: string;
+  };
+  environment?: {
+    type: string;
+    image: string;
+    computeType: string;
+    environmentVariables?: Array<{ name: string; value: string; type: string }>;
+    privilegedMode?: boolean;
+  };
+  logs?: {
+    groupName?: string;
+    streamName?: string;
+    deepLink?: string;
+  };
+  networkInterface?: {
+    subnetId?: string;
+    networkInterfaceId?: string;
+  };
+  timeoutInMinutes?: number;
+  buildComplete?: boolean;
+  queuedTimeoutInMinutes?: number;
+}
+
 /**
  * Get list of running EC2 instances in a region
  */
@@ -354,6 +408,78 @@ export async function listCompletedBuilds(
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to list completed builds: ${stderr}`);
+  }
+}
+
+/**
+ * Get detailed information about a specific build
+ */
+export async function getBuildDetails(
+  buildId: string,
+  profile: string,
+  region: string
+): Promise<BuildDetails> {
+  try {
+    const cmd = `aws codebuild batch-get-builds --ids ${buildId} --region ${region} --profile ${profile} --output json`;
+    const output = execSync(cmd, { encoding: 'utf-8' });
+    const result = JSON.parse(output);
+
+    if (!result.builds || result.builds.length === 0) {
+      throw new Error(`No build found with ID: ${buildId}`);
+    }
+
+    const build = result.builds[0];
+
+    return {
+      id: build.id,
+      arn: build.arn,
+      projectName: build.projectName || 'N/A',
+      buildNumber: build.buildNumber || 0,
+      buildStatus: build.buildStatus || 'UNKNOWN',
+      sourceVersion: build.sourceVersion || 'N/A',
+      resolvedSourceVersion: build.resolvedSourceVersion,
+      initiator: build.initiator,
+      startTime: build.startTime || 'N/A',
+      endTime: build.endTime,
+      currentPhase: build.currentPhase,
+      phases: build.phases,
+      source: build.source,
+      artifacts: build.artifacts,
+      environment: build.environment,
+      logs: build.logs,
+      networkInterface: build.networkInterface,
+      timeoutInMinutes: build.timeoutInMinutes,
+      buildComplete: build.buildComplete,
+      queuedTimeoutInMinutes: build.queuedTimeoutInMinutes,
+    };
+  } catch (error: any) {
+    const stderr = error.stderr?.toString() || error.message;
+    throw new Error(`Failed to get build details: ${stderr}`);
+  }
+}
+
+/**
+ * Get the latest build for a project
+ */
+export async function getLatestBuild(
+  projectName: string,
+  profile: string,
+  region: string
+): Promise<string> {
+  try {
+    const listCmd = `aws codebuild list-builds-for-project --project-name ${projectName} --region ${region} --profile ${profile} --max-items 1 --output json`;
+    const listOutput = execSync(listCmd, { encoding: 'utf-8' });
+    const listResult = JSON.parse(listOutput);
+
+    const buildIds = listResult.ids || [];
+    if (buildIds.length === 0) {
+      throw new Error(`No builds found for project: ${projectName}`);
+    }
+
+    return buildIds[0];
+  } catch (error: any) {
+    const stderr = error.stderr?.toString() || error.message;
+    throw new Error(`Failed to get latest build: ${stderr}`);
   }
 }
 

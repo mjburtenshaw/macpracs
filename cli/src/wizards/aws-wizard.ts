@@ -190,6 +190,10 @@ async function codeBuildSubmenu(profile: string, region: string): Promise<void> 
           value: 'view-build-logs',
         },
         {
+          name: '📋 Inspect build details',
+          value: 'describe',
+        },
+        {
           name: '🔄 Retry failed build',
           value: 'retry-build',
         },
@@ -296,6 +300,26 @@ async function executeAWSOperation(
   profile: string,
   region: string
 ): Promise<void> {
+  // Special case: 'describe' operation uses its own built-in wizard
+  if (operation === 'describe') {
+    console.log(chalk.blue('\nLaunching build describe wizard...\n'));
+
+    try {
+      // Invoke the describe command with profile and region pre-filled
+      // This triggers the describe command's own wizard flow
+      execSync(`macpracs aws codebuild describe --profile ${profile} --region ${region}`, {
+        stdio: 'inherit',
+      });
+      return;
+    } catch (error) {
+      console.error(chalk.red('\nDescribe operation failed'));
+      if (error instanceof Error) {
+        console.error(chalk.red(error.message));
+      }
+      process.exit(1);
+    }
+  }
+
   // For operations that need resource selection, fetch and present resource list
   let resourceName: string | undefined;
   let clusterName: string | undefined;
