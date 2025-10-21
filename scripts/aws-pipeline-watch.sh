@@ -231,8 +231,9 @@ watch_pipeline() {
 
         echo ""
         echo -e "${CYAN}💡 Tips:${NC}"
-        echo -e "${GRAY}  • View execution details: macpracs aws pipeline describe --execution-id $execution_id --pipeline $pipeline_name${NC}"
-        echo -e "${GRAY}  • See commit info: macpracs aws pipeline describe --execution-id latest --pipeline $pipeline_name --format md${NC}"
+        echo -e "${GRAY}  • Replay this watch: macpracs aws pipeline watch $pipeline_name --profile $profile --region $region${NC}"
+        echo -e "${GRAY}  • View execution details: macpracs aws pipeline describe --execution-id $execution_id --pipeline $pipeline_name --profile $profile --region $region${NC}"
+        echo -e "${GRAY}  • See commit info: macpracs aws pipeline describe --execution-id latest --pipeline $pipeline_name --profile $profile --region $region --format md${NC}"
         echo ""
         echo -e "${BLUE}Next refresh in $REFRESH_INTERVAL seconds...${NC}"
         sleep "$REFRESH_INTERVAL"
