@@ -309,41 +309,8 @@ async function gatherLogsConfiguration(options: any, logger: any): Promise<LogsC
       throw new Error('Unable to proceed without valid credentials');
     }
 
-    if (!grepPattern && !options.grep) {
-      const { useGrep } = await inquirer.prompt([
-        {
-          type: 'confirm',
-          name: 'useGrep',
-          message: 'Filter logs with grep?',
-          default: false,
-        },
-      ]);
-
-      if (useGrep) {
-        const { pattern } = await inquirer.prompt([
-          {
-            type: 'input',
-            name: 'pattern',
-            message: 'Enter grep pattern:',
-            validate: (input: string) => (input.trim() ? true : 'Pattern is required'),
-          },
-        ]);
-        grepPattern = pattern;
-      }
-    }
-
-    if (!copyToClipboard && !options.copy) {
-      const { copy } = await inquirer.prompt([
-        {
-          type: 'confirm',
-          name: 'copy',
-          message: 'Copy output to clipboard?',
-          default: false,
-        },
-      ]);
-      copyToClipboard = copy;
-    }
-
+    // When build-id is provided, use CLI flags for grep/copy
+    // Don't prompt - let users pipe or use --grep/--copy flags
     return { buildId, profile, region, grepPattern, copyToClipboard };
   }
 
