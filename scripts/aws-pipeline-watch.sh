@@ -84,9 +84,52 @@ watch_pipeline() {
     echo -e "${BLUE}Profile: ${YELLOW}$profile${NC}, Region: ${YELLOW}$region${NC}"
     echo -e "${BLUE}Refreshing every $REFRESH_INTERVAL seconds (Ctrl+C to exit)${NC}\n"
 
+    # Get latest pipeline execution for metadata
+    local latest_execution
+    latest_execution=$(aws codepipeline list-pipeline-executions \
+        --pipeline-name "$pipeline_name" \
+        --max-items 1 \
+        --region "$region" \
+        --profile "$profile" \
+        --output json 2>&1) || {
+        echo -e "${RED}Error: Failed to get pipeline executions${NC}"
+        echo "$latest_execution"
+        exit 1
+    }
+
+    local execution_id
+    execution_id=$(echo "$latest_execution" | jq -r '.pipelineExecutionSummaries[0].pipelineExecutionId // "N/A"')
+
+    local commit_sha=""
+    local trigger_type=""
+    local trigger_detail=""
+
+    if [[ "$execution_id" != "N/A" ]]; then
+        local execution_details
+        execution_details=$(aws codepipeline get-pipeline-execution \
+            --pipeline-name "$pipeline_name" \
+            --pipeline-execution-id "$execution_id" \
+            --region "$region" \
+            --profile "$profile" \
+            --output json 2>/dev/null)
+
+        if [[ $? -eq 0 ]]; then
+            commit_sha=$(echo "$execution_details" | jq -r '.pipelineExecution.artifactRevisions[0].revisionId // "N/A"' | cut -c1-7)
+            trigger_type=$(echo "$execution_details" | jq -r '.pipelineExecution.trigger.triggerType // "N/A"')
+            trigger_detail=$(echo "$execution_details" | jq -r '.pipelineExecution.trigger.triggerDetail // ""')
+        fi
+    fi
+
+    local execution_id_short=$(echo "$execution_id" | cut -c1-8)
+
     while true; do
         clear
-        echo -e "${BLUE}=== Pipeline Status: $(date '+%Y-%m-%d %H:%M:%S') ===${NC}\n"
+        local current_time=$(date '+%Y-%m-%d %H:%M:%S')
+        local current_epoch=$(date +%s)
+
+        echo -e "${BLUE}=== Pipeline Status: $current_time ===${NC}"
+        echo -e "${CYAN}Execution: ${YELLOW}$execution_id_short${NC} | ${CYAN}Commit: ${YELLOW}$commit_sha${NC} | ${CYAN}Trigger: ${YELLOW}$trigger_type${NC}"
+        echo ""
 
         # Get pipeline state
         local pipeline_state
@@ -100,23 +143,80 @@ watch_pipeline() {
             exit 1
         }
 
-        # Parse and display stage information
-        echo "$pipeline_state" | jq -r '
+        # Parse and display stage information with timestamps and actions
+        echo "$pipeline_state" | jq -r --arg current_epoch "$current_epoch" '
             .stageStates[] |
-            "\(.stageName):\t\(.latestExecution.status // "NOT_STARTED")" +
-            (if .latestExecution.status == "InProgress" then " ⏳"
-             elif .latestExecution.status == "Succeeded" then " ✅"
-             elif .latestExecution.status == "Failed" then " ❌"
-             else "" end)
-        ' | while IFS=$'\t' read -r stage status; do
-            if [[ "$status" == *"InProgress"* ]]; then
-                echo -e "${YELLOW}  $stage: $status${NC}"
-            elif [[ "$status" == *"Succeeded"* ]]; then
-                echo -e "${GREEN}  $stage: $status${NC}"
-            elif [[ "$status" == *"Failed"* ]]; then
-                echo -e "${RED}  $stage: $status${NC}"
+            {
+                stageName: .stageName,
+                status: (.latestExecution.status // "NOT_STARTED"),
+                lastStatusChange: (.latestExecution.lastStatusChange // ""),
+                actions: [.actionStates[]? | select(.latestExecution.status == "InProgress") | .actionName]
+            } |
+            "\(.stageName)\t\(.status)\t\(.lastStatusChange)\t\(.actions | join(", "))"
+        ' | while IFS=$'\t' read -r stage status timestamp actions; do
+            local status_emoji=""
+            local color="${NC}"
+
+            # Determine emoji and color
+            if [[ "$status" == "InProgress" ]]; then
+                status_emoji="⏳"
+                color="${YELLOW}"
+            elif [[ "$status" == "Succeeded" ]]; then
+                status_emoji="✅"
+                color="${GREEN}"
+            elif [[ "$status" == "Failed" ]]; then
+                status_emoji="❌"
+                color="${RED}"
             else
-                echo -e "  $stage: $status"
+                status_emoji="⏸️ "
+                color="${NC}"
+            fi
+
+            # Format timestamp and calculate relative time
+            local time_display=""
+            local relative_time=""
+            if [[ -n "$timestamp" && "$timestamp" != "null" ]]; then
+                # Convert ISO timestamp to local time
+                local ts_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%S" "$(echo $timestamp | cut -d. -f1 | tr 'T' ' ')" +%s 2>/dev/null || echo "0")
+                if [[ "$ts_epoch" != "0" ]]; then
+                    time_display=$(date -r $ts_epoch '+%H:%M:%S')
+
+                    # Calculate relative time
+                    local diff=$((current_epoch - ts_epoch))
+                    if [[ $diff -lt 60 ]]; then
+                        relative_time="${diff}s"
+                    elif [[ $diff -lt 3600 ]]; then
+                        relative_time="$((diff / 60))m ago"
+                    else
+                        relative_time="$((diff / 3600))h $((diff % 3600 / 60))m ago"
+                    fi
+
+                    # For in-progress, show duration instead of "ago"
+                    if [[ "$status" == "InProgress" ]]; then
+                        if [[ $diff -lt 60 ]]; then
+                            relative_time="(${diff}s)"
+                        elif [[ $diff -lt 3600 ]]; then
+                            relative_time="($((diff / 60))m $((diff % 60))s)"
+                        else
+                            relative_time="($((diff / 3600))h $((diff % 3600 / 60))m)"
+                        fi
+                    else
+                        relative_time="($relative_time)"
+                    fi
+                fi
+            fi
+
+            # Print stage with alignment
+            printf "${color}  %-25s %s %-13s [%s] %s${NC}\n" \
+                "$stage:" \
+                "$status_emoji" \
+                "$status" \
+                "$time_display" \
+                "$relative_time"
+
+            # Show current action for InProgress stages
+            if [[ "$status" == "InProgress" && -n "$actions" ]]; then
+                echo -e "${CYAN}    └─ $actions${NC}"
             fi
         done
 
