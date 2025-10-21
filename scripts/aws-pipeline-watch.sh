@@ -318,8 +318,33 @@ stream_logs() {
     echo -e "${BLUE}Streaming logs for: ${YELLOW}$project_name${NC}"
     echo -e "${BLUE}Profile: ${YELLOW}$profile${NC}, Region: ${YELLOW}$region${NC}\n"
 
+    # Get project configuration to find actual log group name
+    echo -e "${CYAN}Fetching project configuration...${NC}"
+    local project_config
+    project_config=$(aws codebuild batch-get-projects \
+        --names "$project_name" \
+        --region "$region" \
+        --profile "$profile" \
+        --output json 2>&1) || {
+        echo -e "${RED}Error: Failed to get project configuration${NC}"
+        echo "$project_config"
+        exit 1
+    }
+
+    # Extract log group name from configuration
+    local log_group
+    log_group=$(echo "$project_config" | jq -r '.projects[0].logsConfig.cloudWatchLogs.groupName // ""')
+
+    if [[ -z "$log_group" ]] || [[ "$log_group" == "null" ]]; then
+        # Fallback to default naming pattern if not specified
+        log_group="/aws/codebuild/$project_name"
+        echo -e "${YELLOW}No custom log group configured, using default: $log_group${NC}\n"
+    else
+        echo -e "${GREEN}✓ Using log group: ${CYAN}$log_group${NC}\n"
+    fi
+
     # Tail CloudWatch logs
-    aws logs tail "/aws/codebuild/$project_name" \
+    aws logs tail "$log_group" \
         --region "$region" \
         --profile "$profile" \
         --follow \
