@@ -20,6 +20,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
+GRAY='\033[0;90m'
 NC='\033[0m' # No Color
 
 # Default values
@@ -222,6 +223,10 @@ watch_pipeline() {
             fi
         done
 
+        echo ""
+        echo -e "${CYAN}💡 Tips:${NC}"
+        echo -e "${GRAY}  • View execution details: macpracs aws pipeline describe --execution-id $execution_id_short --pipeline $pipeline_name${NC}"
+        echo -e "${GRAY}  • See commit info: macpracs aws pipeline describe --execution-id latest --pipeline $pipeline_name --format md${NC}"
         echo ""
         echo -e "${BLUE}Next refresh in $REFRESH_INTERVAL seconds...${NC}"
         sleep "$REFRESH_INTERVAL"
@@ -433,6 +438,11 @@ view_build_logs() {
     # Show end of logs message only if not piped
     if [ "$IS_PIPED" = false ]; then
         echo -e "\n${CYAN}=== End of Logs ===${NC}"
+        echo ""
+        echo -e "${CYAN}💡 Tips:${NC}"
+        echo -e "${GRAY}  • View build details: macpracs aws codebuild describe --build-id $build_id --profile $profile --region $region${NC}"
+        echo -e "${GRAY}  • Filter logs: macpracs aws codebuild logs --build-id $build_id --grep 'ERROR' --profile $profile --region $region${NC}"
+        echo -e "${GRAY}  • Copy to clipboard: add --copy flag to the command above${NC}"
     fi
 }
 
