@@ -177,7 +177,9 @@ watch_pipeline() {
             local relative_time=""
             if [[ -n "$timestamp" && "$timestamp" != "null" ]]; then
                 # Convert ISO timestamp to local time
-                local ts_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%S" "$(echo $timestamp | cut -d. -f1 | tr 'T' ' ')" +%s 2>/dev/null || echo "0")
+                # Remove milliseconds and timezone suffix (e.g., .123Z or +00:00)
+                local timestamp_clean=$(echo "$timestamp" | sed -E 's/\.[0-9]+(Z|[+-][0-9]{2}:[0-9]{2})$//')
+                local ts_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%S" "$timestamp_clean" +%s 2>/dev/null || echo "0")
                 if [[ "$ts_epoch" != "0" ]]; then
                     time_display=$(date -r $ts_epoch '+%H:%M:%S')
 
