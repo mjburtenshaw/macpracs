@@ -215,6 +215,11 @@ export skip_halo=true\
     source ~/.zshrc
 }
 
+setup_obsidian_mcp() {
+    echo "📓 Setting up Obsidian MCP servers..."
+    $mjbhome/macpracs/tools/setup-obsidian-mcp.sh
+}
+
 sign_waiver() {
     echo "This script uses sudo to install the following python packages in the global scope:"
     echo "    - astral"
@@ -237,5 +242,6 @@ prompt_user "📡 Clone repository?" clone_repo
 prompt_user "🐢 Install ZSH dependencies?" install_zsh_dependencies
 prompt_user "🎨 Install color palettes?" install_color_palettes
 prompt_user "🎨 Install terminal profiles?" install_terminal_profiles
+prompt_user "📓 Setup Obsidian MCP servers?" setup_obsidian_mcp
 
 echo "🎉 Done!"
