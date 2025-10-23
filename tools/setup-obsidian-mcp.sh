@@ -219,6 +219,14 @@ fi
 if [[ "$CLIENT" == "desktop" || "$CLIENT" == "both" ]]; then
     log_info "Configuring Claude Desktop..."
 
+    # Check if Claude Desktop is running
+    if pgrep -x "Claude" > /dev/null 2>&1; then
+        log_error "Claude Desktop is currently running"
+        log_error "Please quit Claude Desktop before running this script to avoid config conflicts"
+        log_error "The application may overwrite changes with its cached configuration"
+        exit 1
+    fi
+
     # Backup existing config if it exists
     if [[ -f "$CLAUDE_DESKTOP_CONFIG" ]]; then
         log_info "Backing up existing config to: $DESKTOP_BACKUP"
