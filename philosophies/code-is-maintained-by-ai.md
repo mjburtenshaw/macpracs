@@ -137,6 +137,10 @@ If AI becomes the primary maintainer, what we optimize for must change. Verbose 
 
 The hierarchy `biz > user > ops > ai > human-reader` might seem dystopian—code optimized for machines to read, not humans. But it may be pragmatic if AI writes 80% of code and AI maintains 80% of code.
 
+If you're optimizing for product over craft, `ai > dev` makes sense. Let AI write the verbose, well-commented, operationally-sound code. Let humans focus on specification and operations. The code serves users better when it's maintainable by AI than when it's beautiful to humans.
+
+Of course, sometimes it's just fun to write code. That's fine too. But recognize it as craft, not product optimization.
+
 The question isn't whether this should happen. The question is: if it does happen, how do we ensure the code AI writes is operable, reliable, and serves users?
 
 Perhaps the answer is ensuring `ops` stays above `ai` in the hierarchy, even as `human-reader` falls below it. Humans become guardians of operations, not authors of code.
