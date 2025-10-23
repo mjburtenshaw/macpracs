@@ -9,10 +9,9 @@ _A thought experiment inspired by Facundo Olano's essay "[Code is run more than 
 Olano presents a compelling progression of priorities in software development:
 
 ```
-maintainer > author
-user > dev
 user > ops > dev
-biz > user > ops > dev
+biz > ops > dev
+biz ≹ user
 ```
 
 His key insight resonates: the long-term costs of keeping a system working reliably vastly exceed any inconveniences encountered while building it.
@@ -20,7 +19,7 @@ His key insight resonates: the long-term costs of keeping a system working relia
 But this hierarchy assumes humans are the primary readers and maintainers of code. What if AI takes that role?
 
 ```
-biz > user > ops > ai > human-reader
+biz ≹ user > ops > ai > dev
 ```
 
 This isn't about AI writing code—that's already happening. This is about AI being the primary interface for code maintenance. Humans shift to specification and operations. AI handles the reading, understanding, and modification.
@@ -93,25 +92,25 @@ small files → kept together
 
 We can identify dysfunctions by mapping them to the hierarchy.
 
-## AI-hostile code
+**AI-hostile code**
 
-`human-reader > ai`
+`dev > ai`
 
 Code that's hard for AI to maintain. Clever abstractions that hide behavior. Context spread across many tiny files. Minimal comments because "the code explains itself." Magic numbers without explanation.
 
 This is the inverse of traditional "bad code." It might be elegant to humans but opaque to AI.
 
-## Prompt-driven development
+**Prompt-driven development**
 
-`prompt > ops`
+`ai > ops`
 
 AI-generated code that violates operational concerns. A simple TODO app gets microservices, distributed queues, Redis caching, circuit breakers—all technically correct but operationally nightmarish.
 
 AI can write sophisticated code more easily than humans can operate it. The sophistication spiral.
 
-## Context fragmentation
+**Context fragmentation**
 
-`modularity > maintainability`
+`dev > ai`
 
 Over-modularization that hurts AI understanding. Files so small AI must read twenty to understand one. "Clean code" that's actually opaque to agents.
 
@@ -135,7 +134,7 @@ This is not a prescription. It's a thought experiment.
 
 If AI becomes the primary maintainer, what we optimize for must change. Verbose naming. Abundant comments. Context kept together. These shift from human annoyances to AI necessities.
 
-The hierarchy `biz > user > ops > ai > human-reader` might seem dystopian—code optimized for machines to read, not humans. But it may be pragmatic if AI writes 80% of code and AI maintains 80% of code.
+The hierarchy `biz ≹ user > ops > ai > dev` might seem dystopian—code optimized for machines to read, not humans. But it may be pragmatic if AI writes 80% of code and AI maintains 80% of code.
 
 If you're optimizing for product over craft, `ai > dev` makes sense. Let AI write the verbose, well-commented, operationally-sound code. Let humans focus on specification and operations. The code serves users better when it's maintainable by AI than when it's beautiful to humans.
 
@@ -143,7 +142,7 @@ Of course, sometimes it's just fun to write code. That's fine too. But recognize
 
 The question isn't whether this should happen. The question is: if it does happen, how do we ensure the code AI writes is operable, reliable, and serves users?
 
-Perhaps the answer is ensuring `ops` stays above `ai` in the hierarchy, even as `human-reader` falls below it. Humans become guardians of operations, not authors of code.
+Perhaps the answer is ensuring `ops` stays above `ai` in the hierarchy, even as `dev` falls below it. Humans become guardians of operations, not authors of code.
 
 The alternative is the sophistication spiral—AI generating complex, technically correct systems that fail in subtle, hard-to-debug ways because no human deeply understood them.
 
