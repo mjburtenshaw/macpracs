@@ -19,7 +19,7 @@ His key insight resonates: the long-term costs of keeping a system working relia
 But this hierarchy assumes humans are the primary readers and maintainers of code. What if AI takes that role?
 
 ```
-biz ≹ user > ops > ai > dev
+biz ≹ user > ops > ai
 ```
 
 This isn't about AI writing code—that's already happening. This is about AI being the primary interface for code maintenance. Humans shift to specification and operations. AI handles the reading, understanding, and modification.
@@ -110,7 +110,7 @@ AI can write sophisticated code more easily than humans can operate it. The soph
 
 **Context fragmentation**
 
-`dev > ai`
+`modularity > context`
 
 Over-modularization that hurts AI understanding. Files so small AI must read twenty to understand one. "Clean code" that's actually opaque to agents.
 
