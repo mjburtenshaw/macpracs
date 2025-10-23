@@ -124,9 +124,11 @@ Philosophy
 
 > 何事にもトレードオフがあります。
 > 理想的な結果などありません。
-> 
+>
 > *"Everything has its trade-offs; there's no such thing as an ideal outcome."*
 > *- Haruki Murakami*
+
+> 📖 *For deeper philosophical explorations and thought experiments on operational practices, see the [philosophies/](philosophies/) directory.*
 
 Many are familiar with the iron triangle: You can have it cheap, fast, or good. Pick any two. This is an example of a non-orthogonal relationship, and everything comes at the cost of something else.
 
