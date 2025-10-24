@@ -19,7 +19,7 @@ But knowledge is power, and you can change a system if you know how it works. Yo
 Table of Contents
 ------------------
 
-- [People and Ethics](#people-and-ethics)
+- [People and Agency](#people-and-agency)
 - [Policies](#policies)
 - [Procedures](#procedures)
 - [Platforms](#platforms)
@@ -29,20 +29,20 @@ Table of Contents
 	- [Pitfalls: Blame the Swiss](#pitfalls-blame-the-swiss)
 - [Philosophy](#philosophy)
 
-People and Ethics
+People and Agency
 -----------------
 
 > *"Remember that people break down, too, not just machinery."*
-> 
+>
 > *- Gregory Benford*
 
-People are the most critical component of any system because people have rights. Ultimately, nothing happens without them.
+People are the most critical component of any system because people have agency—the capacity to act and to constrain others' actions. Ultimately, nothing happens without them.
 
-It's people who decide what means justify which ends.
+It's people who decide what means justify which ends, based on their incentives and interests.
 
-There are two types of people in every system: those who have power and those who don't. It's important for those with power to consider the effect their decisions have on those who don't. It's essential to have a diversity of people in a system to round out the considerations of actors.
+Power groups emerge naturally from competing interests. Those with power shape the system; those without adapt or resist. Diverse power groups provide net benefit—not from ethics, but from pragmatism. Homogenous groups optimize for narrow interests and create blind spots. Diverse groups surface more trade-offs, leading to more robust solutions.
 
-> 🤕 *Even if their intent isn't malicious, a homogenous power group is more likely to act in a way that causes unintentional harm.*
+> 🤕 *A homogenous power group will optimize the system for themselves, often at the cost of stability and sustainability.*
 
 Policies
 --------

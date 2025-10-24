@@ -17,14 +17,18 @@ My personal engineering practices.
 
 > Το σύνολο είναι περισσότερο από το άθροισμα των μερών του
 >
-> _"The whole is more than the sum of its parts."_ > _- Aristotle_
+> _"The whole is more than the sum of its parts."_ - Aristotle
 
-My philosophy takes the following assumptions as given:
+See [Code is Maintained by AI](philosophies/code-is-maintained-by-ai.md) for my core engineering philosophy.
 
-1. People have rights.
-2. Diverse power groups provide a net benefit.
-3. Describing a system provides a net benefit.
-4. Systems can be iterated empirically.
+**TL;DR:** I optimize for operational excellence through:
+- **AI-maintainable code** - Explicit over clever, context over brevity
+- **Incentive alignment** - Make the right thing the easy thing
+- **Toil reduction** - For me, my team, the business
+
+My approach: Build systems that don't require heroics. Align incentives so doing the right thing is easier than cutting corners. Let AI handle undifferentiated maintenance labor.
+
+If you want someone who works sustainably, delivers reliable systems, and thinks in incentives rather than ideals, let's talk.
 
 > 🧠 _See [systems](systems.md) if you wanna get in my brain._
 
