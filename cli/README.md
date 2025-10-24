@@ -134,7 +134,7 @@ macpracs timestamp check backup 24 && macpracs startup
 
 ## Configuration
 
-User preferences are stored in `~/.macpracs/config.json`:
+User preferences are stored in `${XDG_CONFIG_HOME:-$HOME/.config}/macpracs/config.json`:
 
 ```json
 {

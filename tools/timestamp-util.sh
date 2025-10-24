@@ -1,11 +1,14 @@
 #!/bin/bash
 
 # Timestamp utility for managing script execution intervals
-# Usage: 
+# Usage:
 #   timestamp_util.sh check <task_name> <interval_hours>
 #   timestamp_util.sh update <task_name>
 
-TIMESTAMP_DIR="$HOME/.macpracs/timestamps"
+# Store timestamps in XDG_DATA_HOME per XDG Base Directory Specification
+# Timestamps are application data, not configuration
+# Falls back to ~/.local/share if XDG_DATA_HOME is not set
+TIMESTAMP_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/macpracs/timestamps"
 mkdir -p "$TIMESTAMP_DIR"
 
 check_timestamp() {

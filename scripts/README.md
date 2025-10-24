@@ -190,7 +190,7 @@ fi
 ```
 
 **Notes:**
-- Timestamps are stored in `$HOME/.macpracs/timestamps/`
+- Timestamps are stored in `${XDG_DATA_HOME:-$HOME/.local/share}/macpracs/timestamps/`
 - Returns exit code 0 if interval has elapsed (task should run)
 - Returns exit code 1 if interval has not elapsed (task should skip)
 - Useful for cron jobs or startup procedures that should run periodically

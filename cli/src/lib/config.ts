@@ -1,5 +1,9 @@
 /**
  * Configuration management for user preferences
+ *
+ * Uses XDG Base Directory Specification for config storage.
+ * Config files belong in XDG_CONFIG_HOME (~/.config/macpracs by default).
+ * Falls back to ~/.config if XDG_CONFIG_HOME is not set.
  */
 
 import * as fs from 'fs';
@@ -7,7 +11,11 @@ import * as path from 'path';
 import * as os from 'os';
 import { Config } from './types';
 
-const CONFIG_DIR = path.join(os.homedir(), '.macpracs');
+// Use XDG_CONFIG_HOME per XDG Base Directory Specification
+// Configuration files belong in XDG_CONFIG_HOME
+// Falls back to ~/.config if XDG_CONFIG_HOME is not set
+const XDG_CONFIG_HOME = process.env.XDG_CONFIG_HOME || path.join(os.homedir(), '.config');
+const CONFIG_DIR = path.join(XDG_CONFIG_HOME, 'macpracs');
 const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
 
 /**

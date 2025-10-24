@@ -2,7 +2,10 @@
  * Context management for multi-job/project configurations
  *
  * Contexts allow macpracs to support multiple jobs (Mango, Halo) or personal projects
- * with different configurations stored in ~/.macpracs/contexts/
+ * with different configurations stored in XDG_CONFIG_HOME/macpracs/contexts/
+ *
+ * Uses XDG Base Directory Specification for config storage.
+ * Falls back to ~/.config if XDG_CONFIG_HOME is not set.
  */
 
 import { readFileSync, readdirSync, existsSync } from 'fs';
@@ -10,7 +13,11 @@ import { join } from 'path';
 import { homedir } from 'os';
 import { Context } from './types';
 
-const CONTEXTS_DIR = join(homedir(), '.macpracs', 'contexts');
+// Use XDG_CONFIG_HOME per XDG Base Directory Specification
+// Context files are configuration data
+// Falls back to ~/.config if XDG_CONFIG_HOME is not set
+const XDG_CONFIG_HOME = process.env.XDG_CONFIG_HOME || join(homedir(), '.config');
+const CONTEXTS_DIR = join(XDG_CONFIG_HOME, 'macpracs', 'contexts');
 
 /**
  * Ensure contexts directory exists

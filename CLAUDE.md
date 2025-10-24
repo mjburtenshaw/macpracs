@@ -19,11 +19,20 @@ This is a personal engineering practices repository containing policies, procedu
 - Primary shell configuration in `tools/.zshrc`
 - Modular zsh configs in `tools/.zsh-configs/` for different tools (homebrew, postgresql, terraform, etc.)
 - Python3 alias configuration in `tools/aliases.sh` to manage Homebrew vs system Python
+- Migration handler in `tools/.zsh-configs/macpracs-migration.config.zsh` for XDG structure migrations
 
 ### Timestamp Utility
 - `tools/timestamp-util.sh` - Utility for managing script execution intervals
 - Usage: `timestamp_util.sh check <task_name> <interval_hours>` or `timestamp_util.sh update <task_name>`
-- Stores timestamps in `$HOME/.macpracs/timestamps/`
+- Stores timestamps in `${XDG_DATA_HOME:-$HOME/.local/share}/macpracs/timestamps/`
+
+### XDG Base Directory Structure
+macpracs follows the XDG Base Directory Specification (https://specifications.freedesktop.org/basedir-spec/latest/):
+- `${XDG_CONFIG_HOME:-$HOME/.config}/macpracs/` - Configuration files (config.json, contexts/)
+- `${XDG_DATA_HOME:-$HOME/.local/share}/macpracs/` - Application data (timestamps/)
+- `${XDG_STATE_HOME:-$HOME/.local/state}/macpracs/` - Logs and state data
+
+This structure is automatically migrated from the legacy `~/.macpracs/` location on shell startup.
 
 ## Development Workflow
 

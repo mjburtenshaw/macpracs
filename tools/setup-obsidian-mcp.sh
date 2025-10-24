@@ -17,7 +17,7 @@
 # - Idempotent: Safe to run multiple times
 # - Single source of truth: Reads from Obsidian plugin configs
 # - Composable: Can be run standalone or from other scripts
-# - Logs always written to ~/.macpracs/logs/ regardless of verbosity
+# - Logs written to XDG_STATE_HOME per XDG Base Directory Specification
 
 set -euo pipefail
 
@@ -25,7 +25,10 @@ set -euo pipefail
 OBSIDIAN_DIR="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents"
 CLAUDE_DESKTOP_CONFIG="$HOME/Library/Application Support/Claude/claude_desktop_config.json"
 DESKTOP_BACKUP="${CLAUDE_DESKTOP_CONFIG}.backup"
-LOG_DIR="$HOME/.macpracs/logs"
+# Store logs in XDG_STATE_HOME per XDG Base Directory Specification
+# Logs represent application state data
+# Falls back to ~/.local/state if XDG_STATE_HOME is not set
+LOG_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/macpracs/logs"
 LOG_FILE="$LOG_DIR/setup-obsidian-mcp.log"
 SYSTEM_PYTHON="/usr/local/bin/python3"
 CLAUDE_CMD="$HOME/.claude/local/claude"
