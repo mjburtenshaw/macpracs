@@ -95,18 +95,19 @@ git add -A
 
 ### Craft Commit Message
 
-Ask user for commit subject line following conventional commit format:
+Analyze the changes and automatically generate a commit subject line following conventional commit format:
 - Format: `<type>: <description>`
 - Types: `feat`, `fix`, `chore`, `docs`, `style`, `refactor`, `test`
 - Use exclamation mark after type for breaking changes (example: feat!: or fix!:)
 - Description should explain WHY, not just WHAT
+- Be specific and concise about the purpose of the changes
 
-**Example:** `feat: Add hushlogin support to terminal configuration`
+**Example:** `feat: Add granular timestamp scaling for pipeline status display`
 
-Then create the full commit message with standard footer:
+Create the full commit message with standard footer:
 
 ```
-<user's subject line>
+<generated subject line>
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -120,19 +121,18 @@ git commit -m "<full commit message>"
 
 ## Step 5: Create Tag
 
-**If either version was bumped:**
+**If the README version was bumped:**
 
-Determine which version to use for the tag:
-- If CLI was bumped: Use CLI version
-- If only README was bumped: Use README version
-- If both were bumped: Ask user which version to use for the main project tag
+Always use the README version for the main project tag (README version is the source of truth for project versioning).
 
 Create annotated tag with `v` prefix:
 ```bash
 git tag -a v{MAJOR}.{MINOR}.{PATCH} -m "<commit subject line>"
 ```
 
-**Example:** `git tag -a v1.3.2 -m "feat: Add hushlogin support to terminal configuration"`
+**Example:** `git tag -a v3.2.0 -m "feat: Add granular timestamp scaling for pipeline status display"`
+
+**Note:** CLI version bumps are tracked separately in `cli/package.json` but do not create project-level tags.
 
 ## Step 6: Push to Remote
 
