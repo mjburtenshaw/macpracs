@@ -57,6 +57,10 @@ export async function awsWizard(): Promise<void> {
           name: '🔐 SSM (Systems Manager)',
           value: 'ssm',
         },
+        {
+          name: '🧠 Cognito',
+          value: 'cognito',
+        },
         new inquirer.Separator(),
         {
           name: '← Back to main menu',
@@ -125,6 +129,9 @@ export async function awsWizard(): Promise<void> {
       break;
     case 'ssm':
       await ssmSubmenu(profile, region);
+      break;
+    case 'cognito':
+      await cognitoSubmenu(profile, region);
       break;
     default:
       console.log(chalk.red(`\nUnknown service: ${service}\n`));
@@ -297,6 +304,188 @@ async function ssmSubmenu(profile: string, region: string): Promise<void> {
   }
 
   await executeAWSOperation(operation, profile, region);
+}
+
+async function cognitoSubmenu(profile: string, region: string): Promise<void> {
+  console.log(chalk.blue('\n🧠 Cognito User Pools Operations\n'));
+
+  const { operation } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'operation',
+      message: 'What would you like to do?',
+      choices: [
+        {
+          name: '📋 Describe user pool',
+          value: 'describe-pool',
+        },
+        {
+          name: '🔑 App Clients',
+          value: 'app-clients',
+        },
+        {
+          name: '👥 Users',
+          value: 'users',
+        },
+        new inquirer.Separator(),
+        {
+          name: '← Back',
+          value: 'back',
+        },
+      ],
+    },
+  ]);
+
+  if (operation === 'back') {
+    return;
+  }
+
+  // Route to appropriate submenu or command
+  if (operation === 'users') {
+    await cognitoUsersSubmenu(profile, region);
+  } else if (operation === 'app-clients') {
+    await cognitoAppClientsSubmenu(profile, region);
+  } else if (operation === 'describe-pool') {
+    try {
+      console.log(chalk.blue('\nLaunching describe pool wizard...\n'));
+      execSync(
+        `macpracs aws cognito user-pools describe-pool --profile ${profile} --region ${region} --format text`,
+        {
+          stdio: 'inherit',
+        }
+      );
+    } catch (error) {
+      console.error(chalk.red('\nDescribe pool operation failed'));
+      if (error instanceof Error) {
+        console.error(chalk.red(error.message));
+      }
+    }
+  }
+}
+
+async function cognitoAppClientsSubmenu(profile: string, region: string): Promise<void> {
+  console.log(chalk.blue('\n🔑 App Clients Operations\n'));
+
+  const { operation } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'operation',
+      message: 'What would you like to do?',
+      choices: [
+        {
+          name: '📋 List app clients',
+          value: 'list-clients',
+        },
+        {
+          name: '🔍 Describe app client',
+          value: 'describe-client',
+        },
+        new inquirer.Separator(),
+        {
+          name: '← Back',
+          value: 'back',
+        },
+      ],
+    },
+  ]);
+
+  if (operation === 'back') {
+    return;
+  }
+
+  // Invoke the Cognito commands directly since they have their own wizard logic
+  try {
+    if (operation === 'list-clients') {
+      console.log(chalk.blue('\nLaunching list clients wizard...\n'));
+      execSync(
+        `macpracs aws cognito user-pools list-clients --profile ${profile} --region ${region} --format text`,
+        {
+          stdio: 'inherit',
+        }
+      );
+    } else if (operation === 'describe-client') {
+      // Ask if they want to copy the Client ID
+      const { copyId } = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'copyId',
+          message: 'Copy Client ID to clipboard after displaying?',
+          default: true,
+        },
+      ]);
+
+      console.log(chalk.blue('\nLaunching describe client wizard...\n'));
+      const copyFlag = copyId ? ' --copy' : '';
+      execSync(
+        `macpracs aws cognito user-pools describe-client --profile ${profile} --region ${region} --format text${copyFlag}`,
+        {
+          stdio: 'inherit',
+        }
+      );
+    }
+  } catch (error) {
+    console.error(chalk.red(`\n${operation} operation failed`));
+    if (error instanceof Error) {
+      console.error(chalk.red(error.message));
+    }
+  }
+}
+
+async function cognitoUsersSubmenu(profile: string, region: string): Promise<void> {
+  console.log(chalk.blue('\n👥 User Pool Users Operations\n'));
+
+  const { operation } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'operation',
+      message: 'What would you like to do?',
+      choices: [
+        {
+          name: '👥 List users in a user pool',
+          value: 'list-users',
+        },
+        {
+          name: '🗑️  Delete user(s) from a user pool',
+          value: 'delete-user',
+        },
+        new inquirer.Separator(),
+        {
+          name: '← Back',
+          value: 'back',
+        },
+      ],
+    },
+  ]);
+
+  if (operation === 'back') {
+    return;
+  }
+
+  // Invoke the Cognito commands directly since they have their own wizard logic
+  try {
+    if (operation === 'list-users') {
+      console.log(chalk.blue('\nLaunching list users wizard...\n'));
+      execSync(
+        `macpracs aws cognito user-pools list-users --profile ${profile} --region ${region}`,
+        {
+          stdio: 'inherit',
+        }
+      );
+    } else if (operation === 'delete-user') {
+      console.log(chalk.blue('\nLaunching delete user wizard...\n'));
+      execSync(
+        `macpracs aws cognito user-pools delete-user --profile ${profile} --region ${region}`,
+        {
+          stdio: 'inherit',
+        }
+      );
+    }
+  } catch (error) {
+    console.error(chalk.red(`\n${operation} operation failed`));
+    if (error instanceof Error) {
+      console.error(chalk.red(error.message));
+    }
+  }
 }
 
 async function executeAWSOperation(

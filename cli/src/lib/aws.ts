@@ -655,6 +655,310 @@ export async function getLatestPipelineExecution(
 }
 
 /**
+ * Cognito User Pool interface
+ */
+export interface UserPool {
+  id: string;
+  name: string;
+  status?: string;
+  creationDate?: string;
+}
+
+/**
+ * Cognito User interface
+ */
+export interface CognitoUser {
+  username: string;
+  email?: string;
+  status: string;
+  enabled: boolean;
+  userCreateDate: string;
+  userLastModifiedDate?: string;
+}
+
+/**
+ * Get list of Cognito User Pools in a region
+ */
+export async function listUserPools(profile: string, region: string): Promise<UserPool[]> {
+  try {
+    const cmd = `aws cognito-idp list-user-pools --max-results 60 --region ${region} --profile ${profile} --output json`;
+    const output = execSync(cmd, { encoding: 'utf-8' });
+    const result = JSON.parse(output);
+
+    return (
+      result.UserPools?.map((pool: any) => ({
+        id: pool.Id,
+        name: pool.Name,
+        status: pool.Status,
+        creationDate: pool.CreationDate,
+      })) || []
+    );
+  } catch (error: any) {
+    const stderr = error.stderr?.toString() || error.message;
+    throw new Error(`Failed to list user pools: ${stderr}`);
+  }
+}
+
+/**
+ * Get list of users in a Cognito User Pool
+ * @param statusFilter - Optional filter: 'CONFIRMED', 'UNCONFIRMED', 'ARCHIVED', 'COMPROMISED', 'UNKNOWN', 'RESET_REQUIRED', 'FORCE_CHANGE_PASSWORD'
+ */
+export async function listUsers(
+  userPoolId: string,
+  profile: string,
+  region: string,
+  statusFilter?: string
+): Promise<CognitoUser[]> {
+  try {
+    let cmd = `aws cognito-idp list-users --user-pool-id ${userPoolId} --region ${region} --profile ${profile} --output json`;
+
+    // Add filter if provided
+    if (statusFilter) {
+      cmd += ` --filter "status = \\"${statusFilter}\\""`;
+    }
+
+    const output = execSync(cmd, { encoding: 'utf-8' });
+    const result = JSON.parse(output);
+
+    return (
+      result.Users?.map((user: any) => {
+        // Extract email from UserAttributes
+        const emailAttr = user.Attributes?.find((attr: any) => attr.Name === 'email');
+
+        return {
+          username: user.Username,
+          email: emailAttr?.Value,
+          status: user.UserStatus,
+          enabled: user.Enabled !== false,
+          userCreateDate: user.UserCreateDate,
+          userLastModifiedDate: user.UserLastModifiedDate,
+        };
+      }) || []
+    );
+  } catch (error: any) {
+    const stderr = error.stderr?.toString() || error.message;
+    throw new Error(`Failed to list users: ${stderr}`);
+  }
+}
+
+/**
+ * Delete a user from a Cognito User Pool
+ */
+export async function deleteUser(
+  userPoolId: string,
+  username: string,
+  profile: string,
+  region: string
+): Promise<void> {
+  try {
+    const cmd = `aws cognito-idp admin-delete-user --user-pool-id ${userPoolId} --username ${username} --region ${region} --profile ${profile}`;
+    execSync(cmd, { encoding: 'utf-8' });
+  } catch (error: any) {
+    const stderr = error.stderr?.toString() || error.message;
+    throw new Error(`Failed to delete user ${username}: ${stderr}`);
+  }
+}
+
+/**
+ * Delete multiple users from a Cognito User Pool
+ * Returns array of failed deletions (empty if all succeeded)
+ */
+export async function deleteUsers(
+  userPoolId: string,
+  usernames: string[],
+  profile: string,
+  region: string
+): Promise<Array<{ username: string; error: string }>> {
+  const failures: Array<{ username: string; error: string }> = [];
+
+  for (const username of usernames) {
+    try {
+      await deleteUser(userPoolId, username, profile, region);
+    } catch (error: any) {
+      failures.push({
+        username,
+        error: error.message || String(error),
+      });
+    }
+  }
+
+  return failures;
+}
+
+/**
+ * User Pool Details interface
+ */
+export interface UserPoolDetails {
+  Id: string;
+  Name: string;
+  Status?: string;
+  CreationDate?: string;
+  LastModifiedDate?: string;
+  Policies?: {
+    PasswordPolicy?: {
+      MinimumLength?: number;
+      RequireUppercase?: boolean;
+      RequireLowercase?: boolean;
+      RequireNumbers?: boolean;
+      RequireSymbols?: boolean;
+      TemporaryPasswordValidityDays?: number;
+    };
+  };
+  LambdaConfig?: any;
+  AutoVerifiedAttributes?: string[];
+  AliasAttributes?: string[];
+  UsernameAttributes?: string[];
+  SmsVerificationMessage?: string;
+  EmailVerificationMessage?: string;
+  EmailVerificationSubject?: string;
+  VerificationMessageTemplate?: any;
+  SmsAuthenticationMessage?: string;
+  MfaConfiguration?: string;
+  DeviceConfiguration?: any;
+  EstimatedNumberOfUsers?: number;
+  EmailConfiguration?: any;
+  SmsConfiguration?: any;
+  UserPoolTags?: Record<string, string>;
+  SmsConfigurationFailure?: string;
+  EmailConfigurationFailure?: string;
+  Domain?: string;
+  CustomDomain?: string;
+  AdminCreateUserConfig?: any;
+  SchemaAttributes?: any[];
+  UserPoolAddOns?: any;
+  UsernameConfiguration?: any;
+  Arn?: string;
+  AccountRecoverySetting?: any;
+}
+
+/**
+ * Get detailed information about a Cognito User Pool
+ */
+export async function describeUserPool(
+  userPoolId: string,
+  profile: string,
+  region: string
+): Promise<UserPoolDetails> {
+  try {
+    const cmd = `aws cognito-idp describe-user-pool --user-pool-id ${userPoolId} --region ${region} --profile ${profile} --output json`;
+    const output = execSync(cmd, { encoding: 'utf-8' });
+    const result = JSON.parse(output);
+
+    if (!result.UserPool) {
+      throw new Error(`No user pool found with ID: ${userPoolId}`);
+    }
+
+    return result.UserPool;
+  } catch (error: any) {
+    const stderr = error.stderr?.toString() || error.message;
+    throw new Error(`Failed to describe user pool: ${stderr}`);
+  }
+}
+
+/**
+ * User Pool Client interface (basic info for listing)
+ */
+export interface UserPoolClient {
+  clientId: string;
+  clientName: string;
+}
+
+/**
+ * User Pool Client Details interface (full configuration)
+ */
+export interface UserPoolClientDetails {
+  ClientId: string;
+  ClientName: string;
+  UserPoolId: string;
+  ClientSecret?: string;
+  RefreshTokenValidity?: number;
+  AccessTokenValidity?: number;
+  IdTokenValidity?: number;
+  TokenValidityUnits?: {
+    AccessToken?: string;
+    IdToken?: string;
+    RefreshToken?: string;
+  };
+  ReadAttributes?: string[];
+  WriteAttributes?: string[];
+  ExplicitAuthFlows?: string[];
+  SupportedIdentityProviders?: string[];
+  CallbackURLs?: string[];
+  LogoutURLs?: string[];
+  DefaultRedirectURI?: string;
+  AllowedOAuthFlows?: string[];
+  AllowedOAuthScopes?: string[];
+  AllowedOAuthFlowsUserPoolClient?: boolean;
+  AnalyticsConfiguration?: any;
+  PreventUserExistenceErrors?: string;
+  EnableTokenRevocation?: boolean;
+  EnablePropagateAdditionalUserContextData?: boolean;
+  CreationDate?: string;
+  LastModifiedDate?: string;
+}
+
+/**
+ * List app clients for a Cognito User Pool
+ */
+export async function listUserPoolClients(
+  userPoolId: string,
+  profile: string,
+  region: string
+): Promise<UserPoolClient[]> {
+  try {
+    const cmd = `aws cognito-idp list-user-pool-clients --user-pool-id ${userPoolId} --max-results 60 --region ${region} --profile ${profile} --output json`;
+    const output = execSync(cmd, { encoding: 'utf-8' });
+    const result = JSON.parse(output);
+
+    return (
+      result.UserPoolClients?.map((client: any) => ({
+        clientId: client.ClientId,
+        clientName: client.ClientName,
+      })) || []
+    );
+  } catch (error: any) {
+    const stderr = error.stderr?.toString() || error.message;
+    throw new Error(`Failed to list user pool clients: ${stderr}`);
+  }
+}
+
+/**
+ * Get detailed information about a User Pool Client
+ */
+export async function describeUserPoolClient(
+  userPoolId: string,
+  clientId: string,
+  profile: string,
+  region: string
+): Promise<UserPoolClientDetails> {
+  try {
+    const cmd = `aws cognito-idp describe-user-pool-client --user-pool-id ${userPoolId} --client-id ${clientId} --region ${region} --profile ${profile} --output json`;
+    const output = execSync(cmd, { encoding: 'utf-8' });
+    const result = JSON.parse(output);
+
+    if (!result.UserPoolClient) {
+      throw new Error(`No client found with ID: ${clientId}`);
+    }
+
+    return result.UserPoolClient;
+  } catch (error: any) {
+    const stderr = error.stderr?.toString() || error.message;
+    throw new Error(`Failed to describe user pool client: ${stderr}`);
+  }
+}
+
+/**
+ * Copy text to clipboard (macOS pbcopy)
+ */
+export function copyToClipboard(text: string): void {
+  try {
+    execSync('pbcopy', { input: text, encoding: 'utf-8' });
+  } catch (error: any) {
+    throw new Error(`Failed to copy to clipboard: ${error.message}`);
+  }
+}
+
+/**
  * Common AWS regions
  */
 export const AWS_REGIONS = [
