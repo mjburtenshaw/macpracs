@@ -2,7 +2,7 @@
 
 My personal engineering practices.
 
-![Static Badge](https://img.shields.io/badge/version-v3.0.0-66023c)
+![Static Badge](https://img.shields.io/badge/version-v3.1.0-66023c)
 
 ## Table of Contents
 

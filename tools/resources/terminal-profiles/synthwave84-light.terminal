@@ -153,8 +153,6 @@
 	cqIWGFhOU09iamVjdAgRGiQpMjdJTFFTV11kand+qKqssbzFzdAAAAAAAAABAQAAAAAA
 	AAAZAAAAAAAAAAAAAAAAAAAA2Q==
 	</data>
-	<key>CommandString</key>
-	<string>yes | source ~/.zshrc &amp;&amp; clear</string>
 	<key>CursorBlink</key>
 	<true/>
 	<key>CursorColor</key>
@@ -222,6 +220,8 @@
 	cqIWGFhOU09iamVjdAgRGiQpMjdJTFFTV11kand+qKqssbzFzdAAAAAAAAABAQAAAAAA
 	AAAZAAAAAAAAAAAAAAAAAAAA2Q==
 	</data>
+	<key>useOptionAsMetaKey</key>
+	<true/>
 	<key>columnCount</key>
 	<integer>84</integer>
 	<key>name</key>

@@ -157,8 +157,6 @@
 	Q29sb3KiFhhYTlNPYmplY3QIERokKTI3SUxRU1ddZGp3fqyusLXAydHUAAAAAAAAAQEA
 	AAAAAAAAGQAAAAAAAAAAAAAAAAAAAN0=
 	</data>
-	<key>CommandString</key>
-	<string>yes | source ~/.zshrc &amp;&amp; clear</string>
 	<key>CursorBlink</key>
 	<true/>
 	<key>CursorColor</key>
@@ -239,6 +237,8 @@
 	ABkAAAAAAAAAAAAAAAAAAADY
 	</data>
 	<key>UseBrightBold</key>
+	<true/>
+	<key>useOptionAsMetaKey</key>
 	<true/>
 	<key>columnCount</key>
 	<integer>86</integer>

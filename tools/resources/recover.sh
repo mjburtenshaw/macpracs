@@ -212,6 +212,20 @@ export skip_halo=true\
 ' ~/.zshrc
     fi
 
+    read "create_hushlogin?🤫 Create ~/.hushlogin to suppress login messages? (y/n): "
+
+    if [[ "$create_hushlogin" == "y" ]]; then
+        touch ~/.hushlogin
+    fi
+
+    read "is_using_mango?🥭 Are you using Mango on this machine? (y/n): "
+
+    if [[ "$is_using_mango" != "y" ]]; then
+        sed -i '' '2a\
+export skip_mango=true\
+' ~/.zshrc
+    fi
+
     source ~/.zshrc
 }
 
