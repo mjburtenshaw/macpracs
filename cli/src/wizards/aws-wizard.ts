@@ -82,18 +82,28 @@ export async function awsWizard(): Promise<void> {
 
   // Step 2: Select AWS profile
   const profiles = getAWSProfiles();
-  const { profile } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'profile',
-      message: 'Select AWS profile:',
-      choices: profiles.map((p) => ({
-        name: p.isDefault ? `${p.name} (default)` : p.name,
-        value: p.name,
-      })),
-      default: process.env.AWS_PROFILE || 'default',
-    },
-  ]);
+  let profile: string;
+
+  if (profiles.length === 1) {
+    // Only one profile available, use it automatically
+    profile = profiles[0].name;
+    console.log(chalk.gray(`Using AWS profile: ${profile}`));
+  } else {
+    // Multiple profiles available, prompt user to select
+    const result = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'profile',
+        message: 'Select AWS profile:',
+        choices: profiles.map((p) => ({
+          name: p.isDefault ? `${p.name} (default)` : p.name,
+          value: p.name,
+        })),
+        default: process.env.AWS_PROFILE || 'default',
+      },
+    ]);
+    profile = result.profile;
+  }
 
   // Step 3: Select region
   const { region } = await inquirer.prompt([
@@ -883,18 +893,28 @@ async function ssoLoginSubmenu(): Promise<void> {
 
   // Get available profiles
   const profiles = getAWSProfiles();
-  const { profile } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'profile',
-      message: 'Select AWS profile for SSO login:',
-      choices: profiles.map((p) => ({
-        name: p.isDefault ? `${p.name} (default)` : p.name,
-        value: p.name,
-      })),
-      default: process.env.AWS_PROFILE || 'default',
-    },
-  ]);
+  let profile: string;
+
+  if (profiles.length === 1) {
+    // Only one profile available, use it automatically
+    profile = profiles[0].name;
+    console.log(chalk.gray(`Using AWS profile: ${profile}`));
+  } else {
+    // Multiple profiles available, prompt user to select
+    const result = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'profile',
+        message: 'Select AWS profile for SSO login:',
+        choices: profiles.map((p) => ({
+          name: p.isDefault ? `${p.name} (default)` : p.name,
+          value: p.name,
+        })),
+        default: process.env.AWS_PROFILE || 'default',
+      },
+    ]);
+    profile = result.profile;
+  }
 
   const logger = createLogger(false, false);
   logger.info(`Logging in to AWS SSO with profile: ${profile}`);
