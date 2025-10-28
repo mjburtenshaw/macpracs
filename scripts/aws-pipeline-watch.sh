@@ -14,6 +14,10 @@
 
 set -euo pipefail
 
+# Source timestamp formatting utility
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/lib/format-timestamp.sh"
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -183,35 +187,21 @@ watch_pipeline() {
             local time_display=""
             local relative_time=""
             if [[ -n "$timestamp" && "$timestamp" != "null" ]]; then
-                # Convert ISO timestamp to local time
-                # Remove milliseconds and timezone suffix (e.g., .123Z or +00:00)
-                local timestamp_clean=$(echo "$timestamp" | sed -E 's/\.[0-9]+(Z|[+-][0-9]{2}:[0-9]{2})$//')
-                local ts_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%S" "$timestamp_clean" +%s 2>/dev/null || echo "0")
-                if [[ "$ts_epoch" != "0" ]]; then
-                    time_display=$(date -r $ts_epoch '+%H:%M:%S')
+                # Use format_timestamp utility to get formatted output
+                local formatted=$(format_timestamp "$timestamp")
 
-                    # Calculate relative time
-                    local diff=$((current_epoch - ts_epoch))
-                    if [[ $diff -lt 60 ]]; then
-                        relative_time="${diff}s"
-                    elif [[ $diff -lt 3600 ]]; then
-                        relative_time="$((diff / 60))m ago"
-                    else
-                        relative_time="$((diff / 3600))h $((diff % 3600 / 60))m ago"
-                    fi
+                # Extract the relative time (first field before |)
+                local relative=$(echo "$formatted" | awk -F' \\| ' '{print $1}')
 
-                    # For in-progress, show duration instead of "ago"
-                    if [[ "$status" == "InProgress" ]]; then
-                        if [[ $diff -lt 60 ]]; then
-                            relative_time="(${diff}s)"
-                        elif [[ $diff -lt 3600 ]]; then
-                            relative_time="($((diff / 60))m $((diff % 60))s)"
-                        else
-                            relative_time="($((diff / 3600))h $((diff % 3600 / 60))m)"
-                        fi
-                    else
-                        relative_time="($relative_time)"
-                    fi
+                # Extract the local time display (second field)
+                local iso_local=$(echo "$formatted" | awk -F' \\| ' '{print $2}')
+                time_display=$(echo "$iso_local" | awk '{print $2}')
+
+                # For in-progress stages, show duration instead of "ago"
+                if [[ "$status" == "InProgress" ]]; then
+                    relative_time="(${relative/ ago/})"
+                else
+                    relative_time="($relative)"
                 fi
             fi
 

@@ -67,19 +67,41 @@ format_timestamp() {
     now_epoch=$(date +%s)
     local diff=$((now_epoch - epoch))
 
-    local days=$((diff / 86400))
-    local hours=$(( (diff % 86400) / 3600 ))
-    local minutes=$(( (diff % 3600) / 60 ))
+    # Calculate time units
+    local seconds=$diff
+    local minutes=$((seconds / 60))
+    local hours=$((seconds / 3600))
+    local days=$((seconds / 86400))
+    local weeks=$((days / 7))
+    local months=$((days / 30))
+    local years=$((days / 365))
 
     local relative
-    if [[ $diff -lt 60 ]]; then
-        relative="just now"
-    elif [[ $days -gt 0 ]]; then
-        relative="${days}d ${hours}h ago"
-    elif [[ $hours -gt 0 ]]; then
-        relative="${hours}h ${minutes}m ago"
-    else
+    if [[ $years -ge 1 ]]; then
+        # > 365 days: show "+1 year ago"
+        relative="+1 year ago"
+    elif [[ $days -ge 30 ]]; then
+        # 30-365 days: show "Xmo Yd ago"
+        local rem_days=$((days % 30))
+        relative="${months}mo ${rem_days}d ago"
+    elif [[ $days -ge 7 ]]; then
+        # 7-30 days: show "Xw Yd ago"
+        local rem_days=$((days % 7))
+        relative="${weeks}w ${rem_days}d ago"
+    elif [[ $days -ge 1 ]]; then
+        # 1-7 days: show "Xd Yh ago"
+        local rem_hours=$(( (seconds % 86400) / 3600 ))
+        relative="${days}d ${rem_hours}h ago"
+    elif [[ $hours -ge 1 ]]; then
+        # < 1 day: show "Xh Ym ago"
+        local rem_minutes=$(( (seconds % 3600) / 60 ))
+        relative="${hours}h ${rem_minutes}m ago"
+    elif [[ $minutes -ge 1 ]]; then
+        # < 1 hour: show "Xm ago"
         relative="${minutes}m ago"
+    else
+        # < 1 minute: show "just now"
+        relative="just now"
     fi
 
     # Convert epoch to local timezone ISO format (YYYY-MM-DD HH:MM:SS)
