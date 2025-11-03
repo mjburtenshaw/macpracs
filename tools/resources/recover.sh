@@ -50,6 +50,9 @@ install_builtins() {
 
     install_homebrew
 
+    echo "Installing GitHub CLI..."
+    brew install gh
+
     echo -e "\nhttps://www.logitech.com/en-us/software/logi-options-plus.html\n"
     read "?☝🏻 Download and install LogiOptions+. Return here and press any key to continue."
 
