@@ -34,6 +34,41 @@ macpracs follows the XDG Base Directory Specification (https://specifications.fr
 
 This structure is automatically migrated from the legacy `~/.macpracs/` location on shell startup.
 
+### MCP Server Setup Utilities
+Tools for configuring Model Context Protocol (MCP) servers for Claude Code and Claude Desktop:
+
+#### Shared Logging Utilities
+- `tools/log-utils.sh` - Shared logging functions used by MCP setup scripts
+- Provides: `log_info`, `log_warn`, `log_error`, `log_success`, `init_logging`, `version_compare`
+- Follows XDG Base Directory Specification for log storage
+- Usage: Source the script after setting `LOG_FILE` and `VERBOSE` variables
+
+#### Obsidian MCP Setup
+- `tools/setup-obsidian-mcp.sh` - Auto-discovers and configures Obsidian vaults as MCP servers
+- Alias: `setup-obsidian-mcp`
+- Extracts API keys from Local REST API plugin configurations
+- Supports both Claude Code and Claude Desktop (`-c/--client` flag)
+- Idempotent and safe to run multiple times
+- Usage: `setup-obsidian-mcp [--verbose] [--client code|desktop|both]`
+
+#### ChromeDevTools MCP Setup
+- `tools/setup-chrome-devtools-mcp.sh` - Configures Chrome browser automation MCP server
+- Alias: `setup-chrome-devtools-mcp`
+- Provides AI assistants with programmatic control over Chrome via DevTools Protocol
+- Supports both Claude Code and Claude Desktop (`-c/--client` flag)
+- Configuration options:
+  - `--headless` - Run Chrome without UI
+  - `--isolated` - Use temporary profiles that auto-clean
+  - `--channel <stable|canary|beta|dev>` - Choose Chrome channel
+  - `--viewport <WxH>` - Set window size (e.g., 1280x720)
+  - `--disable-emulation/performance/network` - Disable specific tool categories
+  - `--chrome-arg <arg>` - Pass additional Chrome launch arguments
+- Requirements: Node.js v20.19+, Chrome browser
+- Usage examples:
+  - `setup-chrome-devtools-mcp --verbose`
+  - `setup-chrome-devtools-mcp --client code --headless --isolated`
+  - `setup-chrome-devtools-mcp --channel canary --viewport 1920x1080`
+
 ## Development Workflow
 
 Based on `procedures/development.md`, the standard development workflow follows:
