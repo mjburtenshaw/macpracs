@@ -72,48 +72,12 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Ensure log directory exists
-mkdir -p "$LOG_DIR"
+# Source shared logging utilities
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/log-utils.sh"
 
-# Initialize log file with timestamp
-echo "=== Setup Obsidian MCP - $(date '+%Y-%m-%d %H:%M:%S') ===" >> "$LOG_FILE"
-echo "Client target: $CLIENT" >> "$LOG_FILE"
-
-# Logging functions
-log_to_file() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
-}
-
-log_info() {
-    local msg="$1"
-    log_to_file "INFO: $msg"
-    if [[ "$VERBOSE" == "true" ]]; then
-        echo "[INFO] $msg"
-    fi
-}
-
-log_warn() {
-    local msg="$1"
-    log_to_file "WARN: $msg"
-    if [[ "$VERBOSE" == "true" ]]; then
-        echo "[WARN] $msg" >&2
-    fi
-}
-
-log_error() {
-    local msg="$1"
-    log_to_file "ERROR: $msg"
-    # Errors always shown, even without verbose
-    echo "[ERROR] $msg" >&2
-}
-
-log_success() {
-    local msg="$1"
-    log_to_file "SUCCESS: $msg"
-    if [[ "$VERBOSE" == "true" ]]; then
-        echo "[SUCCESS] $msg"
-    fi
-}
+# Initialize logging
+init_logging "Setup Obsidian MCP" "Client target: $CLIENT"
 
 # Validate Python installation
 log_info "Validating Python installation..."
