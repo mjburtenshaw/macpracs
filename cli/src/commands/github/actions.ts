@@ -14,11 +14,12 @@ import {
   CommandOptions,
   getCurrentRepo,
   listWorkflowRuns,
-  getWorkflowRun,
   rerunFailedJobs as rerunFailedJobsLib,
   cancelWorkflowRun as cancelWorkflowRunLib,
   getGitHubAccounts,
   ensureGitHubAuth,
+  GitHubActionsWatchOptions,
+  GitHubActionsListOptions,
 } from '../../lib';
 
 const WATCH_SCRIPT_PATH = path.join(__dirname, '../../../../scripts/github-actions-watch.sh');
@@ -102,7 +103,7 @@ function registerWatchCommand(actions: Command): void {
     .option('-w, --workflow <name>', 'Workflow name or ID to filter runs')
     .option('-u, --user <username>', 'GitHub account username')
     .option('--hostname <hostname>', 'GitHub hostname (for GHE)', 'github.com')
-    .action(async (options: any) => {
+    .action(async (options: GitHubActionsWatchOptions) => {
       const globalOpts = actions.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -172,7 +173,7 @@ function registerListCommand(actions: Command): void {
     .option('-l, --limit <number>', 'Limit number of results', '20')
     .option('-u, --user <username>', 'GitHub account username')
     .option('--hostname <hostname>', 'GitHub hostname (for GHE)', 'github.com')
-    .action(async (options: any) => {
+    .action(async (options: GitHubActionsListOptions) => {
       const globalOpts = actions.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -219,6 +220,7 @@ function registerDescribeCommand(actions: Command): void {
     .option('-r, --repo <owner/repo>', 'Repository (defaults to current repo)')
     .option('-u, --user <username>', 'GitHub account username')
     .option('--hostname <hostname>', 'GitHub hostname (for GHE)', 'github.com')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .action(async (runId: string, options: any) => {
       const globalOpts = actions.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
@@ -262,6 +264,7 @@ function registerRerunCommand(actions: Command): void {
     .option('-r, --repo <owner/repo>', 'Repository (defaults to current repo)')
     .option('-u, --user <username>', 'GitHub account username')
     .option('--hostname <hostname>', 'GitHub hostname (for GHE)', 'github.com')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .action(async (runId: string, options: any) => {
       const globalOpts = actions.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
@@ -302,6 +305,7 @@ function registerCancelCommand(actions: Command): void {
     .option('-r, --repo <owner/repo>', 'Repository (defaults to current repo)')
     .option('-u, --user <username>', 'GitHub account username')
     .option('--hostname <hostname>', 'GitHub hostname (for GHE)', 'github.com')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .action(async (runId: string, options: any) => {
       const globalOpts = actions.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);

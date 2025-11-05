@@ -12,7 +12,7 @@ import {
   getCurrentGitConfig,
   type GitHubAccountConfig,
 } from '../../lib/github';
-import { createLogger, type CommandOptions } from '../../lib';
+import { createLogger, type CommandOptions, GitHubAuthOptions } from '../../lib';
 
 export function registerAuthCommand(github: Command): void {
   // macpracs github auth [options]
@@ -22,7 +22,7 @@ export function registerAuthCommand(github: Command): void {
     .option('-w, --web', 'Authenticate via web browser (default)', true)
     .option('-t, --with-token', 'Authenticate with a token from stdin')
     .option('-H, --hostname <hostname>', 'GitHub hostname for enterprise (defaults to github.com)')
-    .action(async (options: any) => {
+    .action(async (options: GitHubAuthOptions) => {
       const globalOpts = github.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -51,6 +51,7 @@ export function registerAuthCommand(github: Command): void {
         // Run gh auth login interactively
         try {
           execSync(authCmd, { stdio: 'inherit' });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           logger.error('Authentication failed');
           process.exit(1);

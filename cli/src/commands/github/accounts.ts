@@ -14,7 +14,7 @@ import {
   getCurrentGitConfig,
   type GitHubAccountConfig,
 } from '../../lib/github';
-import { createLogger, type CommandOptions } from '../../lib';
+import { createLogger, type CommandOptions, GitHubAccountAddOptions, GitHubAccountRemoveOptions } from '../../lib';
 
 export function registerAccountsCommands(github: Command): void {
   // Create accounts subcommand group
@@ -67,7 +67,7 @@ export function registerAccountsCommands(github: Command): void {
     .option('-H, --hostname <hostname>', 'GitHub hostname (defaults to github.com)', 'github.com')
     .option('-n, --name <name>', 'Git user name')
     .option('-e, --email <email>', 'Git user email')
-    .action(async (username: string | undefined, options: any) => {
+    .action(async (username: string | undefined, options: GitHubAccountAddOptions) => {
       const globalOpts = github.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -189,7 +189,7 @@ export function registerAccountsCommands(github: Command): void {
     .command('remove <username>')
     .description('Remove a GitHub account configuration')
     .option('-H, --hostname <hostname>', 'GitHub hostname (defaults to github.com)', 'github.com')
-    .action(async (username: string, options: any) => {
+    .action(async (username: string, options: GitHubAccountRemoveOptions) => {
       const globalOpts = github.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 

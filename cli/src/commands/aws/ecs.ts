@@ -5,7 +5,7 @@
 
 import { Command } from 'commander';
 import path from 'path';
-import { execScript, createLogger, CommandOptions } from '../../lib';
+import { execScript, createLogger, CommandOptions, ECSListClustersOptions, ECSListServicesOptions, ECSDescribeTasksOptions } from '../../lib';
 
 const SCRIPT_PATH = path.join(__dirname, '../../../../scripts/aws-ecs-tasks.sh');
 
@@ -27,7 +27,7 @@ function registerTasksCommand(ecs: Command): void {
     .description('Watch ECS task status with timestamps')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
-    .action(async (cluster: string, service: string, options: any) => {
+    .action(async (cluster: string, service: string, options: ECSDescribeTasksOptions) => {
       const globalOpts = ecs.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -62,7 +62,7 @@ function registerLogsCommand(ecs: Command): void {
     .description('Tail CloudWatch logs for ECS service')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
-    .action(async (cluster: string, service: string, options: any) => {
+    .action(async (cluster: string, service: string, options: ECSDescribeTasksOptions) => {
       const globalOpts = ecs.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -97,7 +97,7 @@ function registerListClustersCommand(ecs: Command): void {
     .description('List all ECS clusters in the region')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
-    .action(async (options: any) => {
+    .action(async (options: ECSListClustersOptions) => {
       const globalOpts = ecs.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -132,7 +132,7 @@ function registerListServicesCommand(ecs: Command): void {
     .description('List all services in an ECS cluster')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
-    .action(async (cluster: string, options: any) => {
+    .action(async (cluster: string, options: ECSListServicesOptions) => {
       const globalOpts = ecs.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 

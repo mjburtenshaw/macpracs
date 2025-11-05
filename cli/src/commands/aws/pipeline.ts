@@ -20,6 +20,10 @@ import {
   getLatestPipelineExecution,
   PipelineExecution,
   AWS_REGIONS,
+  PipelineListOptions,
+  PipelineStatusOptions,
+  PipelineDescribeOptions,
+  Logger,
 } from '../../lib';
 
 const SCRIPT_PATH = path.join(__dirname, '../../../../scripts/aws-pipeline-watch.sh');
@@ -42,7 +46,7 @@ function registerWatchCommand(pipeline: Command): void {
     .description('Watch CodePipeline execution status in real-time')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
-    .action(async (name: string, options: any) => {
+    .action(async (name: string, options: PipelineStatusOptions) => {
       const globalOpts = pipeline.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -77,7 +81,7 @@ function registerRetryCommand(pipeline: Command): void {
     .description('Retry a pipeline execution')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
-    .action(async (name: string, options: any) => {
+    .action(async (name: string, options: PipelineStatusOptions) => {
       const globalOpts = pipeline.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -112,7 +116,7 @@ function registerListCommand(pipeline: Command): void {
     .description('List all CodePipelines in the region')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
-    .action(async (options: any) => {
+    .action(async (options: PipelineListOptions) => {
       const globalOpts = pipeline.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -151,7 +155,7 @@ function registerDescribeCommand(pipeline: Command): void {
     .option('--format <format>', 'Output format: json, md', 'json')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
-    .action(async (options: any) => {
+    .action(async (options: PipelineDescribeOptions) => {
       const globalOpts = pipeline.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -203,7 +207,7 @@ interface DescribeConfig {
   wasWizard: boolean;
 }
 
-async function gatherDescribeConfiguration(options: any, logger: any): Promise<DescribeConfig> {
+async function gatherDescribeConfiguration(options: PipelineDescribeOptions, _logger: Logger): Promise<DescribeConfig> {
   let executionId = options.executionId;
   let pipelineName = options.pipeline;
   let profile = options.profile;

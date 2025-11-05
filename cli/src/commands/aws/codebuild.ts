@@ -8,7 +8,7 @@ import path from 'path';
 import inquirer from 'inquirer';
 import ora from 'ora';
 import chalk from 'chalk';
-import { spawn } from 'child_process';
+import { spawn, ChildProcess } from 'child_process';
 import {
   execScript,
   createLogger,
@@ -21,6 +21,10 @@ import {
   getLatestBuild,
   BuildDetails,
   AWS_REGIONS,
+  CodeBuildLogsOptions,
+  CodeBuildListOptions,
+  CodeBuildDescribeOptions,
+  Logger,
 } from '../../lib';
 
 const SCRIPT_PATH = path.join(__dirname, '../../../../scripts/aws-pipeline-watch.sh');
@@ -50,7 +54,7 @@ function registerLogsCommand(codebuild: Command): void {
     .option('--copy', 'Copy output to clipboard (pbcopy)')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
-    .action(async (options: any) => {
+    .action(async (options: CodeBuildLogsOptions) => {
       const globalOpts = codebuild.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -78,7 +82,7 @@ function registerWatchCommand(codebuild: Command): void {
     .description('Watch CodeBuild project status in real-time')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
-    .action(async (name: string, options: any) => {
+    .action(async (name: string, options: CodeBuildListOptions) => {
       const globalOpts = codebuild.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -113,7 +117,7 @@ function registerStreamCommand(codebuild: Command): void {
     .description('Stream CodeBuild logs in real-time (tail -f style)')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
-    .action(async (name: string, options: any) => {
+    .action(async (name: string, options: CodeBuildListOptions) => {
       const globalOpts = codebuild.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -148,7 +152,7 @@ function registerListCommand(codebuild: Command): void {
     .description('List all CodeBuild projects in the region')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
-    .action(async (options: any) => {
+    .action(async (options: CodeBuildListOptions) => {
       const globalOpts = codebuild.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -183,7 +187,7 @@ function registerRetryCommand(codebuild: Command): void {
     .description('Retry a failed CodeBuild job')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
-    .action(async (projectName: string, buildId: string, options: any) => {
+    .action(async (projectName: string, buildId: string, options: CodeBuildListOptions) => {
       const globalOpts = codebuild.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -222,7 +226,7 @@ function registerDescribeCommand(codebuild: Command): void {
     .option('--format <format>', 'Output format: json, md', 'json')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region', 'us-east-1')
-    .action(async (options: any) => {
+    .action(async (options: CodeBuildDescribeOptions) => {
       const globalOpts = codebuild.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -276,7 +280,7 @@ interface DescribeConfig {
   wasWizard: boolean;
 }
 
-async function gatherLogsConfiguration(options: any, logger: any): Promise<LogsConfig> {
+async function gatherLogsConfiguration(options: CodeBuildLogsOptions, _logger: Logger): Promise<LogsConfig> {
   let buildId = options.buildId;
   let profile = options.profile;
   let region = options.region || 'us-east-1';
@@ -449,7 +453,7 @@ async function gatherLogsConfiguration(options: any, logger: any): Promise<LogsC
   return { buildId, profile, region, grepPattern, copyToClipboard };
 }
 
-async function executeWithPiping(config: LogsConfig, logger: any): Promise<void> {
+async function executeWithPiping(config: LogsConfig, logger: Logger): Promise<void> {
   console.log(chalk.blue('\nFetching build logs...\n'));
 
   const args = ['view-build-logs', config.buildId, config.profile, config.region];
@@ -485,10 +489,10 @@ async function executeWithPiping(config: LogsConfig, logger: any): Promise<void>
 
 async function executePipeline(
   commands: Array<{ cmd: string; args: string[] }>,
-  logger: any
+  _logger: Logger
 ): Promise<void> {
   return new Promise((resolve, reject) => {
-    const processes: any[] = [];
+    const processes: ChildProcess[] = [];
     const stderrOutputs: Map<number, string> = new Map();
 
     // Phase 1: Create all processes
@@ -569,7 +573,7 @@ async function executePipeline(
 
 // Helper functions for describe command
 
-async function gatherDescribeConfiguration(options: any, logger: any): Promise<DescribeConfig> {
+async function gatherDescribeConfiguration(options: CodeBuildDescribeOptions, _logger: Logger): Promise<DescribeConfig> {
   let buildId = options.buildId;
   let profile = options.profile;
   let region = options.region || 'us-east-1';

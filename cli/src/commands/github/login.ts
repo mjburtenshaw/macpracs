@@ -13,7 +13,7 @@ import {
   getCurrentGitConfig,
   type GitHubAccount,
 } from '../../lib/github';
-import { createLogger, type CommandOptions } from '../../lib';
+import { createLogger, type CommandOptions, GitHubLoginOptions } from '../../lib';
 
 export function registerLoginCommand(github: Command): void {
   // macpracs github login [username] [options]
@@ -21,7 +21,7 @@ export function registerLoginCommand(github: Command): void {
     .command('login [username]')
     .description('Switch between authenticated GitHub accounts')
     .option('-H, --hostname <hostname>', 'GitHub hostname (defaults to github.com)', 'github.com')
-    .action(async (username: string | undefined, options: any) => {
+    .action(async (username: string | undefined, options: GitHubLoginOptions) => {
       const globalOpts = github.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 

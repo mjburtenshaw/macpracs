@@ -6,7 +6,7 @@
 import { Command } from 'commander';
 import inquirer from 'inquirer';
 import { execSync } from 'child_process';
-import { createLogger, getAWSProfiles, CommandOptions } from '../../lib';
+import { createLogger, getAWSProfiles, CommandOptions, SSOLoginOptions } from '../../lib';
 
 export function registerSSOCommands(aws: Command): void {
   const sso = aws
@@ -22,7 +22,7 @@ function registerLoginCommand(sso: Command): void {
     .command('login')
     .description('Login to AWS SSO with profile selection')
     .option('-p, --profile <profile>', 'AWS CLI profile to use for SSO login')
-    .action(async (options: any) => {
+    .action(async (options: SSOLoginOptions) => {
       const globalOpts = sso.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 

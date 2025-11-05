@@ -11,3 +11,4 @@ export * from './github';
 export * from './context';
 export * from './secrets';
 export * from './mq-publisher';
+export * from './command-options';

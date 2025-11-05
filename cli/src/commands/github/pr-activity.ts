@@ -15,6 +15,7 @@ export function registerPRActivityCommand(github: Command): void {
     .command('pr-activity <pr-number>')
     .description('View PR description and comments in markdown format')
     .option('-r, --repo <owner/repo>', 'Repository in owner/repo format (defaults to current repo)')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .action(async (prNumber: string, options: any) => {
       const globalOpts = github.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);

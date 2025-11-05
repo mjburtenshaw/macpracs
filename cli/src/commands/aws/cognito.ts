@@ -21,6 +21,12 @@ import {
   describeUserPoolClient,
   copyToClipboard,
   AWS_REGIONS,
+  CognitoDescribePoolOptions,
+  CognitoListClientsOptions,
+  CognitoDescribeClientOptions,
+  CognitoListUsersOptions,
+  CognitoDeleteUserOptions,
+  Logger,
 } from '../../lib';
 
 export function registerCognitoCommands(aws: Command): void {
@@ -50,7 +56,7 @@ function registerDescribePoolCommand(userPools: Command): void {
       'Output format (text or json)',
       'json'
     )
-    .action(async (options: any) => {
+    .action(async (options: CognitoDescribePoolOptions) => {
       const globalOpts = userPools.parent?.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -101,7 +107,7 @@ function registerListClientsCommand(userPools: Command): void {
       'Output format (text or json)',
       'json'
     )
-    .action(async (options: any) => {
+    .action(async (options: CognitoListClientsOptions) => {
       const globalOpts = userPools.parent?.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -164,7 +170,7 @@ function registerDescribeClientCommand(userPools: Command): void {
       'json'
     )
     .option('-c, --copy', 'Copy Client ID to clipboard', false)
-    .action(async (options: any) => {
+    .action(async (options: CognitoDescribeClientOptions) => {
       const globalOpts = userPools.parent?.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -222,7 +228,7 @@ function registerListUsersCommand(userPools: Command): void {
     .option('--status <status>', 'Filter by status (CONFIRMED, UNCONFIRMED, etc.)')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region')
-    .action(async (options: any) => {
+    .action(async (options: CognitoListUsersOptions) => {
       const globalOpts = userPools.parent?.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -286,7 +292,7 @@ function registerDeleteUserCommand(userPools: Command): void {
     .option('--username <username>', 'Username to delete')
     .option('-p, --profile <profile>', 'AWS CLI profile')
     .option('-r, --region <region>', 'AWS region')
-    .action(async (options: any) => {
+    .action(async (options: CognitoDeleteUserOptions) => {
       const globalOpts = userPools.parent?.parent?.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -344,8 +350,8 @@ function registerDeleteUserCommand(userPools: Command): void {
 
 // Helper function to gather list-users configuration
 async function gatherListUsersConfiguration(
-  options: any,
-  logger: any
+  options: CognitoListUsersOptions,
+  logger: Logger
 ): Promise<{ userPoolId: string; profile: string; region: string; statusFilter?: string }> {
   let { userPoolId, profile, region, status: statusFilter } = options;
 
@@ -439,8 +445,8 @@ async function gatherListUsersConfiguration(
 
 // Helper function to gather delete-user configuration
 async function gatherDeleteUserConfiguration(
-  options: any,
-  logger: any
+  options: CognitoDeleteUserOptions,
+  logger: Logger
 ): Promise<{ userPoolId: string; usernames: string[]; profile: string; region: string }> {
   let { userPoolId, profile, region } = options;
   const { username } = options;
@@ -590,10 +596,11 @@ async function gatherDeleteUserConfiguration(
 
 // Helper function to gather describe-pool configuration
 async function gatherDescribePoolConfiguration(
-  options: any,
-  logger: any
+  options: CognitoDescribePoolOptions,
+  logger: Logger
 ): Promise<{ userPoolId: string; profile: string; region: string; format: string }> {
-  let { userPoolId, profile, region, format } = options;
+  let { userPoolId, profile, region } = options;
+  const { format } = options;
 
   // Select profile if not provided
   if (!profile) {
@@ -662,6 +669,7 @@ async function gatherDescribePoolConfiguration(
 }
 
 // Helper function to display user pool details in markdown format
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function displayUserPoolMarkdown(pool: any): void {
   console.log(chalk.bold('\n# User Pool Details\n'));
 
@@ -775,10 +783,11 @@ function displayUserPoolMarkdown(pool: any): void {
 
 // Helper function to gather list-clients configuration
 async function gatherListClientsConfiguration(
-  options: any,
-  logger: any
+  options: CognitoListClientsOptions,
+  logger: Logger
 ): Promise<{ userPoolId: string; profile: string; region: string; format: string }> {
-  let { userPoolId, profile, region, format } = options;
+  let { userPoolId, profile, region } = options;
+  const { format } = options;
 
   // Select profile if not provided
   if (!profile) {
@@ -848,8 +857,8 @@ async function gatherListClientsConfiguration(
 
 // Helper function to gather describe-client configuration
 async function gatherDescribeClientConfiguration(
-  options: any,
-  logger: any
+  options: CognitoDescribeClientOptions,
+  logger: Logger
 ): Promise<{
   userPoolId: string;
   clientId: string;
@@ -858,7 +867,8 @@ async function gatherDescribeClientConfiguration(
   format: string;
   copy: boolean;
 }> {
-  let { userPoolId, clientId, profile, region, format, copy } = options;
+  let { userPoolId, clientId, profile, region } = options;
+  const { format, copy } = options;
 
   // Select profile if not provided
   if (!profile) {
@@ -958,6 +968,7 @@ async function gatherDescribeClientConfiguration(
 }
 
 // Helper function to display client details in markdown format
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function displayClientMarkdown(client: any): void {
   console.log(chalk.bold('\n# App Client Details\n'));
 
