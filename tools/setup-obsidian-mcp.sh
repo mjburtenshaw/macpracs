@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 
 # Setup Obsidian MCP Servers
 #
@@ -74,6 +74,7 @@ done
 
 # Source shared logging utilities
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
 source "$SCRIPT_DIR/log-utils.sh"
 
 # Initialize logging

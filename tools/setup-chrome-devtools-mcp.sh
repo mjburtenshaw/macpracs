@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 
 # Setup ChromeDevTools MCP Server
 #
@@ -148,6 +148,7 @@ done
 
 # Source shared logging utilities
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
 source "$SCRIPT_DIR/log-utils.sh"
 
 # Initialize logging
@@ -235,11 +236,11 @@ if [[ "$DISABLE_NETWORK" == "true" ]]; then
 fi
 
 # Add custom Chrome arguments
-for arg in "${CHROME_ARGS[@]}"; do
+for arg in "${CHROME_ARGS[@]+"${CHROME_ARGS[@]}"}"; do
     MCP_ARGS+=("--chromeArg=$arg")
 done
 
-log_info "MCP server arguments: ${MCP_ARGS[*]}"
+log_info "MCP server arguments: ${MCP_ARGS[*]+"${MCP_ARGS[*]}"}"
 
 # Configure Claude Code
 if [[ "$CLIENT" == "code" || "$CLIENT" == "both" ]]; then
@@ -257,13 +258,14 @@ if [[ "$CLIENT" == "code" || "$CLIENT" == "both" ]]; then
         "--scope" "user"
         "--transport" "stdio"
         "$MCP_SERVER_NAME"
+        "--"
         "npx"
         "-y"
         "chrome-devtools-mcp@latest"
     )
 
     # Add MCP arguments
-    for arg in "${MCP_ARGS[@]}"; do
+    for arg in "${MCP_ARGS[@]+"${MCP_ARGS[@]}"}"; do
         CMD_ARGS+=("$arg")
     done
 
@@ -300,7 +302,8 @@ if [[ "$CLIENT" == "desktop" || "$CLIENT" == "both" ]]; then
     # Generate config using Python
     export CLAUDE_DESKTOP_CONFIG
     export MCP_SERVER_NAME
-    export MCP_ARGS_JSON=$(printf '%s\n' "${MCP_ARGS[@]}" | jq -R . | jq -s .)
+    MCP_ARGS_JSON=$(printf '%s\n' "${MCP_ARGS[@]+"${MCP_ARGS[@]}"}" | jq -R . | jq -s .)
+    export MCP_ARGS_JSON
 
     PYTHON_OUTPUT=$(python3 - <<'EOF' 2>&1
 import json

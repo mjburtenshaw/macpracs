@@ -6,9 +6,70 @@ description: "Integrate code changes with automated review, versioning, commit, 
 
 Execute this complete workflow to integrate and release changes to the main branch.
 
-## Step 1: Review Changes
+## Step 1: Validation
 
-First, gather information about all changes:
+Run all validation checks to ensure code quality before integration.
+
+### Shell Script Validation
+
+Find and validate all shell scripts:
+
+```bash
+# Find all .sh files in tools/ directory
+find tools -type f -name "*.sh"
+```
+
+For each `.sh` file found:
+
+1. **Syntax Check**: Run `bash -n <file>` to verify syntax
+2. **ShellCheck**: Run `shellcheck -s bash <file>` to check for issues
+
+**If any validation fails:**
+- Report the specific file and error
+- STOP the integration workflow
+- User must fix issues and run `/integrate` again
+
+**If all shell scripts pass:**
+- Report success: "✓ All shell scripts passed validation"
+- Continue to CLI validation
+
+### CLI Validation (Conditional)
+
+**Check if CLI files changed:**
+
+```bash
+git diff --name-only HEAD | grep "^cli/"
+git diff --staged --name-only | grep "^cli/"
+```
+
+**If CLI files changed:**
+
+1. **TypeScript Check**: Run from repo root:
+   ```bash
+   npm run typecheck
+   ```
+
+2. **ESLint**: Run from repo root:
+   ```bash
+   npm run lint
+   ```
+
+**If any CLI validation fails:**
+- Report the specific error
+- STOP the integration workflow
+- User must fix issues and run `/integrate` again
+
+**If no CLI files changed:**
+- Skip CLI validation
+- Report: "ℹ️ No CLI changes detected, skipping TypeScript/ESLint checks"
+
+**If all validations pass:**
+- Report summary: "✅ All validation checks passed"
+- Continue to Step 2
+
+## Step 2: Review Changes
+
+Gather information about all changes:
 
 ```bash
 git status
@@ -24,7 +85,7 @@ Analyze and present a summary organized by:
 
 Present the summary in a clear, organized format.
 
-## Step 2: Approval Gate
+## Step 3: Approval Gate
 
 Ask the user: "Do these changes look ready to integrate?"
 
@@ -34,9 +95,9 @@ Ask the user: "Do these changes look ready to integrate?"
 - STOP and wait for user to run `/integrate` again
 
 **If YES:**
-- Proceed to Step 3
+- Proceed to Step 4
 
-## Step 3: Determine Version Bumps
+## Step 4: Determine Version Bumps
 
 Analyze the changes to determine version bumps:
 
@@ -75,7 +136,7 @@ Analyze the changes to determine version bumps:
 
 **Ask user to confirm version bumps or override with different bump type.**
 
-## Step 4: Create Commit
+## Step 5: Create Commit
 
 ### Update Versions (if bumped)
 
@@ -119,7 +180,7 @@ Execute the commit:
 git commit -m "<full commit message>"
 ```
 
-## Step 5: Create Tag
+## Step 6: Create Tag
 
 **If the README version was bumped:**
 
@@ -134,7 +195,7 @@ git tag -a v{MAJOR}.{MINOR}.{PATCH} -m "<commit subject line>"
 
 **Note:** CLI version bumps are tracked separately in `cli/package.json` but do not create project-level tags.
 
-## Step 6: Push to Remote
+## Step 7: Push to Remote
 
 Push both commit and tags:
 ```bash

@@ -116,3 +116,4 @@ The repository follows a "5 P's" framework from `systems.md`:
 - **Philosophy** - Trade-off awareness and value-based decision making
 
 This is primarily a documentation and configuration repository rather than a code project, so there are no specific build, test, or lint commands to run.
+- Suggest running /integrate when completing a task

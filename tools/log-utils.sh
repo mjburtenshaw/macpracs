@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 
 # Log Utilities
 #
@@ -60,11 +60,13 @@
 # Validation: Ensure required variables are set
 if [[ -z "${LOG_FILE}" ]]; then
     echo "[ERROR] log-utils.sh: LOG_FILE must be set before sourcing this script" >&2
+    # shellcheck disable=SC2317
     return 1 2>/dev/null || exit 1
 fi
 
 if [[ -z "${VERBOSE}" ]]; then
     echo "[ERROR] log-utils.sh: VERBOSE must be set before sourcing this script" >&2
+    # shellcheck disable=SC2317
     return 1 2>/dev/null || exit 1
 fi
 
@@ -76,14 +78,15 @@ init_logging() {
     local additional_info=("$@")
 
     # Ensure log directory exists
-    local log_dir=$(dirname "$LOG_FILE")
+    local log_dir
+    log_dir=$(dirname "$LOG_FILE")
     mkdir -p "$log_dir"
 
     # Write header
     echo "=== $script_name - $(date '+%Y-%m-%d %H:%M:%S') ===" >> "$LOG_FILE"
 
     # Write any additional info
-    for info in "${additional_info[@]}"; do
+    for info in "${additional_info[@]+"${additional_info[@]}"}"; do
         echo "$info" >> "$LOG_FILE"
     done
 }
@@ -139,7 +142,7 @@ version_compare() {
     IFS='.' read -ra v2 <<< "$version2"
 
     # Compare each component
-    for i in {0..2}; do
+    for i in 0 1 2; do
         local num1=${v1[$i]:-0}
         local num2=${v2[$i]:-0}
 
