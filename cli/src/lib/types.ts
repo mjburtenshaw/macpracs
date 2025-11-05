@@ -80,4 +80,8 @@ export interface Context {
     defaultDonorBranch?: string;
     branchPrefix?: string;
   };
+  github?: {
+    username: string;
+    hostname: string;
+  };
 }

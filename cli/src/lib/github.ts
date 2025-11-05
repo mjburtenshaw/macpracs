@@ -3,6 +3,9 @@
  */
 
 import { execSync } from 'child_process';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
 
 export interface PullRequest {
   number: number;
@@ -60,6 +63,17 @@ export interface GitHubAccount {
   hostname: string;
   isActive: boolean;
 }
+
+export interface GitHubAccountConfig {
+  username: string;
+  hostname: string;
+  name: string;
+  email: string;
+}
+
+// XDG Base Directory Specification
+const XDG_CONFIG_HOME = process.env.XDG_CONFIG_HOME || path.join(os.homedir(), '.config');
+const GITHUB_ACCOUNTS_FILE = path.join(XDG_CONFIG_HOME, 'macpracs', 'github-accounts.json');
 
 /**
  * Get list of pull requests for a repository
@@ -171,7 +185,9 @@ export function getGitHubAccounts(): GitHubAccount[] {
     const lines = output.split('\n');
     let currentHostname = '';
 
-    for (const line of lines) {
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
       // Extract hostname (e.g., "github.com" or "enterprise.github.com")
       if (line.trim() && !line.includes('✓') && !line.includes('-')) {
         currentHostname = line.trim();
@@ -182,8 +198,19 @@ export function getGitHubAccounts(): GitHubAccount[] {
       const match = line.match(/✓\s+Logged in to .+ account (\S+)/);
       if (match && currentHostname) {
         const username = match[1];
-        const isActive = line.includes('Active account: true') ||
-                        lines.some(l => l.includes('Active account: true'));
+
+        // Check the next few lines after this account line for "Active account: true"
+        let isActive = false;
+        for (let j = i + 1; j < Math.min(i + 10, lines.length); j++) {
+          if (lines[j].includes('Active account: true')) {
+            isActive = true;
+            break;
+          }
+          // Stop if we hit another account or hostname line
+          if (lines[j].includes('✓ Logged in') || (lines[j].trim() && !lines[j].includes('-'))) {
+            break;
+          }
+        }
 
         accounts.push({
           username,
@@ -443,5 +470,128 @@ export async function cancelWorkflowRun(repo: string, runId: number): Promise<vo
     }
 
     throw new Error(`Failed to cancel workflow run: ${stderr}`);
+  }
+}
+
+/**
+ * Ensure the config directory exists
+ */
+function ensureConfigDir(): void {
+  const configDir = path.dirname(GITHUB_ACCOUNTS_FILE);
+  if (!fs.existsSync(configDir)) {
+    fs.mkdirSync(configDir, { recursive: true });
+  }
+}
+
+/**
+ * Load GitHub account configurations from disk
+ * @returns Map of username@hostname to account config
+ */
+export function loadGitHubAccountsConfig(): Map<string, GitHubAccountConfig> {
+  ensureConfigDir();
+
+  if (!fs.existsSync(GITHUB_ACCOUNTS_FILE)) {
+    return new Map();
+  }
+
+  try {
+    const content = fs.readFileSync(GITHUB_ACCOUNTS_FILE, 'utf-8');
+    const data = JSON.parse(content);
+    const accounts = new Map<string, GitHubAccountConfig>();
+
+    for (const [key, value] of Object.entries(data)) {
+      accounts.set(key, value as GitHubAccountConfig);
+    }
+
+    return accounts;
+  } catch (error) {
+    console.error('Failed to load GitHub accounts config:', error);
+    return new Map();
+  }
+}
+
+/**
+ * Save GitHub account configurations to disk
+ * @param accounts - Map of username@hostname to account config
+ */
+export function saveGitHubAccountsConfig(accounts: Map<string, GitHubAccountConfig>): void {
+  ensureConfigDir();
+
+  try {
+    const data: Record<string, GitHubAccountConfig> = {};
+    for (const [key, value] of accounts.entries()) {
+      data[key] = value;
+    }
+
+    fs.writeFileSync(GITHUB_ACCOUNTS_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (error) {
+    console.error('Failed to save GitHub accounts config:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get a GitHub account configuration by username
+ * @param username - GitHub username
+ * @param hostname - GitHub hostname (defaults to github.com)
+ * @returns Account configuration if found, undefined otherwise
+ */
+export function getGitHubAccountConfig(
+  username: string,
+  hostname: string = 'github.com'
+): GitHubAccountConfig | undefined {
+  const accounts = loadGitHubAccountsConfig();
+  const key = `${username}@${hostname}`;
+  return accounts.get(key);
+}
+
+/**
+ * Save a GitHub account configuration
+ * @param account - Account configuration to save
+ */
+export function saveGitHubAccountConfig(account: GitHubAccountConfig): void {
+  const accounts = loadGitHubAccountsConfig();
+  const key = `${account.username}@${account.hostname}`;
+  accounts.set(key, account);
+  saveGitHubAccountsConfig(accounts);
+}
+
+/**
+ * Remove a GitHub account configuration
+ * @param username - GitHub username
+ * @param hostname - GitHub hostname (defaults to github.com)
+ */
+export function removeGitHubAccountConfig(username: string, hostname: string = 'github.com'): void {
+  const accounts = loadGitHubAccountsConfig();
+  const key = `${username}@${hostname}`;
+  accounts.delete(key);
+  saveGitHubAccountsConfig(accounts);
+}
+
+/**
+ * Update git config with account details
+ * @param name - Git user name
+ * @param email - Git user email
+ */
+export function updateGitConfig(name: string, email: string): void {
+  try {
+    execSync(`git config --global user.name "${name}"`, { encoding: 'utf-8', stdio: 'inherit' });
+    execSync(`git config --global user.email "${email}"`, { encoding: 'utf-8', stdio: 'inherit' });
+  } catch (error: any) {
+    throw new Error(`Failed to update git config: ${error.message}`);
+  }
+}
+
+/**
+ * Get current git config user details
+ * @returns Object with name and email, or undefined if not set
+ */
+export function getCurrentGitConfig(): { name: string; email: string } | undefined {
+  try {
+    const name = execSync('git config --global user.name', { encoding: 'utf-8' }).trim();
+    const email = execSync('git config --global user.email', { encoding: 'utf-8' }).trim();
+    return { name, email };
+  } catch (error) {
+    return undefined;
   }
 }

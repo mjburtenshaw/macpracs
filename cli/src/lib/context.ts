@@ -12,6 +12,7 @@ import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import { Context } from './types';
+import { switchGitHubAccount, getGitHubAccountConfig, updateGitConfig } from './github';
 
 // Use XDG_CONFIG_HOME per XDG Base Directory Specification
 // Context files are configuration data
@@ -19,13 +20,6 @@ import { Context } from './types';
 const XDG_CONFIG_HOME = process.env.XDG_CONFIG_HOME || join(homedir(), '.config');
 const CONTEXTS_DIR = join(XDG_CONFIG_HOME, 'macpracs', 'contexts');
 
-/**
- * Ensure contexts directory exists
- */
-function ensureContextsDir(): void {
-  // Note: We don't auto-create this directory
-  // Users should manually create it and add context files
-}
 
 /**
  * List all available context names
@@ -128,4 +122,48 @@ export function getContextsDir(): string {
  */
 export function contextsExist(): boolean {
   return existsSync(CONTEXTS_DIR);
+}
+
+/**
+ * Find all contexts that have GitHub configuration
+ */
+export function findContextsWithGitHub(): Context[] {
+  const contextNames = listContexts();
+  const githubContexts: Context[] = [];
+
+  for (const name of contextNames) {
+    try {
+      const context = loadContext(name);
+      if (context.github) {
+        githubContexts.push(context);
+      }
+    } catch (error) {
+      // Skip invalid contexts
+      console.error(`Warning: Failed to load context '${name}':`, error);
+    }
+  }
+
+  return githubContexts;
+}
+
+/**
+ * Switch to the GitHub account associated with a context
+ * @param context - Context to switch to
+ * @returns Promise that resolves when switch is complete
+ */
+export async function switchToContextGitHub(context: Context): Promise<void> {
+  if (!context.github) {
+    throw new Error(`Context '${context.name}' does not have GitHub configuration`);
+  }
+
+  const { username, hostname } = context.github;
+
+  // Switch gh CLI account
+  await switchGitHubAccount(username, hostname);
+
+  // Get account config and update git config if available
+  const accountConfig = getGitHubAccountConfig(username, hostname);
+  if (accountConfig) {
+    updateGitConfig(accountConfig.name, accountConfig.email);
+  }
 }

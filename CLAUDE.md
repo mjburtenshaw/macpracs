@@ -69,6 +69,79 @@ Tools for configuring Model Context Protocol (MCP) servers for Claude Code and C
   - `setup-chrome-devtools-mcp --client code --headless --isolated`
   - `setup-chrome-devtools-mcp --channel canary --viewport 1920x1080`
 
+### GitHub Account Management
+Tools for managing multiple GitHub accounts with seamless switching between work and personal contexts:
+
+#### GitHub Login Utility
+- `tools/github-login.sh` - Shell script for quickly switching between and authenticating GitHub accounts
+- Alias: `github-login`
+- Uses `gh` CLI for account management and updates git config automatically
+- Supports both interactive (prompts for account) and direct (specify username) modes
+- Account configurations stored in `${XDG_CONFIG_HOME}/macpracs/github-accounts.json`
+- Idempotent and safe to run multiple times
+- Usage examples:
+  - `github-login` - Interactive mode with account selection prompt
+  - `github-login mjburtenshaw` - Direct mode to switch to specific user
+  - `github-login --auth` - Authenticate a new GitHub account
+  - `github-login --verbose` - Show detailed output
+
+#### CLI Commands
+The macpracs CLI includes comprehensive GitHub account management:
+
+**Authentication Command**
+- `macpracs github auth` - Authenticate a new GitHub account via gh CLI
+- `macpracs github auth --web` - Authenticate via web browser (default)
+- `macpracs github auth --with-token` - Authenticate with a token from stdin
+- `macpracs github auth --hostname <host>` - Specify GitHub hostname for enterprise
+- Automatically detects newly added account and prompts to configure git user details
+- Integrated into interactive wizard: `macpracs` → GitHub Operations → Authenticate new account
+- After authentication, optionally saves name/email configuration for automatic git config updates
+
+**Login Command**
+- `macpracs github login` - Interactive account switching with prompts
+- `macpracs github login <username>` - Direct account switching
+- `macpracs github login --hostname <host>` - Specify GitHub hostname (defaults to github.com)
+- Automatically updates gh CLI active account and git global config (user.name, user.email)
+- Integrated into interactive wizard: `macpracs` → GitHub Operations → Switch GitHub account
+
+**Account Configuration Commands**
+- `macpracs github accounts list` - Show all configured accounts with name/email details
+- `macpracs github accounts add` - Add or update account configuration (interactive)
+- `macpracs github accounts add <username>` - Add account with prompts
+- `macpracs github accounts add <username> -n "Name" -e "email@example.com"` - Add account non-interactively
+- `macpracs github accounts remove <username>` - Remove account configuration
+- Account configs map GitHub usernames to git user.name and user.email for automatic switching
+
+**Context Integration**
+- Context files in `${XDG_CONFIG_HOME}/macpracs/contexts/` can include GitHub account associations
+- Add `github` section to context JSON:
+  ```json
+  {
+    "name": "mango",
+    "github": {
+      "username": "mjburtenshaw",
+      "hostname": "github.com"
+    }
+  }
+  ```
+- Future enhancement: Automatic GitHub account switching when changing work contexts
+- Use `switchToContextGitHub(context)` in CLI code to switch accounts based on context
+
+**Multi-Account Workflow**
+1. Authenticate new accounts (choose one method):
+   - **Recommended**: `macpracs github auth` - Handles authentication + configuration in one flow
+   - **Shell**: `github-login --auth` - Shell script alternative with same functionality
+   - **Manual**: `gh auth login` + `macpracs github accounts add` - Separate auth and config steps
+2. Quick switching between accounts:
+   - **Shell**: `github-login <username>`
+   - **CLI**: `macpracs github login <username>`
+   - **Wizard**: `macpracs` → GitHub Operations → Switch GitHub account
+3. SSH host aliases in `~/.ssh/config` handle git operations:
+   - `github-personal` for personal account
+   - `github-mango` for work account
+   - Repository remote URLs should use host aliases: `git@github-personal:user/repo.git`
+4. Account configurations (name/email) stored in `${XDG_CONFIG_HOME}/macpracs/github-accounts.json` enable automatic git config updates on switch
+
 ## Development Workflow
 
 Based on `procedures/development.md`, the standard development workflow follows:
@@ -117,3 +190,4 @@ The repository follows a "5 P's" framework from `systems.md`:
 
 This is primarily a documentation and configuration repository rather than a code project, so there are no specific build, test, or lint commands to run.
 - Suggest running /integrate when completing a task
+- The CLI has no build process because it runs using tsx
