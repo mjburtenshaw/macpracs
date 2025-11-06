@@ -67,6 +67,7 @@ export interface Context {
         event: {
           eventType: string;
           eventTimestamp: string | null;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           payload: Record<string, any>;
         };
       }

@@ -92,6 +92,7 @@ export async function listPullRequests(
     const output = execSync(cmd, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
     const result = JSON.parse(output);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return result.map((pr: any) => ({
       number: pr.number,
       title: pr.title,
@@ -99,6 +100,7 @@ export async function listPullRequests(
       author: pr.author?.login || 'unknown',
       updatedAt: pr.updatedAt,
     }));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
 
@@ -138,6 +140,7 @@ export async function listUserRepos(): Promise<Repository[]> {
       .filter(line => line.trim())
       .map(line => JSON.parse(line));
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return repos.map((repo: any) => ({
       nameWithOwner: repo.nameWithOwner,
       name: repo.name,
@@ -145,6 +148,7 @@ export async function listUserRepos(): Promise<Repository[]> {
       private: repo.private,
       archived: repo.archived,
     }));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
 
@@ -221,6 +225,7 @@ export function getGitHubAccounts(): GitHubAccount[] {
     }
 
     return accounts;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
 
@@ -249,6 +254,7 @@ export async function switchGitHubAccount(username: string, hostname: string = '
     }
 
     execSync(cmd, { encoding: 'utf-8', stdio: 'inherit' });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
 
@@ -276,6 +282,7 @@ export async function ensureGitHubAuth(account?: string, hostname: string = 'git
     // Verify authentication
     execSync('gh auth status', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
     return true;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
 
@@ -320,6 +327,7 @@ export async function listWorkflowRuns(
     const output = execSync(cmd, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
     const result = JSON.parse(output);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return result.map((run: any) => ({
       id: run.id,
       name: run.name,
@@ -335,6 +343,7 @@ export async function listWorkflowRuns(
       workflow_id: run.workflow_id,
       display_title: run.display_title || run.name,
     }));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
 
@@ -378,6 +387,7 @@ export async function getWorkflowRun(repo: string, runId: number): Promise<Workf
       workflow_id: run.workflow_id,
       display_title: run.display_title || run.name,
     };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
 
@@ -400,6 +410,7 @@ export async function listWorkflowJobs(repo: string, runId: number): Promise<Wor
     const output = execSync(cmd, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
     const result = JSON.parse(output);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return result.map((job: any) => ({
       id: job.id,
       name: job.name,
@@ -407,6 +418,7 @@ export async function listWorkflowJobs(repo: string, runId: number): Promise<Wor
       conclusion: job.conclusion,
       started_at: job.started_at,
       completed_at: job.completed_at,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       steps: (job.steps || []).map((step: any) => ({
         name: step.name,
         status: step.status,
@@ -416,6 +428,7 @@ export async function listWorkflowJobs(repo: string, runId: number): Promise<Wor
         completed_at: step.completed_at,
       })),
     }));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
 
@@ -436,6 +449,7 @@ export async function rerunFailedJobs(repo: string, runId: number): Promise<void
   try {
     const cmd = `gh api -X POST "repos/${repo}/actions/runs/${runId}/rerun-failed-jobs"`;
     execSync(cmd, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
 
@@ -459,6 +473,7 @@ export async function cancelWorkflowRun(repo: string, runId: number): Promise<vo
   try {
     const cmd = `gh api -X POST "repos/${repo}/actions/runs/${runId}/cancel"`;
     execSync(cmd, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
 
@@ -577,6 +592,7 @@ export function updateGitConfig(name: string, email: string): void {
   try {
     execSync(`git config --global user.name "${name}"`, { encoding: 'utf-8', stdio: 'inherit' });
     execSync(`git config --global user.email "${email}"`, { encoding: 'utf-8', stdio: 'inherit' });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new Error(`Failed to update git config: ${error.message}`);
   }

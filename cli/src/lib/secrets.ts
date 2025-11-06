@@ -68,6 +68,7 @@ export function readSecret(filename: string): string {
   try {
     // Read and trim any whitespace/newlines
     return readFileSync(secretPath, 'utf-8').trim();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new Error(`Failed to read secret file ${secretPath}: ${error.message}`);
   }

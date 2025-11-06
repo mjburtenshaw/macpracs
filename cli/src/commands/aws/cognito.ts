@@ -397,7 +397,7 @@ async function gatherListUsersConfiguration(
   // Select user pool if not provided
   if (!userPoolId) {
     const spinner = ora('Fetching user pools...').start();
-    const pools = await listUserPools(profile, region);
+    const pools = await listUserPools(profile!, region!);
     spinner.stop();
 
     if (pools.length === 0) {
@@ -440,7 +440,7 @@ async function gatherListUsersConfiguration(
     statusFilter = answer.statusFilter;
   }
 
-  return { userPoolId, profile, region, statusFilter };
+  return { userPoolId: userPoolId!, profile: profile!, region: region!, statusFilter: statusFilter ?? undefined };
 }
 
 // Helper function to gather delete-user configuration
@@ -493,7 +493,7 @@ async function gatherDeleteUserConfiguration(
   // Select user pool if not provided
   if (!userPoolId) {
     const spinner = ora('Fetching user pools...').start();
-    const pools = await listUserPools(profile, region);
+    const pools = await listUserPools(profile!, region!);
     spinner.stop();
 
     if (pools.length === 0) {
@@ -540,7 +540,7 @@ async function gatherDeleteUserConfiguration(
 
     // Fetch users
     const spinner = ora('Fetching users...').start();
-    const users = await listUsers(userPoolId, profile, region, filterAnswer.statusFilter);
+    const users = await listUsers(userPoolId!, profile!, region!, filterAnswer.statusFilter);
     spinner.stop();
 
     if (users.length === 0) {
@@ -591,7 +591,7 @@ async function gatherDeleteUserConfiguration(
     }
   }
 
-  return { userPoolId, usernames, profile, region };
+  return { userPoolId: userPoolId!, usernames: usernames!, profile: profile!, region: region! };
 }
 
 // Helper function to gather describe-pool configuration
@@ -644,7 +644,7 @@ async function gatherDescribePoolConfiguration(
   // Select user pool if not provided
   if (!userPoolId) {
     const spinner = ora('Fetching user pools...').start();
-    const pools = await listUserPools(profile, region);
+    const pools = await listUserPools(profile!, region!);
     spinner.stop();
 
     if (pools.length === 0) {
@@ -665,7 +665,7 @@ async function gatherDescribePoolConfiguration(
     userPoolId = answer.userPoolId;
   }
 
-  return { userPoolId, profile, region, format: format || 'json' };
+  return { userPoolId: userPoolId!, profile: profile!, region: region!, format: format || 'json' };
 }
 
 // Helper function to display user pool details in markdown format
@@ -831,7 +831,7 @@ async function gatherListClientsConfiguration(
   // Select user pool if not provided
   if (!userPoolId) {
     const spinner = ora('Fetching user pools...').start();
-    const pools = await listUserPools(profile, region);
+    const pools = await listUserPools(profile!, region!);
     spinner.stop();
 
     if (pools.length === 0) {
@@ -852,7 +852,7 @@ async function gatherListClientsConfiguration(
     userPoolId = answer.userPoolId;
   }
 
-  return { userPoolId, profile, region, format: format || 'json' };
+  return { userPoolId: userPoolId!, profile: profile!, region: region!, format: format || 'json' };
 }
 
 // Helper function to gather describe-client configuration
@@ -912,7 +912,7 @@ async function gatherDescribeClientConfiguration(
   // Select user pool if not provided
   if (!userPoolId) {
     const spinner = ora('Fetching user pools...').start();
-    const pools = await listUserPools(profile, region);
+    const pools = await listUserPools(profile!, region!);
     spinner.stop();
 
     if (pools.length === 0) {
@@ -936,7 +936,7 @@ async function gatherDescribeClientConfiguration(
   // Select app client if not provided
   if (!clientId) {
     const spinner = ora('Fetching app clients...').start();
-    const clients = await listUserPoolClients(userPoolId, profile, region);
+    const clients = await listUserPoolClients(userPoolId!, profile!, region!);
     spinner.stop();
 
     if (clients.length === 0) {
@@ -958,10 +958,10 @@ async function gatherDescribeClientConfiguration(
   }
 
   return {
-    userPoolId,
-    clientId,
-    profile,
-    region,
+    userPoolId: userPoolId!,
+    clientId: clientId!,
+    profile: profile!,
+    region: region!,
     format: format || 'json',
     copy: copy || false,
   };

@@ -306,7 +306,7 @@ async function gatherLogsConfiguration(options: CodeBuildLogsOptions, _logger: L
     }
 
     const spinner = ora('Checking AWS credentials...').start();
-    const credentialsValid = await ensureAWSCredentials(profile);
+    const credentialsValid = await ensureAWSCredentials(profile!);
     spinner.stop();
 
     if (!credentialsValid) {
@@ -315,7 +315,7 @@ async function gatherLogsConfiguration(options: CodeBuildLogsOptions, _logger: L
 
     // When build-id is provided, use CLI flags for grep/copy
     // Don't prompt - let users pipe or use --grep/--copy flags
-    return { buildId, profile, region, grepPattern, copyToClipboard };
+    return { buildId: buildId!, profile: profile!, region: region!, grepPattern: grepPattern ?? undefined, copyToClipboard: copyToClipboard! };
   }
 
   // Full wizard mode
@@ -352,7 +352,7 @@ async function gatherLogsConfiguration(options: CodeBuildLogsOptions, _logger: L
   }
 
   const credentialsSpinner = ora('Checking AWS credentials...').start();
-  const credentialsValid = await ensureAWSCredentials(profile);
+  const credentialsValid = await ensureAWSCredentials(profile!);
   credentialsSpinner.stop();
 
   if (!credentialsValid) {
@@ -362,7 +362,7 @@ async function gatherLogsConfiguration(options: CodeBuildLogsOptions, _logger: L
   let projectName = options.project;
   if (!projectName) {
     const projectsSpinner = ora('Fetching CodeBuild projects...').start();
-    const projects = await listBuildProjects(profile, region);
+    const projects = await listBuildProjects(profile!, region!);
     projectsSpinner.stop();
 
     if (projects.length === 0) {
@@ -398,7 +398,7 @@ async function gatherLogsConfiguration(options: CodeBuildLogsOptions, _logger: L
 
   const buildsSpinner = ora('Fetching builds...').start();
   const filter = selectedStatus === 'all' ? undefined : selectedStatus;
-  const builds = await listCompletedBuilds(projectName, profile, region, filter);
+  const builds = await listCompletedBuilds(projectName!, profile!, region!, filter);
   buildsSpinner.stop();
 
   if (builds.length === 0) {
@@ -450,7 +450,7 @@ async function gatherLogsConfiguration(options: CodeBuildLogsOptions, _logger: L
   ]);
   copyToClipboard = copy;
 
-  return { buildId, profile, region, grepPattern, copyToClipboard };
+  return { buildId: buildId!, profile: profile!, region: region!, grepPattern: grepPattern ?? undefined, copyToClipboard: copyToClipboard! };
 }
 
 async function executeWithPiping(config: LogsConfig, logger: Logger): Promise<void> {
@@ -513,14 +513,17 @@ async function executePipeline(
 
       // Set up piping between processes
       if (i < processes.length - 1) {
-        proc.stdout.pipe(processes[i + 1].stdin);
+        const nextStdin = processes[i + 1].stdin;
+        if (proc.stdout && nextStdin) {
+          proc.stdout.pipe(nextStdin);
+        }
       } else if (cmd !== 'pbcopy') {
         // Last process and not pbcopy - show output
-        proc.stdout.pipe(process.stdout);
+        proc.stdout?.pipe(process.stdout);
       }
 
       // Capture stderr
-      proc.stderr.on('data', (data: Buffer) => {
+      proc.stderr?.on('data', (data: Buffer) => {
         const text = data.toString();
         const currentStderr = stderrOutputs.get(i) || '';
         stderrOutputs.set(i, currentStderr + text);
@@ -620,7 +623,7 @@ async function gatherDescribeConfiguration(options: CodeBuildDescribeOptions, _l
       }
 
       const credentialsSpinner = ora('Checking AWS credentials...').start();
-      const credentialsValid = await ensureAWSCredentials(profile);
+      const credentialsValid = await ensureAWSCredentials(profile!);
       credentialsSpinner.stop();
 
       if (!credentialsValid) {
@@ -628,7 +631,7 @@ async function gatherDescribeConfiguration(options: CodeBuildDescribeOptions, _l
       }
 
       const projectsSpinner = ora('Fetching CodeBuild projects...').start();
-      const projects = await listBuildProjects(profile, region);
+      const projects = await listBuildProjects(profile!, region!);
       projectsSpinner.stop();
 
       if (projects.length === 0) {
@@ -648,7 +651,7 @@ async function gatherDescribeConfiguration(options: CodeBuildDescribeOptions, _l
 
     // Get the latest build ID
     const spinner = ora('Fetching latest build...').start();
-    buildId = await getLatestBuild(projectName, profile, region);
+    buildId = await getLatestBuild(projectName!, profile!, region!);
     spinner.stop();
 
     if (wasWizard) {
@@ -682,7 +685,7 @@ async function gatherDescribeConfiguration(options: CodeBuildDescribeOptions, _l
       format = selectedFormat;
     }
 
-    return { buildId, profile, region, detail, format, wasWizard };
+    return { buildId: buildId!, profile: profile!, region: region!, detail: detail!, format: format!, wasWizard };
   }
 
   // If build-id is 'unknown' or not provided, launch full wizard
@@ -721,7 +724,7 @@ async function gatherDescribeConfiguration(options: CodeBuildDescribeOptions, _l
     }
 
     const credentialsSpinner = ora('Checking AWS credentials...').start();
-    const credentialsValid = await ensureAWSCredentials(profile);
+    const credentialsValid = await ensureAWSCredentials(profile!);
     credentialsSpinner.stop();
 
     if (!credentialsValid) {
@@ -731,7 +734,7 @@ async function gatherDescribeConfiguration(options: CodeBuildDescribeOptions, _l
     let projectName = options.project;
     if (!projectName) {
       const projectsSpinner = ora('Fetching CodeBuild projects...').start();
-      const projects = await listBuildProjects(profile, region);
+      const projects = await listBuildProjects(profile!, region!);
       projectsSpinner.stop();
 
       if (projects.length === 0) {
@@ -750,7 +753,7 @@ async function gatherDescribeConfiguration(options: CodeBuildDescribeOptions, _l
     }
 
     const buildsSpinner = ora('Fetching builds...').start();
-    const builds = await listCompletedBuilds(projectName, profile, region);
+    const builds = await listCompletedBuilds(projectName!, profile!, region!);
     buildsSpinner.stop();
 
     if (builds.length === 0) {
@@ -799,7 +802,7 @@ async function gatherDescribeConfiguration(options: CodeBuildDescribeOptions, _l
     ]);
     format = selectedFormat;
 
-    return { buildId, profile, region, detail, format, wasWizard };
+    return { buildId: buildId!, profile: profile!, region: region!, detail: detail!, format: format!, wasWizard };
   }
 
   // Specific build ID provided
@@ -821,14 +824,14 @@ async function gatherDescribeConfiguration(options: CodeBuildDescribeOptions, _l
   }
 
   const spinner = ora('Checking AWS credentials...').start();
-  const credentialsValid = await ensureAWSCredentials(profile);
+  const credentialsValid = await ensureAWSCredentials(profile!);
   spinner.stop();
 
   if (!credentialsValid) {
     throw new Error('Unable to proceed without valid credentials');
   }
 
-  return { buildId, profile, region, detail, format, wasWizard };
+  return { buildId: buildId!, profile: profile!, region: region!, detail: detail!, format: format!, wasWizard };
 }
 
 function formatBuildOutput(

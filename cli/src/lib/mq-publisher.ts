@@ -12,10 +12,12 @@ import { Context } from './types';
 /**
  * Load custom event payload from JSON file
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function loadCustomPayload(filePath: string): Record<string, any> {
   try {
     const content = readFileSync(filePath, 'utf-8');
     return JSON.parse(content);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (error.code === 'ENOENT') {
       throw new Error(`Custom payload file not found: ${filePath}`);
@@ -96,6 +98,7 @@ export async function publishEvent(options: PublishEventOptions): Promise<void> 
   const amqpUrl = buildAmqpUrl(context, environment, password);
 
   // Prepare event
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let event: Record<string, any>;
   if (customPayload) {
     event = loadCustomPayload(customPayload);
@@ -152,6 +155,7 @@ export async function publishEvent(options: PublishEventOptions): Promise<void> 
     await channel.waitForConfirms();
 
     console.log(chalk.green(`✓ Successfully published ${eventType} event to ${environment}`));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new Error(`Failed to publish event: ${error.message}`);
   } finally {

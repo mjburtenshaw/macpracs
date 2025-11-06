@@ -109,7 +109,7 @@ function registerWatchCommand(actions: Command): void {
 
       try {
         // Select GitHub account
-        await selectGitHubAccount(options.user, options.hostname);
+        await selectGitHubAccount(options.user ?? undefined, options.hostname ?? undefined);
 
         let repo = options.repo;
 
@@ -129,8 +129,8 @@ function registerWatchCommand(actions: Command): void {
           // Get latest run if no run ID specified
           const spinner = ora('Fetching latest workflow run...').start();
           const runs = await listWorkflowRuns(repo, {
-            branch: options.branch,
-            workflow: options.workflow,
+            branch: options.branch ?? undefined,
+            workflow: options.workflow ?? undefined,
             limit: 1,
           });
           spinner.stop();
@@ -179,7 +179,7 @@ function registerListCommand(actions: Command): void {
 
       try {
         // Select GitHub account
-        await selectGitHubAccount(options.user, options.hostname);
+        await selectGitHubAccount(options.user ?? undefined, options.hostname ?? undefined);
 
         let repo = options.repo;
 
@@ -227,7 +227,7 @@ function registerDescribeCommand(actions: Command): void {
 
       try {
         // Select GitHub account
-        await selectGitHubAccount(options.user, options.hostname);
+        await selectGitHubAccount(options.user ?? undefined, options.hostname ?? undefined);
 
         let repo = options.repo;
 
@@ -271,7 +271,7 @@ function registerRerunCommand(actions: Command): void {
 
       try {
         // Select GitHub account
-        await selectGitHubAccount(options.user, options.hostname);
+        await selectGitHubAccount(options.user ?? undefined, options.hostname ?? undefined);
 
         let repo = options.repo;
 
@@ -312,7 +312,7 @@ function registerCancelCommand(actions: Command): void {
 
       try {
         // Select GitHub account
-        await selectGitHubAccount(options.user, options.hostname);
+        await selectGitHubAccount(options.user ?? undefined, options.hostname ?? undefined);
 
         let repo = options.repo;
 

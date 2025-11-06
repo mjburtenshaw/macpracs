@@ -160,6 +160,7 @@ async function authenticateAccountSubmenu(): Promise<void> {
   // Run gh auth login interactively
   try {
     execSync(authCmd, { stdio: 'inherit' });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.log(chalk.red('\n✗ Authentication failed\n'));
     return;

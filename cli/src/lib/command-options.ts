@@ -6,74 +6,65 @@
  */
 
 /**
- * Logger interface for command logging
- */
-export interface Logger {
-  log(message: string): void;
-  info(message: string): void;
-  warn(message: string): void;
-  error(message: string, error?: Error): void;
-  success(message: string): void;
-}
-
-/**
  * Base AWS command options
  */
 export interface BaseAWSOptions {
-  profile?: string;
-  region?: string;
+  profile: string | null;
+  region: string | null;
 }
 
 /**
  * CodeBuild command options
  */
 export interface CodeBuildLogsOptions extends BaseAWSOptions {
-  buildId?: string;
-  project?: string;
-  status?: string;
-  grep?: string;
-  copy?: boolean;
+  buildId: string | null;
+  project: string | null;
+  status: string | null;
+  grep: string | null;
+  copy: boolean | null;
 }
 
 export interface CodeBuildListOptions extends BaseAWSOptions {
-  project?: string;
-  status?: string;
-  limit?: number;
+  project: string | null;
+  status: string | null;
+  limit: number | null;
 }
 
 export interface CodeBuildDescribeOptions extends BaseAWSOptions {
-  buildId?: string;
-  project?: string;
+  buildId: string | null;
+  project: string | null;
+  detail: 'summary' | 'detailed' | 'full' | null;
+  format: 'json' | 'md' | null;
 }
 
 /**
  * Cognito command options
  */
 export interface CognitoDescribePoolOptions extends BaseAWSOptions {
-  userPoolId?: string;
-  format?: 'text' | 'json';
+  userPoolId: string | null;
+  format: 'text' | 'json' | null;
 }
 
 export interface CognitoListClientsOptions extends BaseAWSOptions {
-  userPoolId?: string;
-  format?: 'text' | 'json';
+  userPoolId: string | null;
+  format: 'text' | 'json' | null;
 }
 
 export interface CognitoDescribeClientOptions extends BaseAWSOptions {
-  userPoolId?: string;
-  clientId?: string;
-  format?: 'text' | 'json';
-  copy?: boolean;
+  userPoolId: string | null;
+  clientId: string | null;
+  format: 'text' | 'json' | null;
+  copy: boolean | null;
 }
 
 export interface CognitoListUsersOptions extends BaseAWSOptions {
-  userPoolId?: string;
-  status?: string;
+  userPoolId: string | null;
+  status: string | null;
 }
 
 export interface CognitoDeleteUserOptions extends BaseAWSOptions {
-  userPoolId?: string;
-  username?: string;
+  userPoolId: string | null;
+  username: string | null;
 }
 
 /**
@@ -84,17 +75,17 @@ export interface ECSListClustersOptions extends BaseAWSOptions {
 }
 
 export interface ECSListServicesOptions extends BaseAWSOptions {
-  cluster?: string;
+  cluster: string | null;
 }
 
 export interface ECSRestartServiceOptions extends BaseAWSOptions {
-  cluster?: string;
-  service?: string;
+  cluster: string | null;
+  service: string | null;
 }
 
 export interface ECSDescribeTasksOptions extends BaseAWSOptions {
-  cluster?: string;
-  service?: string;
+  cluster: string | null;
+  service: string | null;
 }
 
 /**
@@ -105,27 +96,27 @@ export interface PipelineListOptions extends BaseAWSOptions {
 }
 
 export interface PipelineStatusOptions extends BaseAWSOptions {
-  pipeline?: string;
+  pipeline: string | null;
 }
 
 export interface PipelineLogsOptions extends BaseAWSOptions {
-  pipeline?: string;
-  stage?: string;
-  action?: string;
+  pipeline: string | null;
+  stage: string | null;
+  action: string | null;
 }
 
 export interface PipelineDescribeOptions extends BaseAWSOptions {
-  executionId?: string;
-  pipeline?: string;
-  detail?: 'summary' | 'detailed' | 'full';
-  format?: 'json' | 'md';
+  executionId: string | null;
+  pipeline: string | null;
+  detail: 'summary' | 'detailed' | 'full' | null;
+  format: 'json' | 'md' | null;
 }
 
 /**
  * SSO command options
  */
 export interface SSOLoginOptions {
-  profile?: string;
+  profile: string | null;
 }
 
 /**
@@ -136,48 +127,70 @@ export interface GitHubAccountListOptions {
 }
 
 export interface GitHubAccountAddOptions {
-  username?: string;
-  hostname?: string;
-  name?: string;
-  email?: string;
+  username: string | null;
+  hostname: string | null;
+  name: string | null;
+  email: string | null;
 }
 
 export interface GitHubAccountRemoveOptions {
-  username?: string;
-  hostname?: string;
+  username: string | null;
+  hostname: string | null;
 }
 
 export interface GitHubActionsWatchOptions {
-  runId?: string;
-  repo?: string;
+  runId: string | null;
+  branch: string | null;
+  workflow: string | null;
+  repo: string | null;
+  user: string | null;
+  hostname: string | null;
 }
 
 export interface GitHubActionsListOptions {
-  branch?: string;
-  status?: string;
-  repo?: string;
+  branch: string | null;
+  workflow: string | null;
+  status: string | null;
+  limit: string | null;
+  repo: string | null;
+  user: string | null;
+  hostname: string | null;
 }
 
 export interface GitHubActionsDescribeOptions {
-  runId?: string;
-  repo?: string;
+  runId: string | null;
+  repo: string | null;
 }
 
 export interface GitHubActionsRerunOptions {
-  runId?: string;
-  repo?: string;
+  runId: string | null;
+  repo: string | null;
 }
 
 export interface GitHubActionsCancelOptions {
-  runId?: string;
-  repo?: string;
+  runId: string | null;
+  repo: string | null;
 }
 
 export interface GitHubAuthOptions {
-  hostname?: string;
+  web: boolean | null;
+  withToken: boolean | null;
+  hostname: string | null;
 }
 
 export interface GitHubLoginOptions {
-  username?: string;
-  hostname?: string;
+  username: string | null;
+  hostname: string | null;
+}
+
+/**
+ * MQ command options
+ */
+export interface MQPublishOptions {
+  context: string;
+  environment: string;
+  eventType: string;
+  password: string | null;
+  secretFile: string | null;
+  customPayload: string | null;
 }

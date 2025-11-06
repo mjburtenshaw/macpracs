@@ -162,7 +162,7 @@ function registerDescribeCommand(pipeline: Command): void {
       try {
         const config = await gatherDescribeConfiguration(options, logger);
         const execution = await getPipelineExecution(
-          config.pipelineName,
+          config.pipelineName!,
           config.executionId,
           config.profile,
           config.region
@@ -199,7 +199,7 @@ function registerDescribeCommand(pipeline: Command): void {
 
 interface DescribeConfig {
   executionId: string;
-  pipelineName: string;
+  pipelineName: string | null;
   profile: string;
   region: string;
   detail: 'summary' | 'detailed' | 'full';
@@ -253,7 +253,7 @@ async function gatherDescribeConfiguration(options: PipelineDescribeOptions, _lo
       }
 
       const credentialsSpinner = ora('Checking AWS credentials...').start();
-      const credentialsValid = await ensureAWSCredentials(profile);
+      const credentialsValid = await ensureAWSCredentials(profile!);
       credentialsSpinner.stop();
 
       if (!credentialsValid) {
@@ -261,7 +261,7 @@ async function gatherDescribeConfiguration(options: PipelineDescribeOptions, _lo
       }
 
       const pipelinesSpinner = ora('Fetching pipelines...').start();
-      const pipelines = await listPipelines(profile, region);
+      const pipelines = await listPipelines(profile!, region!);
       pipelinesSpinner.stop();
 
       if (pipelines.length === 0) {
@@ -281,7 +281,7 @@ async function gatherDescribeConfiguration(options: PipelineDescribeOptions, _lo
 
     // Get the latest execution ID
     const spinner = ora('Fetching latest execution...').start();
-    executionId = await getLatestPipelineExecution(pipelineName, profile, region);
+    executionId = await getLatestPipelineExecution(pipelineName!, profile!, region!);
     spinner.stop();
 
     if (wasWizard) {
@@ -315,7 +315,7 @@ async function gatherDescribeConfiguration(options: PipelineDescribeOptions, _lo
       format = selectedFormat;
     }
 
-    return { executionId, pipelineName, profile, region, detail, format, wasWizard };
+    return { executionId, pipelineName, profile: profile!, region, detail, format, wasWizard };
   }
 
   // If execution-id is 'unknown' or not provided, launch full wizard
@@ -354,7 +354,7 @@ async function gatherDescribeConfiguration(options: PipelineDescribeOptions, _lo
     }
 
     const credentialsSpinner = ora('Checking AWS credentials...').start();
-    const credentialsValid = await ensureAWSCredentials(profile);
+    const credentialsValid = await ensureAWSCredentials(profile!);
     credentialsSpinner.stop();
 
     if (!credentialsValid) {
@@ -363,7 +363,7 @@ async function gatherDescribeConfiguration(options: PipelineDescribeOptions, _lo
 
     if (!pipelineName) {
       const pipelinesSpinner = ora('Fetching pipelines...').start();
-      const pipelines = await listPipelines(profile, region);
+      const pipelines = await listPipelines(profile!, region!);
       pipelinesSpinner.stop();
 
       if (pipelines.length === 0) {
@@ -382,7 +382,7 @@ async function gatherDescribeConfiguration(options: PipelineDescribeOptions, _lo
     }
 
     const executionsSpinner = ora('Fetching executions...').start();
-    const executions = await listPipelineExecutions(pipelineName, profile, region);
+    const executions = await listPipelineExecutions(pipelineName!, profile!, region!);
     executionsSpinner.stop();
 
     if (executions.length === 0) {
@@ -436,7 +436,7 @@ async function gatherDescribeConfiguration(options: PipelineDescribeOptions, _lo
     ]);
     format = selectedFormat;
 
-    return { executionId, pipelineName, profile, region, detail, format, wasWizard };
+    return { executionId: executionId!, pipelineName, profile: profile!, region, detail, format, wasWizard };
   }
 
   // Specific execution ID provided, need pipeline name
@@ -462,14 +462,14 @@ async function gatherDescribeConfiguration(options: PipelineDescribeOptions, _lo
   }
 
   const spinner = ora('Checking AWS credentials...').start();
-  const credentialsValid = await ensureAWSCredentials(profile);
+  const credentialsValid = await ensureAWSCredentials(profile!);
   spinner.stop();
 
   if (!credentialsValid) {
     throw new Error('Unable to proceed without valid credentials');
   }
 
-  return { executionId, pipelineName, profile, region, detail, format, wasWizard };
+  return { executionId, pipelineName, profile: profile!, region, detail, format, wasWizard };
 }
 
 function formatPipelineOutput(

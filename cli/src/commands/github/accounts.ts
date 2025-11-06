@@ -165,8 +165,8 @@ export function registerAccountsCommands(github: Command): void {
         const accountConfig: GitHubAccountConfig = {
           username: selectedUsername,
           hostname,
-          name,
-          email,
+          name: name!,
+          email: email!,
         };
 
         saveGitHubAccountConfig(accountConfig);

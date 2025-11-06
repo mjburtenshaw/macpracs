@@ -70,6 +70,7 @@ export async function ensureAWSCredentials(profile: string): Promise<boolean> {
     // Test credentials with a simple AWS call
     execSync(testCmd, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
     return true; // Credentials are valid
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || '';
 
@@ -86,7 +87,8 @@ export async function ensureAWSCredentials(profile: string): Promise<boolean> {
         execSync(testCmd, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
         console.log(chalk.green('✓ Session refreshed\n'));
         return true;
-      } catch (loginError) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (loginError: any) {
         console.log(chalk.red('✗ Login failed\n'));
         return false;
       }
@@ -105,7 +107,9 @@ export async function listPipelines(profile: string, region: string): Promise<st
     const cmd = `aws codepipeline list-pipelines --region ${region} --profile ${profile} --output json`;
     const output = execSync(cmd, { encoding: 'utf-8' });
     const result = JSON.parse(output);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return result.pipelines?.map((p: any) => p.name) || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to list pipelines: ${stderr}`);
@@ -121,6 +125,7 @@ export async function listBuildProjects(profile: string, region: string): Promis
     const output = execSync(cmd, { encoding: 'utf-8' });
     const result = JSON.parse(output);
     return result.projects || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to list build projects: ${stderr}`);
@@ -142,6 +147,7 @@ export async function listECSClusters(profile: string, region: string): Promise<
         return parts[parts.length - 1];
       }) || []
     );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     // Re-throw with better error message
     const stderr = error.stderr?.toString() || error.message;
@@ -168,6 +174,7 @@ export async function listECSServices(
         return parts[parts.length - 1];
       }) || []
     );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to list ECS services: ${stderr}`);
@@ -183,7 +190,9 @@ export async function listRDSInstances(profile: string, region: string): Promise
     const output = execSync(cmd, { encoding: 'utf-8' });
     const result = JSON.parse(output);
     // Extract DB instance identifiers
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return result.DBInstances?.map((db: any) => db.DBInstanceIdentifier) || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to list RDS instances: ${stderr}`);
@@ -272,10 +281,13 @@ export async function listEC2Instances(
     const instances: EC2Instance[] = [];
 
     // Parse through reservations and instances
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     result.Reservations?.forEach((reservation: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       reservation.Instances?.forEach((instance: any) => {
         const instanceId = instance.InstanceId;
         // Get the Name tag if it exists
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const nameTag = instance.Tags?.find((tag: any) => tag.Key === 'Name');
         const name = nameTag?.Value || 'N/A';
 
@@ -287,6 +299,7 @@ export async function listEC2Instances(
     });
 
     return instances;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to list EC2 instances: ${stderr}`);
@@ -319,6 +332,7 @@ export async function listFailedBuilds(
 
     // Filter for failed builds that can be retried (not from CodePipeline)
     const failedBuilds: BuildInfo[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     detailsResult.builds?.forEach((build: any) => {
       if (build.buildStatus === 'FAILED') {
         const initiatedBy = build.initiatedBy || '';
@@ -345,6 +359,7 @@ export async function listFailedBuilds(
     });
 
     return failedBuilds;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to list failed builds: ${stderr}`);
@@ -379,6 +394,7 @@ export async function listCompletedBuilds(
 
     // Filter for completed builds based on status filter
     const completedBuilds: BuildInfo[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     detailsResult.builds?.forEach((build: any) => {
       const buildStatus = build.buildStatus;
 
@@ -405,6 +421,7 @@ export async function listCompletedBuilds(
     });
 
     return completedBuilds;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to list completed builds: ${stderr}`);
@@ -524,6 +541,7 @@ export async function getBuildDetails(
       buildComplete: build.buildComplete,
       queuedTimeoutInMinutes: build.queuedTimeoutInMinutes,
     };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to get build details: ${stderr}`);
@@ -549,6 +567,7 @@ export async function getLatestBuild(
     }
 
     return buildIds[0];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to get latest build: ${stderr}`);
@@ -590,6 +609,7 @@ export async function getPipelineExecution(
       trigger: execution.trigger,
       stageStates: stateResult.stageStates,
     };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to get pipeline execution: ${stderr}`);
@@ -626,6 +646,7 @@ export async function listPipelineExecutions(
     }
 
     return summaries;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to list pipeline executions: ${stderr}`);
@@ -648,6 +669,7 @@ export async function getLatestPipelineExecution(
     }
 
     return executions[0].pipelineExecutionId;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.message || String(error);
     throw new Error(`Failed to get latest pipeline execution: ${stderr}`);
@@ -686,6 +708,7 @@ export async function listUserPools(profile: string, region: string): Promise<Us
     const result = JSON.parse(output);
 
     return (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       result.UserPools?.map((pool: any) => ({
         id: pool.Id,
         name: pool.Name,
@@ -693,6 +716,7 @@ export async function listUserPools(profile: string, region: string): Promise<Us
         creationDate: pool.CreationDate,
       })) || []
     );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to list user pools: ${stderr}`);
@@ -721,8 +745,10 @@ export async function listUsers(
     const result = JSON.parse(output);
 
     return (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       result.Users?.map((user: any) => {
         // Extract email from UserAttributes
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const emailAttr = user.Attributes?.find((attr: any) => attr.Name === 'email');
 
         return {
@@ -735,6 +761,7 @@ export async function listUsers(
         };
       }) || []
     );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to list users: ${stderr}`);
@@ -753,6 +780,7 @@ export async function deleteUser(
   try {
     const cmd = `aws cognito-idp admin-delete-user --user-pool-id ${userPoolId} --username ${username} --region ${region} --profile ${profile}`;
     execSync(cmd, { encoding: 'utf-8' });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to delete user ${username}: ${stderr}`);
@@ -774,6 +802,7 @@ export async function deleteUsers(
   for (const username of usernames) {
     try {
       await deleteUser(userPoolId, username, profile, region);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       failures.push({
         username,
@@ -804,6 +833,7 @@ export interface UserPoolDetails {
       TemporaryPasswordValidityDays?: number;
     };
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   LambdaConfig?: any;
   AutoVerifiedAttributes?: string[];
   AliasAttributes?: string[];
@@ -811,23 +841,32 @@ export interface UserPoolDetails {
   SmsVerificationMessage?: string;
   EmailVerificationMessage?: string;
   EmailVerificationSubject?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   VerificationMessageTemplate?: any;
   SmsAuthenticationMessage?: string;
   MfaConfiguration?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   DeviceConfiguration?: any;
   EstimatedNumberOfUsers?: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   EmailConfiguration?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   SmsConfiguration?: any;
   UserPoolTags?: Record<string, string>;
   SmsConfigurationFailure?: string;
   EmailConfigurationFailure?: string;
   Domain?: string;
   CustomDomain?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   AdminCreateUserConfig?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   SchemaAttributes?: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   UserPoolAddOns?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   UsernameConfiguration?: any;
   Arn?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   AccountRecoverySetting?: any;
 }
 
@@ -849,6 +888,7 @@ export async function describeUserPool(
     }
 
     return result.UserPool;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to describe user pool: ${stderr}`);
@@ -889,6 +929,7 @@ export interface UserPoolClientDetails {
   AllowedOAuthFlows?: string[];
   AllowedOAuthScopes?: string[];
   AllowedOAuthFlowsUserPoolClient?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   AnalyticsConfiguration?: any;
   PreventUserExistenceErrors?: string;
   EnableTokenRevocation?: boolean;
@@ -911,11 +952,13 @@ export async function listUserPoolClients(
     const result = JSON.parse(output);
 
     return (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       result.UserPoolClients?.map((client: any) => ({
         clientId: client.ClientId,
         clientName: client.ClientName,
       })) || []
     );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to list user pool clients: ${stderr}`);
@@ -941,6 +984,7 @@ export async function describeUserPoolClient(
     }
 
     return result.UserPoolClient;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const stderr = error.stderr?.toString() || error.message;
     throw new Error(`Failed to describe user pool client: ${stderr}`);
@@ -953,6 +997,7 @@ export async function describeUserPoolClient(
 export function copyToClipboard(text: string): void {
   try {
     execSync('pbcopy', { input: text, encoding: 'utf-8' });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new Error(`Failed to copy to clipboard: ${error.message}`);
   }

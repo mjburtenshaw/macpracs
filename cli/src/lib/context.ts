@@ -58,6 +58,7 @@ export function loadContext(name: string): Context {
     context.name = name;
 
     return context;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (error instanceof SyntaxError) {
       throw new Error(`Invalid JSON in context file ${contextPath}: ${error.message}`);

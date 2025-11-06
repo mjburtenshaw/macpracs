@@ -6,6 +6,7 @@ import { Command } from 'commander';
 import {
   createLogger,
   CommandOptions,
+  MQPublishOptions,
   publishEvent,
   loadContext,
   readSecret,
@@ -21,7 +22,7 @@ export function registerPublishEventCommands(mq: Command): void {
     .option('-p, --password <password>', 'AMQP password (or use --secret-file)')
     .option('-s, --secret-file <path>', 'Path to secret file (relative to ~/.secrets/)')
     .option('--custom-payload <path>', 'Path to custom JSON payload file')
-    .action(async (options: any) => {
+    .action(async (options: MQPublishOptions) => {
       const globalOpts = mq.parent?.opts() as CommandOptions;
       const logger = createLogger(globalOpts?.verbose, globalOpts?.quiet);
 
@@ -39,8 +40,8 @@ export function registerPublishEventCommands(mq: Command): void {
           context,
           environment: options.environment,
           eventType: options.eventType,
-          password,
-          customPayload: options.customPayload,
+          password: password ?? undefined,
+          customPayload: options.customPayload ?? undefined,
           verbose: globalOpts?.verbose,
         });
       } catch (error) {
