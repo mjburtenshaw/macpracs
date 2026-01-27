@@ -1,7 +1,7 @@
 # Claude Code and related tools configuration
 
 # Claude Code CLI
-alias claude="~/.claude/local/claude"
+alias claude="~/.local/bin/claude"
 
 # MCP setup utilities
 alias setup-obsidian-mcp="~/code/github.com/mjburtenshaw/macpracs/tools/setup-obsidian-mcp.sh"
