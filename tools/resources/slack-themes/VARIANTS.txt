@@ -1,0 +1,59 @@
+THEMODYNAMIC STARK - SLACK THEME CODES
+======================================
+
+STANDARD THEMES
+---------------
+
+Themodynamic Dark:
+#131114,#201d21,#7a2656,#edebe4,#2f2c30,#edebe4,#92b282,#ad7676,#0f0e10,#849ab8
+
+Themodynamic Light:
+#edebe4,#e0ddd3,#7a2656,#f7f6f2,#f7f6f2,#201d21,#4a6b3a,#5c2828,#f7f6f2,#5a708f
+
+
+ALTERNATIVE VARIANTS
+--------------------
+
+Dark - Purple Accent (More Memory.Grace):
+#131114,#201d21,#a3457a,#edebe4,#2f2c30,#edebe4,#92b282,#cc6aa2,#0f0e10,#849ab8
+
+Light - Sage Accent (More Memory.Sage):
+#edebe4,#e0ddd3,#6d8f5b,#f7f6f2,#f7f6f2,#201d21,#4a6b3a,#854a4a,#f7f6f2,#5a708f
+
+Dark - Orange Accent (Memory.Wrath):
+#131114,#201d21,#ad6c45,#edebe4,#2f2c30,#edebe4,#92b282,#e09970,#0f0e10,#849ab8
+
+Light - Blue Accent (Memory.Silver):
+#edebe4,#e0ddd3,#5a708f,#f7f6f2,#f7f6f2,#201d21,#4a6b3a,#849ab8,#f7f6f2,#364a66
+
+Dark - Red Accent (Memory.Whispers):
+#131114,#201d21,#854a4a,#edebe4,#2f2c30,#edebe4,#92b282,#ad7676,#0f0e10,#849ab8
+
+Light - Yellow Accent (Memory.Garden):
+#edebe4,#e0ddd3,#ada56c,#f7f6f2,#f7f6f2,#201d21,#4a6b3a,#d1c997,#f7f6f2,#5a708f
+
+
+SLACK THEME FORMAT
+------------------
+Position 1:  Column Background
+Position 2:  Menu Background Hover
+Position 3:  Active Item (accent color)
+Position 4:  Active Item Text
+Position 5:  Hover Item
+Position 6:  Text Color
+Position 7:  Active Presence (online indicator)
+Position 8:  Mention Badge
+Position 9:  Top Nav Background
+Position 10: Top Nav Text
+
+
+INSTALLATION
+------------
+1. Open Slack → Preferences (Cmd+,)
+2. Click "Themes" in sidebar
+3. Scroll to "Create a custom theme"
+4. Copy/paste one of the codes above
+5. Click "Done"
+
+
+"Color is rare. When it appears, it means something."

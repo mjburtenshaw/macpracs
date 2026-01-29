@@ -1,0 +1,295 @@
+/*
+Themodynamic Stark - Contextual Fonts
+=====================================
+
+This CSS snippet applies different fonts based on file context:
+- Prose files (/prose/ in path) → Serif
+- Notes/documentation → Sans-serif
+- Code blocks → Monospace
+
+Installation:
+1. Copy this file to: YourVault/.obsidian/snippets/
+2. Enable in Settings → Appearance → CSS snippets
+3. Restart Obsidian
+
+Recommended fonts (install these first):
+- Serif: Charter (built-in macOS) or Lora
+- Sans: Inter (download from rsms.me/inter)
+- Mono: FiraCode (already recommended)
+*/
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FONT VARIABLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Serif fonts (for prose) */
+  --font-prose-serif: "Charter", "Charter BT", "Lora", "Iowan Old Style", "Georgia", serif;
+
+  /* Sans-serif fonts (for notes) */
+  --font-notes-sans: "Inter", "SF Pro", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", sans-serif;
+
+  /* Monospace fonts (for code) */
+  --font-code-mono: "FiraCode-Regular", "Fira Code", "JetBrains Mono", "SF Mono", "Courier New", monospace;
+
+  /* Font sizes */
+  --font-size-prose: 18px;
+  --font-size-notes: 16px;
+  --font-size-code: 14px;
+
+  /* Line heights */
+  --line-height-prose: 1.8;
+  --line-height-notes: 1.6;
+  --line-height-code: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DEFAULT: SANS-SERIF FOR NOTES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Editor */
+.markdown-source-view.mod-cm6 .cm-content,
+.markdown-source-view.mod-cm6 .cm-line {
+  font-family: var(--font-notes-sans);
+  font-size: var(--font-size-notes);
+  line-height: var(--line-height-notes);
+}
+
+/* Reading view */
+.markdown-preview-view {
+  font-family: var(--font-notes-sans);
+  font-size: var(--font-size-notes);
+  line-height: var(--line-height-notes);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROSE FILES: SERIF FONT
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/*
+Target files with "prose" in their path.
+Obsidian uses data-path attribute on workspace leaves.
+*/
+
+/* Method 1: Using data-path attribute (if available) */
+.workspace-leaf[data-path*="/prose/"] .markdown-source-view.mod-cm6 .cm-content,
+.workspace-leaf[data-path*="/prose/"] .markdown-source-view.mod-cm6 .cm-line {
+  font-family: var(--font-prose-serif);
+  font-size: var(--font-size-prose);
+  line-height: var(--line-height-prose);
+}
+
+.workspace-leaf[data-path*="/prose/"] .markdown-preview-view {
+  font-family: var(--font-prose-serif);
+  font-size: var(--font-size-prose);
+  line-height: var(--line-height-prose);
+}
+
+/* Method 2: Using inline title as indicator (fallback) */
+.inline-title:has-text("prose") ~ .markdown-source-view.mod-cm6 .cm-content,
+.inline-title:has-text("prose") ~ .markdown-source-view.mod-cm6 .cm-line {
+  font-family: var(--font-prose-serif);
+  font-size: var(--font-size-prose);
+  line-height: var(--line-height-prose);
+}
+
+/* Prose paragraph spacing */
+.workspace-leaf[data-path*="/prose/"] .markdown-preview-view p,
+.workspace-leaf[data-path*="/prose/"] .cm-line {
+  margin-bottom: 1.2em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CODE BLOCKS: MONOSPACE (BOTH CONTEXTS)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Inline code */
+.cm-inline-code,
+code {
+  font-family: var(--font-code-mono);
+  font-size: 0.9em;
+}
+
+/* Code blocks - Editor */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock {
+  font-family: var(--font-code-mono);
+  font-size: var(--font-size-code);
+  line-height: var(--line-height-code);
+}
+
+/* Code blocks - Reading view */
+.markdown-preview-view pre,
+.markdown-preview-view code {
+  font-family: var(--font-code-mono);
+  font-size: var(--font-size-code);
+  line-height: var(--line-height-code);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MANUAL TOGGLE: CSS CLASSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/*
+If path detection doesn't work, you can manually add a CSS class to files
+using the "cssclass" frontmatter property:
+
+---
+cssclass: prose-mode
+---
+
+Then the file will use serif fonts.
+*/
+
+.prose-mode .markdown-source-view.mod-cm6 .cm-content,
+.prose-mode .markdown-source-view.mod-cm6 .cm-line,
+.prose-mode .markdown-preview-view {
+  font-family: var(--font-prose-serif);
+  font-size: var(--font-size-prose);
+  line-height: var(--line-height-prose);
+}
+
+.notes-mode .markdown-source-view.mod-cm6 .cm-content,
+.notes-mode .markdown-source-view.mod-cm6 .cm-line,
+.notes-mode .markdown-preview-view {
+  font-family: var(--font-notes-sans);
+  font-size: var(--font-size-notes);
+  line-height: var(--line-height-notes);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HEADERS: ALWAYS SANS-SERIF (OPTIONAL)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/*
+Uncomment this section if you want headers to always be sans-serif,
+even in prose files. This can help with structure and hierarchy.
+*/
+
+/*
+.markdown-preview-view h1,
+.markdown-preview-view h2,
+.markdown-preview-view h3,
+.markdown-preview-view h4,
+.markdown-preview-view h5,
+.markdown-preview-view h6,
+.cm-header {
+  font-family: var(--font-notes-sans);
+}
+*/
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FONT FEATURE SETTINGS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Enable ligatures for code */
+.cm-inline-code,
+code,
+pre {
+  font-variant-ligatures: normal;
+  font-feature-settings: "liga" 1, "calt" 1;
+}
+
+/* Enable proper quotation marks for prose */
+.workspace-leaf[data-path*="/prose/"] .markdown-preview-view,
+.prose-mode .markdown-preview-view {
+  font-variant-ligatures: common-ligatures;
+  font-feature-settings: "liga" 1, "calt" 1;
+  text-rendering: optimizeLegibility;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ADJUSTMENTS FOR READING MODE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Increase max width for prose files in reading mode */
+.workspace-leaf[data-path*="/prose/"] .markdown-preview-view,
+.prose-mode .markdown-preview-view {
+  max-width: 750px;
+  margin: 0 auto;
+  padding: 2em 3em;
+}
+
+/* Standard width for notes */
+.markdown-preview-view {
+  max-width: 700px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FIRST LINE INDENT FOR PROSE (OPTIONAL)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/*
+Uncomment for traditional book-style first-line indentation in prose files.
+*/
+
+/*
+.workspace-leaf[data-path*="/prose/"] .markdown-preview-view p + p,
+.prose-mode .markdown-preview-view p + p {
+  text-indent: 2em;
+  margin-top: 0;
+}
+*/
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DEBUGGING: SHOW WHICH MODE IS ACTIVE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/*
+Uncomment to add a subtle indicator showing which font mode is active.
+This helps verify the CSS is working correctly.
+*/
+
+/*
+.workspace-leaf[data-path*="/prose/"]::before {
+  content: "📖 Prose Mode";
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: var(--grace-2);
+  color: var(--key-1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 1000;
+}
+
+.markdown-source-view::before {
+  content: "📝 Notes Mode";
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: var(--silver-2);
+  color: var(--key-1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 1000;
+}
+
+.workspace-leaf[data-path*="/prose/"] .markdown-source-view::before {
+  content: "📖 Prose Mode";
+  background: var(--grace-2);
+}
+*/
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CUSTOMIZATION GUIDE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/*
+To customize fonts, edit the variables at the top:
+
+--font-prose-serif: Your preferred serif font
+--font-notes-sans: Your preferred sans-serif font
+--font-code-mono: Your preferred monospace font
+
+Font size recommendations:
+- Prose: 17-19px (larger for comfort)
+- Notes: 15-17px (standard)
+- Code: 13-15px (smaller, more compact)
+
+Line height recommendations:
+- Prose: 1.7-1.9 (generous for readability)
+- Notes: 1.5-1.7 (standard)
+- Code: 1.4-1.6 (compact)
+*/

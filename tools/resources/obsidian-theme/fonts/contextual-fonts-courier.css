@@ -1,0 +1,298 @@
+/*
+Themodynamic Stark - Courier System (Maximum Brutality)
+========================================================
+
+"The system does not seek peace. It seeks containment."
+
+Pure typewriter aesthetic - field reports typed in the Survey Corps.
+Everything is monospace. Maximum stark functionality.
+
+Installation:
+1. Install Courier Prime from Google Fonts (optional - Courier is built-in)
+2. Copy this file to: YourVault/.obsidian/snippets/
+3. Enable in Settings → Appearance → CSS snippets
+4. Restart Obsidian
+*/
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FONT VARIABLES - COURIER SYSTEM
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Courier Prime - Refined version of classic Courier */
+  --font-typewriter: "Courier Prime", "Courier New", "Courier", monospace;
+
+  /* Courier Prime Code - Optimized for programming */
+  --font-code: "Courier Prime Code", "Courier Prime", "Courier New", monospace;
+
+  /* Font sizes - Larger for monospace readability */
+  --font-size-prose: 16px;   /* Monospace needs to be smaller */
+  --font-size-notes: 15px;   /* Even more compact for notes */
+  --font-size-code: 14px;    /* Standard code size */
+
+  /* Line heights - Generous for monospace */
+  --line-height-prose: 1.8;  /* Extra spacing for comfort */
+  --line-height-notes: 1.7;  /* Still generous */
+  --line-height-code: 1.6;   /* Technical blocks */
+
+  /* Character width optimization */
+  --letter-spacing-prose: 0.01em;   /* Slight breathing room */
+  --letter-spacing-notes: 0;        /* Tight for efficiency */
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DEFAULT: COURIER FOR EVERYTHING
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Editor - all files */
+.markdown-source-view.mod-cm6 .cm-content,
+.markdown-source-view.mod-cm6 .cm-line {
+  font-family: var(--font-typewriter);
+  font-size: var(--font-size-notes);
+  line-height: var(--line-height-notes);
+  letter-spacing: var(--letter-spacing-notes);
+}
+
+/* Reading view - all files */
+.markdown-preview-view {
+  font-family: var(--font-typewriter);
+  font-size: var(--font-size-notes);
+  line-height: var(--line-height-notes);
+  letter-spacing: var(--letter-spacing-notes);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROSE FILES: SLIGHTLY LARGER COURIER
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Same font, just larger and more generous spacing */
+.workspace-leaf[data-path*="/prose/"] .markdown-source-view.mod-cm6 .cm-content,
+.workspace-leaf[data-path*="/prose/"] .markdown-source-view.mod-cm6 .cm-line {
+  font-size: var(--font-size-prose);
+  line-height: var(--line-height-prose);
+  letter-spacing: var(--letter-spacing-prose);
+}
+
+.workspace-leaf[data-path*="/prose/"] .markdown-preview-view {
+  font-size: var(--font-size-prose);
+  line-height: var(--line-height-prose);
+  letter-spacing: var(--letter-spacing-prose);
+}
+
+/* Manual frontmatter control */
+.prose-mode .markdown-source-view.mod-cm6 .cm-content,
+.prose-mode .markdown-source-view.mod-cm6 .cm-line,
+.prose-mode .markdown-preview-view {
+  font-size: var(--font-size-prose);
+  line-height: var(--line-height-prose);
+  letter-spacing: var(--letter-spacing-prose);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CODE BLOCKS: COURIER PRIME CODE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Inline code - slightly smaller */
+.cm-inline-code,
+code {
+  font-family: var(--font-code);
+  font-size: 0.95em; /* Closer to body size since both are mono */
+}
+
+/* Code blocks */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock {
+  font-family: var(--font-code);
+  font-size: var(--font-size-code);
+  line-height: var(--line-height-code);
+}
+
+.markdown-preview-view pre,
+.markdown-preview-view code {
+  font-family: var(--font-code);
+  font-size: var(--font-size-code);
+  line-height: var(--line-height-code);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HEADERS: BOLD COURIER (TYPEWRITER EMPHASIS)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Headers stay monospace but use bold */
+.markdown-preview-view h1,
+.markdown-preview-view h2,
+.markdown-preview-view h3,
+.markdown-preview-view h4,
+.markdown-preview-view h5,
+.markdown-preview-view h6,
+.cm-header {
+  font-family: var(--font-typewriter);
+  font-weight: 700;
+  letter-spacing: 0.02em; /* Slightly wider for headers */
+}
+
+/* H1 and H2 slightly larger */
+.markdown-preview-view h1,
+.cm-header-1 {
+  font-size: 1.4em;
+  text-transform: uppercase; /* Old typewriter style */
+  letter-spacing: 0.05em;
+}
+
+.markdown-preview-view h2,
+.cm-header-2 {
+  font-size: 1.2em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EMPHASIS: TYPEWRITER STYLE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Bold - heavier weight */
+.markdown-preview-view strong,
+.cm-strong {
+  font-weight: 700;
+}
+
+/* Italic - slanted but still monospace */
+.markdown-preview-view em,
+.cm-em {
+  font-style: italic;
+}
+
+/* Bold italic - both */
+.markdown-preview-view strong em,
+.markdown-preview-view em strong {
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LISTS: MECHANICAL FORMATTING
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* List markers heavy weight */
+.markdown-preview-view li::marker {
+  font-weight: 700;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BLOCKQUOTES: TYPEWRITER INDENT STYLE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Traditional typewriter blockquote - indented and italicized */
+.markdown-preview-view blockquote {
+  font-style: italic;
+  padding-left: 3ch; /* Character-based indent for monospace */
+  margin-left: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYOUT ADJUSTMENTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Prose files - wider for comfort */
+.workspace-leaf[data-path*="/prose/"] .markdown-preview-view,
+.prose-mode .markdown-preview-view {
+  max-width: 80ch; /* Character-based width for monospace */
+  margin: 0 auto;
+  padding: 2em 3em;
+}
+
+/* Notes files - narrower for efficiency */
+.markdown-preview-view {
+  max-width: 75ch; /* Character-based width */
+}
+
+/* Paragraph spacing */
+.workspace-leaf[data-path*="/prose/"] .markdown-preview-view p,
+.prose-mode .markdown-preview-view p {
+  margin-bottom: 1.2em;
+}
+
+.markdown-preview-view p {
+  margin-bottom: 1em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FONT RENDERING: TYPEWRITER SHARPNESS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Sharp rendering for typewriter aesthetic */
+.markdown-preview-view,
+.markdown-source-view {
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: auto;
+  text-rendering: optimizeSpeed; /* Faster, sharper */
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TABLES: ALIGNED MONOSPACE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Tables benefit from monospace alignment */
+.markdown-preview-view table {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DEBUGGING INDICATOR (OPTIONAL)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/*
+Uncomment to show which mode is active:
+
+.workspace-leaf[data-path*="/prose/"]::before {
+  content: "⌨ Courier (Prose Field Report)";
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: var(--grace-2);
+  color: var(--key-1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: var(--font-typewriter);
+  font-size: 11px;
+  font-weight: 700;
+  z-index: 1000;
+}
+
+.markdown-source-view::before {
+  content: "⌨ Courier (Notes)";
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: var(--silver-2);
+  color: var(--key-1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: var(--font-typewriter);
+  font-size: 11px;
+  font-weight: 700;
+  z-index: 1000;
+}
+
+.workspace-leaf[data-path*="/prose/"] .markdown-source-view::before {
+  content: "⌨ Courier (Prose Field Report)";
+  background: var(--grace-2);
+}
+*/
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THEMODYNAMIC STARK INTEGRATION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/*
+Maximum brutality: everything is typewriter.
+
+This is the pure field report aesthetic:
+- Survey Corps logs typed on portable typewriters
+- Military documentation under harsh conditions
+- Telegraph messages from the frontlines
+- Archival records with zero embellishment
+
+"The system does not seek peace. It seeks containment."
+
+Every document is a field report. Every note is documentation.
+Courier is the ultimate stark functionality.
+*/

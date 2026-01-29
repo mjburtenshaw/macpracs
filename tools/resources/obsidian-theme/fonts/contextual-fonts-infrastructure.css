@@ -1,0 +1,196 @@
+/*
+Themodynamic Stark - Infrastructure Fonts
+==========================================
+
+"If the font is telling you to pay attention to it, it's a bad font."
+
+Infrastructure principle:
+- Fonts should be invisible
+- Content is the color, font is the desaturated base
+- System fonts except where ligatures add functional value
+
+Fonts:
+- Notes: SF Pro (built-in macOS sans)
+- Prose: Charter (built-in macOS serif) - requires Prose Mode plugin
+- Code: FiraCode (ligatures justify the exception)
+
+Installation:
+1. Install the Prose Mode plugin (optional - enables Charter for /prose/ files)
+2. FiraCode is optional (falls back to SF Mono)
+3. Copy this file to: YourVault/.obsidian/snippets/
+4. Enable in Settings → Appearance → CSS snippets
+5. Restart Obsidian
+*/
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INFRASTRUCTURE FONTS - Override Obsidian's font variables
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.theme-dark,
+.theme-light {
+  /* Main text font - SF Pro system font */
+  --font-text: "SF Pro", "-apple-system", "BlinkMacSystemFont", sans-serif;
+
+  /* Code font - FiraCode with ligatures */
+  --font-monospace: "FiraCode-Regular", "Fira Code", "SF Mono", "Menlo", monospace;
+
+  /* Interface font - same as text */
+  --font-interface: "SF Pro", "-apple-system", "BlinkMacSystemFont", sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROSE MODE - Pure monochrome reader's view (requires Prose Mode plugin)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.prose-mode {
+  /* Serif font for traditional prose */
+  --font-text: "Charter", "Georgia", serif;
+
+  /* Pure monochrome - everything is foreground color */
+  --text-accent: var(--text-normal);
+  --text-accent-hover: var(--text-normal);
+  --link-color: var(--text-normal);
+  --link-color-hover: var(--text-normal);
+  --link-external-color: var(--text-normal);
+
+  /* Headings - structure only, no color */
+  --h1-color: var(--text-normal);
+  --h2-color: var(--text-normal);
+  --h3-color: var(--text-normal);
+  --h4-color: var(--text-normal);
+  --h5-color: var(--text-normal);
+  --h6-color: var(--text-normal);
+}
+
+.prose-mode .markdown-source-view.mod-cm6 .cm-content,
+.prose-mode .markdown-source-view.mod-cm6 .cm-line,
+.prose-mode .markdown-preview-view {
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+/* Strip color from all prose elements */
+.prose-mode .cm-header-1,
+.prose-mode .cm-header-2,
+.prose-mode .cm-header-3,
+.prose-mode .cm-header-4,
+.prose-mode .cm-header-5,
+.prose-mode .cm-header-6,
+.prose-mode .markdown-preview-view h1,
+.prose-mode .markdown-preview-view h2,
+.prose-mode .markdown-preview-view h3,
+.prose-mode .markdown-preview-view h4,
+.prose-mode .markdown-preview-view h5,
+.prose-mode .markdown-preview-view h6 {
+  color: var(--text-normal);
+}
+
+/* Links - present but not colored */
+.prose-mode .cm-link,
+.prose-mode .cm-hmd-internal-link,
+.prose-mode .markdown-preview-view .internal-link,
+.prose-mode .cm-url,
+.prose-mode .external-link {
+  color: var(--text-normal);
+  text-decoration: none;
+}
+
+.prose-mode .cm-link:hover,
+.prose-mode .cm-hmd-internal-link:hover,
+.prose-mode .markdown-preview-view .internal-link:hover {
+  text-decoration: underline;
+}
+
+/* Bold - present but not colored */
+.prose-mode .cm-strong,
+.prose-mode .markdown-preview-view strong {
+  color: var(--text-normal);
+}
+
+/* Italic - present but not colored */
+.prose-mode .cm-em,
+.prose-mode .markdown-preview-view em {
+  color: var(--text-normal);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   QUOTE BLOCKS - Apply prose styling everywhere
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Editor view - target the line container, not the spans */
+.HyperMD-quote {
+  font-family: "Charter", "Georgia", serif;
+  font-size: 18px;
+  line-height: 1.4;
+  border-left: 3px solid var(--text-muted);
+  background-color: transparent;
+}
+
+.cm-quote {
+  color: var(--text-normal);
+  font-style: italic;
+  border-left: none;
+  background-color: transparent;
+  padding-left: 0;
+}
+
+.cm-formatting-quote::before {
+  border-inline-start-color: var(--text-muted);
+}
+
+/* Live preview ::before borders */
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote::before,
+.markdown-source-view.mod-cm6 .cm-blockquote-border::before {
+  border-inline-start-color: var(--text-muted);
+}
+
+/* Reading view */
+.markdown-preview-view blockquote {
+  font-family: "Charter", "Georgia", serif;
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--text-normal);
+  border-left: 3px solid var(--text-muted);
+  background-color: transparent;
+  font-style: italic;
+}
+
+.markdown-preview-view blockquote::before {
+  border-inline-start-color: var(--text-muted);
+}
+
+/* Strip color from formatted text in quotes */
+.cm-quote .cm-strong,
+.cm-quote .cm-em,
+.markdown-preview-view blockquote strong,
+.markdown-preview-view blockquote em {
+  color: var(--text-normal);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ENABLE LIGATURES FOR CODE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.cm-inline-code,
+code,
+pre,
+.markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  font-variant-ligatures: normal;
+  font-feature-settings: "liga" 1, "calt" 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INFRASTRUCTURE PRINCIPLE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/*
+The font is infrastructure.
+You should read the content, not notice the font.
+
+SF Pro: System font you already know (built-in macOS)
+FiraCode: Ligatures improve code readability (install once, becomes infrastructure)
+
+"Color is rare. When it appears, it means something."
+The Themodynamic Stark color palette is the pop of color.
+The font is the desaturated base - functional, invisible, reliable.
+*/

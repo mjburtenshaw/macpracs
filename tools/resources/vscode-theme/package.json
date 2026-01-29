@@ -1,0 +1,40 @@
+{
+  "name": "themodynamic-stark",
+  "displayName": "Themodynamic Stark",
+  "description": "A zero-sum narrative economy rendered in color - pops of meaningful color against an otherwise desaturated world",
+  "version": "1.0.0",
+  "publisher": "kuroki",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Themes"
+  ],
+  "contributes": {
+    "themes": [
+      {
+        "label": "Themodynamic Dark",
+        "uiTheme": "vs-dark",
+        "path": "./themes/themodynamic-dark.json"
+      },
+      {
+        "label": "Themodynamic Light",
+        "uiTheme": "vs",
+        "path": "./themes/themodynamic-light.json"
+      }
+    ]
+  },
+  "keywords": [
+    "theme",
+    "dark",
+    "light",
+    "fantasy",
+    "narrative",
+    "stark",
+    "desaturated"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kuroki/themodynamic-stark"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "prose-mode",
+  "name": "Prose Mode",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Automatically applies prose-mode class to files in /prose/ directories for serif font rendering",
+  "author": "Malcolm Burtenshaw",
+  "authorUrl": "https://github.com/mjburtenshaw",
+  "isDesktopOnly": false
+}

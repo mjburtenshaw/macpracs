@@ -1,0 +1,687 @@
+/*
+Themodynamic Stark - Obsidian Theme
+"The system does not seek peace. It seeks containment."
+
+A zero-sum narrative economy rendered in color.
+Color is rare. When it appears, it means something.
+
+Palette organized by the Eldritch Keys cosmology:
+- Void Band (3): Forgetting, absence, silence
+- Key Band (3): Preservation, clarity, witness
+- Memory Band (24): What we preserve
+
+Version: 1.0.0
+Author: Malcolm Burtenshaw
+*/
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   COLOR PALETTE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.theme-dark {
+  /* Void Band - Backgrounds, shadows, deep tones */
+  --void-0: #131114;
+  --void-1: #201d21;
+  --void-2: #2f2c30;
+
+  /* Key Band - Paper base, highlights, light features */
+  --key-0: #e0ddd3;
+  --key-1: #edebe4;
+  --key-2: #f7f6f2;
+
+  /* Memory.Whispers - Alice's favorite color (red) */
+  --whispers-0: #ad7676;
+  --whispers-1: #854a4a;
+  --whispers-2: #5c2828;
+  --whispers-3: #330f0f;
+
+  /* Memory.Wrath - Colt's eye striations (orange) */
+  --wrath-0: #e09970;
+  --wrath-1: #ad6c45;
+  --wrath-2: #7a4322;
+  --wrath-3: #47210b;
+
+  /* Memory.Sage - Alice's eyes (green) */
+  --sage-0: #bcd6b0;
+  --sage-1: #92b282;
+  --sage-2: #6d8f5b;
+  --sage-3: #4a6b3a;
+
+  /* Memory.Silver - Silver's eyes (blue) */
+  --silver-0: #b4c6e0;
+  --silver-1: #849ab8;
+  --silver-2: #5a708f;
+  --silver-3: #364a66;
+
+  /* Memory.Garden - Mary Feybrook's hair (yellow) */
+  --garden-0: #f5efc9;
+  --garden-1: #d1c997;
+  --garden-2: #ada56c;
+  --garden-3: #8a8148;
+
+  /* Memory.Grace - Colt's scarf (purple) */
+  --grace-0: #cc6aa2;
+  --grace-1: #a3457a;
+  --grace-2: #7a2656;
+  --grace-3: #521035;
+}
+
+.theme-light {
+  /* Void Band */
+  --void-0: #131114;
+  --void-1: #201d21;
+  --void-2: #2f2c30;
+
+  /* Key Band */
+  --key-0: #e0ddd3;
+  --key-1: #edebe4;
+  --key-2: #f7f6f2;
+
+  /* Memory.Whispers */
+  --whispers-0: #ad7676;
+  --whispers-1: #854a4a;
+  --whispers-2: #5c2828;
+  --whispers-3: #330f0f;
+
+  /* Memory.Wrath */
+  --wrath-0: #e09970;
+  --wrath-1: #ad6c45;
+  --wrath-2: #7a4322;
+  --wrath-3: #47210b;
+
+  /* Memory.Sage */
+  --sage-0: #bcd6b0;
+  --sage-1: #92b282;
+  --sage-2: #6d8f5b;
+  --sage-3: #4a6b3a;
+
+  /* Memory.Silver */
+  --silver-0: #b4c6e0;
+  --silver-1: #849ab8;
+  --silver-2: #5a708f;
+  --silver-3: #364a66;
+
+  /* Memory.Garden */
+  --garden-0: #f5efc9;
+  --garden-1: #d1c997;
+  --garden-2: #ada56c;
+  --garden-3: #8a8148;
+
+  /* Memory.Grace */
+  --grace-0: #cc6aa2;
+  --grace-1: #a3457a;
+  --grace-2: #7a2656;
+  --grace-3: #521035;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE COLORS - DARK MODE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.theme-dark {
+  /* Base colors */
+  --background-primary: var(--void-0);
+  --background-primary-alt: var(--void-1);
+  --background-secondary: var(--void-1);
+  --background-secondary-alt: var(--void-2);
+  --background-modifier-border: var(--void-2);
+  --background-modifier-form-field: var(--void-1);
+  --background-modifier-form-field-highlighted: var(--void-2);
+  --background-modifier-box-shadow: rgba(0, 0, 0, 0.3);
+  --background-modifier-success: var(--sage-3);
+  --background-modifier-error: var(--whispers-2);
+  --background-modifier-error-rgb: 92, 40, 40;
+  --background-modifier-error-hover: var(--whispers-1);
+  --background-modifier-cover: rgba(19, 17, 20, 0.8);
+
+  /* Text colors */
+  --text-normal: var(--silver-2);
+  --text-muted: var(--silver-3);
+  --text-faint: var(--void-2);
+  --text-on-accent: var(--key-1);
+  --text-error: var(--whispers-0);
+  --text-success: var(--sage-1);
+  --text-selection: rgba(163, 69, 122, 0.3);
+  --text-accent: var(--grace-1);
+  --text-accent-hover: var(--grace-0);
+  --list-marker-color: var(--text-normal);
+
+  /* Interactive colors */
+  --interactive-normal: var(--void-2);
+  --interactive-hover: var(--silver-2);
+  --interactive-accent: var(--grace-1);
+  --interactive-accent-rgb: 163, 69, 122;
+  --interactive-accent-hover: var(--grace-0);
+  --interactive-success: var(--sage-2);
+
+  /* Scrollbar */
+  --scrollbar-bg: var(--void-1);
+  --scrollbar-thumb-bg: var(--void-2);
+  --scrollbar-active-thumb-bg: var(--silver-2);
+
+  /* Highlights */
+  --text-highlight-bg: var(--grace-3);
+  --text-highlight-bg-active: var(--grace-2);
+
+  /* Code */
+  --code-normal: var(--key-1);
+  --code-background: var(--void-1);
+  --code-comment: var(--silver-2);
+  --code-function: var(--garden-1);
+  --code-keyword: var(--grace-1);
+  --code-string: var(--sage-1);
+  --code-tag: var(--grace-1);
+  --code-value: var(--wrath-1);
+
+  /* Graph */
+  --graph-node: var(--silver-1);
+  --graph-line: var(--void-2);
+  --graph-node-unresolved: var(--silver-3);
+  --graph-node-tag: var(--grace-1);
+  --graph-node-attachment: var(--sage-1);
+
+  /* Links */
+  --link-color: var(--silver-0);
+  --link-color-hover: var(--silver-0);
+  --link-external-color: var(--wrath-0);
+  --link-unresolved-color: var(--whispers-0);
+  --link-unresolved-opacity: 1;
+
+  /* Tags */
+  --tag-color: var(--grace-1);
+  --tag-background: var(--grace-3);
+
+  /* Checkboxes */
+  --checkbox-color: var(--grace-1);
+  --checkbox-color-hover: var(--grace-0);
+  --checkbox-border-color: var(--silver-2);
+
+  /* Tables */
+  --table-header-background: var(--void-2);
+  --table-row-even-background: var(--void-1);
+  --table-row-odd-background: var(--void-0);
+  --table-row-alt-background: var(--void-1);
+  --table-border-color: var(--void-2);
+
+  /* Blockquotes */
+  --blockquote-border: var(--silver-2);
+  --blockquote-background: var(--void-1);
+
+  /* Dividers */
+  --hr-color: var(--void-2);
+
+  /* Indentation guides */
+  --indentation-guide-color: var(--void-2);
+  --indentation-guide-color-active: var(--silver-2);
+
+  /* Icons */
+  --icon-color: var(--silver-2);
+  --icon-color-hover: var(--grace-1);
+  --icon-color-active: var(--grace-1);
+  --icon-color-focused: var(--grace-0);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE COLORS - LIGHT MODE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.theme-light {
+  /* Base colors */
+  --background-primary: var(--key-1);
+  --background-primary-alt: var(--key-0);
+  --background-secondary: var(--key-2);
+  --background-secondary-alt: var(--key-0);
+  --background-modifier-border: var(--key-0);
+  --background-modifier-form-field: var(--key-2);
+  --background-modifier-form-field-highlighted: var(--key-0);
+  --background-modifier-box-shadow: rgba(0, 0, 0, 0.1);
+  --background-modifier-success: var(--sage-0);
+  --background-modifier-error: var(--whispers-0);
+  --background-modifier-error-rgb: 173, 118, 118;
+  --background-modifier-error-hover: var(--whispers-1);
+  --background-modifier-cover: rgba(237, 235, 228, 0.8);
+
+  /* Text colors */
+  --text-normal: var(--void-1);
+  --text-muted: var(--silver-2);
+  --text-faint: var(--silver-1);
+  --text-on-accent: var(--key-1);
+  --text-error: var(--whispers-2);
+  --text-success: var(--sage-3);
+  --text-selection: rgba(122, 38, 86, 0.25);
+  --text-accent: var(--grace-2);
+  --text-accent-hover: var(--grace-1);
+  --list-marker-color: var(--text-normal);
+
+  /* Interactive colors */
+  --interactive-normal: var(--key-0);
+  --interactive-hover: var(--silver-1);
+  --interactive-accent: var(--grace-2);
+  --interactive-accent-rgb: 122, 38, 86;
+  --interactive-accent-hover: var(--grace-1);
+  --interactive-success: var(--sage-2);
+
+  /* Scrollbar */
+  --scrollbar-bg: var(--key-2);
+  --scrollbar-thumb-bg: var(--key-0);
+  --scrollbar-active-thumb-bg: var(--silver-1);
+
+  /* Highlights */
+  --text-highlight-bg: var(--grace-0);
+  --text-highlight-bg-active: var(--grace-1);
+
+  /* Code */
+  --code-normal: var(--sage-3);
+  --code-background: var(--key-2);
+  --code-comment: var(--silver-2);
+  --code-function: var(--garden-3);
+  --code-keyword: var(--grace-2);
+  --code-string: var(--sage-2);
+  --code-tag: var(--grace-2);
+  --code-value: var(--wrath-2);
+
+  /* Graph */
+  --graph-node: var(--silver-2);
+  --graph-line: var(--key-0);
+  --graph-node-unresolved: var(--silver-1);
+  --graph-node-tag: var(--grace-2);
+  --graph-node-attachment: var(--sage-2);
+
+  /* Links */
+  --link-color: var(--silver-2);
+  --link-color-hover: var(--silver-3);
+  --link-external-color: var(--wrath-2);
+  --link-unresolved-color: var(--silver-1);
+  --link-unresolved-opacity: 0.6;
+
+  /* Tags */
+  --tag-color: var(--grace-2);
+  --tag-background: var(--grace-0);
+
+  /* Checkboxes */
+  --checkbox-color: var(--grace-2);
+  --checkbox-color-hover: var(--grace-1);
+  --checkbox-border-color: var(--silver-1);
+
+  /* Tables */
+  --table-header-background: var(--key-0);
+  --table-row-even-background: var(--key-2);
+  --table-row-odd-background: var(--key-1);
+  --table-row-alt-background: var(--key-2);
+  --table-border-color: var(--key-0);
+
+  /* Blockquotes */
+  --blockquote-border: var(--silver-1);
+  --blockquote-background: var(--key-2);
+
+  /* Dividers */
+  --hr-color: var(--key-0);
+
+  /* Indentation guides */
+  --indentation-guide-color: var(--key-0);
+  --indentation-guide-color-active: var(--silver-1);
+
+  /* Icons */
+  --icon-color: var(--silver-2);
+  --icon-color-hover: var(--grace-2);
+  --icon-color-active: var(--grace-2);
+  --icon-color-focused: var(--grace-1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+body {
+  --font-text: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-monospace: "FiraCode-Regular", "SF Mono", Monaco, "Cascadia Code", "Courier New", monospace;
+  --font-interface: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EDITOR STYLING
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Headers */
+.cm-header-1,
+.markdown-preview-view h1 {
+  color: var(--grace-1);
+  font-weight: 700;
+}
+
+.cm-header-2,
+.markdown-preview-view h2 {
+  color: var(--grace-1);
+  font-weight: 600;
+}
+
+.cm-header-3,
+.markdown-preview-view h3 {
+  color: var(--text-normal);
+  font-weight: 600;
+}
+
+.cm-header-4,
+.markdown-preview-view h4 {
+  color: var(--text-normal);
+  font-weight: 600;
+}
+
+.cm-header-5,
+.markdown-preview-view h5 {
+  color: var(--text-normal);
+  font-weight: 600;
+}
+
+.cm-header-6,
+.markdown-preview-view h6 {
+  color: var(--text-normal);
+  font-weight: 600;
+}
+
+/* Strong tags within headings should inherit heading color */
+.markdown-preview-view h1 strong,
+.markdown-preview-view h2 strong,
+.markdown-preview-view h3 strong,
+.markdown-preview-view h4 strong,
+.markdown-preview-view h5 strong,
+.markdown-preview-view h6 strong {
+  color: inherit;
+}
+
+/* Links */
+.cm-link,
+.cm-hmd-internal-link,
+.markdown-preview-view .internal-link {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.cm-link:hover,
+.cm-hmd-internal-link:hover,
+.markdown-preview-view .internal-link:hover {
+  color: var(--link-color-hover);
+  text-decoration: underline;
+}
+
+.cm-url,
+.external-link {
+  color: var(--link-external-color);
+}
+
+/* Bold */
+.cm-strong,
+.markdown-preview-view strong {
+  color: var(--text-normal);
+  font-weight: 700;
+}
+
+/* Italic */
+.cm-em,
+.markdown-preview-view em {
+  color: var(--text-normal);
+  font-style: italic;
+}
+
+/* Code */
+.cm-inline-code,
+code {
+  color: var(--code-normal);
+  background-color: var(--code-background);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: var(--font-monospace);
+  font-size: 0.9em;
+}
+
+/* Code blocks */
+pre code {
+  color: var(--code-normal);
+  background-color: var(--code-background);
+  padding: 1em;
+  display: block;
+  border-radius: 5px;
+}
+
+/* Tags */
+.cm-hashtag,
+.tag {
+  color: var(--tag-color);
+  background-color: var(--tag-background);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+/* Blockquotes */
+.cm-quote,
+.markdown-preview-view blockquote {
+  color: var(--text-muted);
+  border-left: 3px solid var(--blockquote-border);
+  padding-left: 1em;
+  background-color: var(--blockquote-background);
+  font-style: italic;
+}
+
+/* Embeds */
+.markdown-embed,
+.internal-embed {
+  border-left: 4px solid var(--grace-1);
+  padding-left: 1em;
+}
+
+/* Lists - color controlled by --list-marker-color variable */
+
+/* Task lists */
+.task-list-item-checkbox {
+  border: 2px solid var(--checkbox-border-color);
+  appearance: none;
+  width: 1.2em;
+  height: 1.2em;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.task-list-item-checkbox:checked {
+  background-color: var(--checkbox-color);
+  border-color: var(--checkbox-color);
+}
+
+.task-list-item-checkbox:hover {
+  border-color: var(--checkbox-color-hover);
+}
+
+/* Horizontal rules */
+hr {
+  border-color: var(--hr-color);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GRAPH VIEW
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.graph-view.color-circle,
+.graph-view.color-fill-highlight {
+  color: var(--graph-node);
+}
+
+.graph-view.color-line {
+  color: var(--graph-line);
+}
+
+.graph-view.color-text {
+  color: var(--text-normal);
+}
+
+.graph-view.color-fill-tag {
+  color: var(--graph-node-tag);
+}
+
+.graph-view.color-fill-attachment {
+  color: var(--graph-node-attachment);
+}
+
+.graph-view.color-fill-unresolved {
+  color: var(--graph-node-unresolved);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FILE EXPLORER
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.nav-file-title,
+.nav-folder-title {
+  color: var(--text-normal);
+}
+
+.nav-file-title:hover,
+.nav-folder-title:hover {
+  background-color: var(--background-secondary-alt);
+}
+
+.nav-file-title.is-active {
+  background-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TABLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table thead {
+  background-color: var(--table-header-background);
+  font-weight: 600;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: var(--table-row-even-background);
+}
+
+table tbody tr:nth-child(odd) {
+  background-color: var(--table-row-odd-background);
+}
+
+table th,
+table td {
+  border: 1px solid var(--table-border-color);
+  padding: 8px 12px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLLBARS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-bg);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-active-thumb-bg);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODALS & PROMPTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.modal {
+  background-color: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+}
+
+.modal-title {
+  color: var(--text-accent);
+  font-weight: 600;
+}
+
+.prompt {
+  background-color: var(--background-primary-alt);
+  border: 1px solid var(--background-modifier-border);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SETTINGS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.setting-item {
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+.setting-item-name {
+  color: var(--text-normal);
+  font-weight: 500;
+}
+
+.setting-item-description {
+  color: var(--text-muted);
+  font-size: 0.9em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+button {
+  background-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+button:hover {
+  background-color: var(--interactive-accent-hover);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CUSTOM ENHANCEMENTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Highlight current line in editor */
+.cm-active .CodeMirror-activeline-background {
+  background-color: var(--background-primary-alt);
+}
+
+/* Selection highlighting */
+.cm-content ::selection,
+.markdown-preview-view ::selection {
+  background-color: var(--text-selection);
+}
+
+/* Cursor */
+.cm-cursor {
+  border-left-color: var(--text-accent);
+}
+
+/* Focus outline */
+:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+}
+
+/* Suggestion container */
+.suggestion-container {
+  background-color: var(--background-primary-alt);
+  border: 1px solid var(--background-modifier-border);
+}
+
+.suggestion-item.is-selected {
+  background-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+}

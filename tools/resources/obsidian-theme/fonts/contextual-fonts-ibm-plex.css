@@ -1,0 +1,283 @@
+/*
+Themodynamic Stark - IBM Plex Font System
+==========================================
+
+"The system does not seek peace. It seeks containment."
+
+IBM Plex family - systematic, industrial, precise.
+Perfect for military field documentation aesthetic.
+
+Installation:
+1. Install IBM Plex Serif, Sans, and Mono from GitHub or Google Fonts
+2. Copy this file to: YourVault/.obsidian/snippets/
+3. Enable in Settings → Appearance → CSS snippets
+4. Restart Obsidian
+*/
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FONT VARIABLES - IBM PLEX SYSTEM
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* IBM Plex Serif - Technical serif for formal documentation */
+  --font-prose-serif: "IBM Plex Serif", "Roboto Slab", "Courier Prime", monospace;
+
+  /* IBM Plex Sans - Industrial sans for systematic notes */
+  --font-notes-sans: "IBM Plex Sans", "Roboto", "-apple-system", sans-serif;
+
+  /* IBM Plex Mono - Technical monospace */
+  --font-code-mono: "IBM Plex Mono", "Roboto Mono", "Courier Prime Code", monospace;
+
+  /* Font sizes - Technical documentation sizing */
+  --font-size-prose: 17px;   /* Slightly smaller than literary fonts */
+  --font-size-notes: 16px;   /* Standard functional size */
+  --font-size-code: 14px;    /* Compact technical */
+
+  /* Line heights - Tighter than literary, functional */
+  --line-height-prose: 1.7;  /* Documentation, not literature */
+  --line-height-notes: 1.6;  /* Systematic scanning */
+  --line-height-code: 1.5;   /* Technical precision */
+
+  /* Font weights - IBM Plex specific */
+  --font-weight-normal: 400; /* Regular */
+  --font-weight-medium: 500; /* Medium for emphasis */
+  --font-weight-bold: 600;   /* Semibold for headers */
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DEFAULT: IBM PLEX SANS FOR NOTES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Editor */
+.markdown-source-view.mod-cm6 .cm-content,
+.markdown-source-view.mod-cm6 .cm-line {
+  font-family: var(--font-notes-sans);
+  font-size: var(--font-size-notes);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-notes);
+}
+
+/* Reading view */
+.markdown-preview-view {
+  font-family: var(--font-notes-sans);
+  font-size: var(--font-size-notes);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-notes);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROSE FILES: IBM PLEX SERIF
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Path-based detection */
+.workspace-leaf[data-path*="/prose/"] .markdown-source-view.mod-cm6 .cm-content,
+.workspace-leaf[data-path*="/prose/"] .markdown-source-view.mod-cm6 .cm-line {
+  font-family: var(--font-prose-serif);
+  font-size: var(--font-size-prose);
+  line-height: var(--line-height-prose);
+}
+
+.workspace-leaf[data-path*="/prose/"] .markdown-preview-view {
+  font-family: var(--font-prose-serif);
+  font-size: var(--font-size-prose);
+  line-height: var(--line-height-prose);
+}
+
+/* Manual frontmatter control */
+.prose-mode .markdown-source-view.mod-cm6 .cm-content,
+.prose-mode .markdown-source-view.mod-cm6 .cm-line,
+.prose-mode .markdown-preview-view {
+  font-family: var(--font-prose-serif);
+  font-size: var(--font-size-prose);
+  line-height: var(--line-height-prose);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CODE BLOCKS: IBM PLEX MONO
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Inline code */
+.cm-inline-code,
+code {
+  font-family: var(--font-code-mono);
+  font-size: 0.9em;
+  font-variant-ligatures: none; /* IBM Plex Mono doesn't need ligatures */
+}
+
+/* Code blocks - Editor */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock {
+  font-family: var(--font-code-mono);
+  font-size: var(--font-size-code);
+  line-height: var(--line-height-code);
+}
+
+/* Code blocks - Reading view */
+.markdown-preview-view pre,
+.markdown-preview-view code {
+  font-family: var(--font-code-mono);
+  font-size: var(--font-size-code);
+  line-height: var(--line-height-code);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HEADERS: ALWAYS IBM PLEX SANS (SYSTEMATIC HIERARCHY)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Headers use Sans even in prose files - maintains structural clarity */
+.markdown-preview-view h1,
+.markdown-preview-view h2,
+.markdown-preview-view h3,
+.markdown-preview-view h4,
+.markdown-preview-view h5,
+.markdown-preview-view h6,
+.cm-header {
+  font-family: var(--font-notes-sans);
+  font-weight: var(--font-weight-bold);
+}
+
+/* H1 is bolder for clear hierarchy */
+.markdown-preview-view h1,
+.cm-header-1 {
+  font-weight: 700;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EMPHASIS: INDUSTRIAL WEIGHTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Bold uses semibold (600) not full bold - more technical */
+.markdown-preview-view strong,
+.cm-strong {
+  font-weight: var(--font-weight-bold);
+}
+
+/* Italic maintains normal weight */
+.markdown-preview-view em,
+.cm-em {
+  font-style: italic;
+  font-weight: var(--font-weight-normal);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LISTS: SYSTEMATIC FORMATTING
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Lists maintain font family */
+.markdown-preview-view ul,
+.markdown-preview-view ol {
+  font-family: inherit;
+}
+
+/* List markers slightly muted */
+.markdown-preview-view li::marker {
+  color: var(--text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROSE-SPECIFIC ADJUSTMENTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Wider reading column for prose */
+.workspace-leaf[data-path*="/prose/"] .markdown-preview-view,
+.prose-mode .markdown-preview-view {
+  max-width: 750px;
+  margin: 0 auto;
+  padding: 2em 3em;
+}
+
+/* Paragraph spacing for prose */
+.workspace-leaf[data-path*="/prose/"] .markdown-preview-view p,
+.prose-mode .markdown-preview-view p {
+  margin-bottom: 1.2em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NOTES: COMPACT FORMATTING
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Standard width for notes */
+.markdown-preview-view {
+  max-width: 700px;
+}
+
+/* Tighter paragraph spacing for notes */
+.markdown-preview-view p {
+  margin-bottom: 1em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FONT FEATURES: TECHNICAL RENDERING
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Optimize rendering for technical fonts */
+.markdown-preview-view,
+.markdown-source-view {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* IBM Plex Serif features */
+.workspace-leaf[data-path*="/prose/"] .markdown-preview-view,
+.prose-mode .markdown-preview-view {
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DEBUGGING INDICATOR (OPTIONAL)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/*
+Uncomment to show which mode is active:
+
+.workspace-leaf[data-path*="/prose/"]::before {
+  content: "📋 Plex Serif (Prose)";
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: var(--grace-2);
+  color: var(--key-1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: var(--font-notes-sans);
+  font-size: 11px;
+  font-weight: 500;
+  z-index: 1000;
+}
+
+.markdown-source-view::before {
+  content: "📋 Plex Sans (Notes)";
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: var(--silver-2);
+  color: var(--key-1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: var(--font-notes-sans);
+  font-size: 11px;
+  font-weight: 500;
+  z-index: 1000;
+}
+
+.workspace-leaf[data-path*="/prose/"] .markdown-source-view::before {
+  content: "📋 Plex Serif (Prose)";
+  background: var(--grace-2);
+}
+*/
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THEMODYNAMIC STARK INTEGRATION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/*
+This CSS snippet is designed to work with the Themodynamic Stark theme.
+The IBM Plex family complements the "systematic containment" aesthetic:
+
+- IBM Plex Serif: Technical documentation with authority
+- IBM Plex Sans: Industrial precision for notes
+- IBM Plex Mono: Engineering specifications
+
+"The system does not seek peace. It seeks containment."
+*/

@@ -1,0 +1,8 @@
+{
+  "name": "Themodynamic Stark",
+  "version": "1.0.0",
+  "minAppVersion": "0.16.0",
+  "author": "Malcolm Burtenshaw",
+  "authorUrl": "https://github.com/mjburtenshaw",
+  "modes": ["dark", "light"]
+}
