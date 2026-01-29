@@ -5,7 +5,8 @@
 
 set -e
 
-THEME_NAME="themodynamic-stark"
+# Extension folder must follow VS Code naming convention: publisher.name-version
+THEME_NAME="kuroki.themodynamic-stark-1.0.0"
 THEME_DIR="$HOME/.vscode/extensions/$THEME_NAME"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
