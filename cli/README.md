@@ -24,7 +24,7 @@ Personal engineering practices command-line tool following UNIX philosophy.
 ## Installation
 
 ```bash
-cd ~/code/github.com/mjburtenshaw/macpracs/cli
+cd ~/github.com/mjburtenshaw/macpracs/cli
 npm install
 npm link
 ```
