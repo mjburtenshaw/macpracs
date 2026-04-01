@@ -34,7 +34,7 @@ find_vaults() {
 echo "Searching for Obsidian vaults..."
 # Build array (compatible with bash 3.2)
 vault_list=$(find_vaults | sort -u)
-IFS=$'\n' VAULTS=($vault_list)
+mapfile -t VAULTS <<< "$vault_list"
 
 if [ ${#VAULTS[@]} -eq 0 ]; then
     echo "❌ No Obsidian vaults found."
@@ -68,7 +68,7 @@ if [ ${#VAULTS[@]} -eq 1 ]; then
     echo "Installing to: $vault_name"
 else
     echo -n "Select vault number (1-${#VAULTS[@]}): "
-    read selection
+    read -r selection
 
     if ! [[ "$selection" =~ ^[0-9]+$ ]] || [ "$selection" -lt 1 ] || [ "$selection" -gt ${#VAULTS[@]} ]; then
         echo "❌ Invalid selection"

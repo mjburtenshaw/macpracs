@@ -20,8 +20,10 @@ check_timestamp() {
         return 1  # File doesn't exist, should run
     fi
     
-    local last_run=$(cat "$timestamp_file" 2>/dev/null || echo "0")
-    local current_time=$(date +%s)
+    local last_run
+    last_run=$(cat "$timestamp_file" 2>/dev/null || echo "0")
+    local current_time
+    current_time=$(date +%s)
     local interval_seconds=$((interval_hours * 3600))
     local elapsed=$((current_time - last_run))
     
@@ -35,8 +37,9 @@ check_timestamp() {
 update_timestamp() {
     local task_name="$1"
     local timestamp_file="$TIMESTAMP_DIR/${task_name}.timestamp"
-    local current_time=$(date +%s)
-    
+    local current_time
+    current_time=$(date +%s)
+
     echo "$current_time" > "$timestamp_file"
 }
 

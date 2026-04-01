@@ -1,6 +1,9 @@
 #!/bin/zsh
+# shellcheck disable=SC2162  # zsh read "var?prompt" syntax assigns variables
+# shellcheck disable=SC2154  # variables assigned via zsh read "var?prompt" syntax
+# shellcheck disable=SC1090,SC1091  # can't follow dynamic source paths
 
-export mjbhome=~/code/github.com/mjburtenshaw
+export mjbhome=~/github.com/mjburtenshaw
 
 add_ssh_key() {
     echo "🔑 Adding SSH key..."
@@ -11,7 +14,7 @@ add_ssh_key() {
 
     echo -e "\n$keyfile_path\n"
     echo "☝🏻  Use the copied keyfile path to fill in prompts:"
-    echo $keyfile_path | pbcopy
+    echo "$keyfile_path" | pbcopy
     echo "📋 Copied to clipboard"
 
     ssh-keygen -t ed25519 -C "$keyfile"
@@ -26,9 +29,9 @@ Host github.com
     IdentityFile $keyfile_path
 
 EOF
-    ssh-add $keyfile_path
+    ssh-add "$keyfile_path"
 
-    pbcopy < $keyfile_path.pub
+    pbcopy < "${keyfile_path}.pub"
     echo "📋 COPIED TO CLIPBOARD! :D"
 
     echo -e "\n$keyfile_path.pub\n"
@@ -37,12 +40,12 @@ EOF
 }
 
 clone_repo() {
-    "📡 Cloning macpracs..."
-    mkdir -p $mjbhome
+    echo "📡 Cloning macpracs..."
+    mkdir -p "$mjbhome"
     operating_dir=$(pwd)
-    cd $mjbhome
+    cd "$mjbhome" || return
     git clone git@github.com:mjburtenshaw/macpracs.git
-    cd $operating_dir
+    cd "$operating_dir" || return
 }
 
 install_builtins() {
@@ -94,6 +97,7 @@ install_color_palettes() {
     color_palettes_dir=$mjbhome/macpracs/tools/resources/color-palettes
 
     setopt NULL_GLOB
+    # shellcheck disable=SC2206  # intentional zsh glob array with NULL_GLOB
     color_palettes=($color_palettes_dir/*.clr)
     unsetopt NULL_GLOB
 
@@ -116,6 +120,7 @@ install_homebrew() {
     if [[ "$first_time" == "y" ]]; then
         # add brew to PATH
         echo >> /Users/malcolmburtenshaw/.zprofile
+        # shellcheck disable=SC2016  # intentional: single quotes prevent expansion at write time
         echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/malcolmburtenshaw/.zprofile
     fi
 
@@ -137,6 +142,7 @@ install_terminal_profiles() {
     terminal_profiles_dir=$mjbhome/macpracs/tools/resources/terminal-profiles
 
     setopt NULL_GLOB
+    # shellcheck disable=SC2206  # intentional zsh glob array with NULL_GLOB
     terminal_profiles=($terminal_profiles_dir/*.terminal)
     unsetopt NULL_GLOB
 
@@ -169,7 +175,7 @@ install_zsh_dependencies() {
     echo "💾 Installing oh-my-zsh..."
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     ZSH_CUSTOM=~/.oh-my-zsh/custom
-    cp ~/code/github.com/mjburtenshaw/macpracs/tools/resources/bullet-train.zsh-theme.txt $ZSH_CUSTOM/themes/bullet-train.zsh-theme
+    cp ~/github.com/mjburtenshaw/macpracs/tools/resources/bullet-train.zsh-theme.txt $ZSH_CUSTOM/themes/bullet-train.zsh-theme
 
     install_node
 
@@ -187,7 +193,7 @@ install_zsh_dependencies() {
 #
 # See also: aliases.sh
 pip_install() {
-    /usr/local/bin/python3 -m pip install --user $1
+    /usr/local/bin/python3 -m pip install --user "$1"
 }
 
 # Function to prompt user before running each task

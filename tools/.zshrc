@@ -1,6 +1,6 @@
 # ZSH Configuration
 
-export mjbhome="${HOME}/code/github.com/mjburtenshaw"
+export mjbhome="${HOME}/github.com/mjburtenshaw"
 export obsidian="${HOME}/Library/Mobile Documents/iCloud~md~obsidian/Documents"
 
 source $mjbhome/macpracs/tools/aliases.sh

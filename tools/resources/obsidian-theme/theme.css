@@ -271,7 +271,7 @@ Author: Malcolm Burtenshaw
   --text-highlight-bg-active: var(--grace-1);
 
   /* Code */
-  --code-normal: var(--sage-3);
+  --code-normal: var(--void-1);
   --code-background: var(--key-2);
   --code-comment: var(--silver-2);
   --code-function: var(--garden-3);
